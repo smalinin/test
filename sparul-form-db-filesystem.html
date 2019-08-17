@@ -718,7 +718,7 @@
 			};
 
 			try {
-				var resp = await fetch(url, options);
+				var resp = await solid.auth.fetch(url, options);
 				if (resp.status >= 200 && resp.status <= 300) {
 					console.log(resp.status + " - " + resp.statusText);
 					updateTable();
@@ -768,7 +768,7 @@
 				body: delete_cmd,
 			};
 			try {
-				var resp = await fetch(url, options);
+				var resp = await solid.auth.fetch(url, options);
 				if (resp.status >= 200 && resp.status <= 300) {
 					console.log(resp.status + " - " + resp.statusText);
 					updateTable();
@@ -827,7 +827,7 @@
 				crossDomain: true,
 			};
 			try {
-				var resp = await fetch(url, options)
+				var resp = await solid.auth.fetch(url, options)
 
 					.then((res) => res.json())
 					.then(data => {
@@ -917,7 +917,7 @@
 				crossDomain: true,
 			};
 			try {
-				var resp = await fetch(url, options)
+				var resp = await solid.auth.fetch(url, options)
 
 					.then((res) => res.json())
 					.then(data => {
@@ -986,7 +986,7 @@
 			};
 
 			try {
-				var resp = await fetch(url, options)
+				var resp = await solid.auth.fetch(url, options)
 
 					.then((res) => res.json())
 					.then(data => {
@@ -1053,7 +1053,7 @@
 			};
 
 			try {
-				const resp = await fetch(url, options); // resp awaits completion of fetch 
+				const resp = await solid.auth.fetch(url, options); // resp awaits completion of fetch 
 
 				if (resp.status >= 200 && resp.status <= 300) {
 					console.log(resp.status + " - " + resp.statusText);
@@ -1081,7 +1081,7 @@
 			let url = docName;
 
 			console.log("Fetch Command:" + turtle_cmd);
-
+/***
 			const options = {
 				method: 'PATCH',
 				headers: {
@@ -1092,13 +1092,23 @@
 				crossDomain: true,
 				body: turtle_cmd,
 			};
-
+***/
+			const options = {
+				method: 'PUT',
+				headers: {
+					'Content-type': 'plain/text',
+				},
+				credentials: 'include',
+				mode: 'cors',
+				crossDomain: true,
+				body: turtle_cmd,
+			};
 			try {
-				var resp = await fetch(url, options);
+				var resp = await solid.auth.fetch(url, options);
 				if (resp.status >= 200 && resp.status <= 300) {
 					hideSpinner();
 					console.log(resp.status + " - " + resp.statusText);
-					updateTable();
+//??--					updateTable();
 				}
 				else {
 					hideSpinner();
@@ -1136,7 +1146,7 @@
 			};
 
 			try {
-				var resp = await fetch(url, options);
+				var resp = await solid.auth.fetch(url, options);
 				if (resp.status >= 200 && resp.status <= 300) {
 					hideSpinner();
 					console.log(resp.status + " - " + resp.statusText);
