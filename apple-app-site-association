@@ -1,9 +1,0 @@
-{
-    "applinks": {
-        "apps": [],
-        "details": [{
-            "appID": "E4G7YC8M82.com.openlinksw.youid.ios",
-            "paths": ["/test/youid/*", "/youid/*", "/test/*"]
-        }]
-    }
-}

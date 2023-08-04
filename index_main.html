@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+      * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+  <meta name="theme-ios" content="#007aff">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>ChatBot</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon.png">
+  
+  
+  <link rel="stylesheet" href="framework7/framework7-bundle.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <style>
+    .hidden {
+      display: none!important;
+    }
+    .dot25 {
+      align-items:center; 
+      width:25em; 
+      text-overflow:ellipsis; 
+      overflow:hidden; 
+      white-space:nowrap;    
+    }
+    .pre500 {
+      max-width:100%; 
+      height: 500px !important; 
+      overflow:scroll; 
+      white-space:pre;
+      word-wrap: normal;
+      border-style: groove;
+      border-width: thin;
+      font-size: 14px !important;
+    }
+    .pre300 {
+      max-width:100%; 
+      height: 200px !important; 
+      overflow:scroll; 
+      white-space:pre;
+      word-wrap: normal;
+      border-style: groove;
+      border-width: thin;
+      font-size: 14px !important;
+    }
+    .btn-cmd {
+      text-transform: none!important;
+    }
+    .img_btn {
+      width: 20px;
+      height: 20px;
+    }
+    div.acc_item {display:flex; flex-direction:row; align-items: center;}
+    span.acc_item {padding-left:10px}
+    img.acc_item {width:48px; height:48px}
+    :root {
+      --f7-label-font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="panel panel-left panel-cover panel-resizable panel-init">
+      <div class="page">
+        <div class="page-content">
+          <div class="block-title">Topics</div>
+          <div class="list">
+            <ul>
+              <li class="swipeout">
+                <div class="item-content swipeout-content">
+                  <div class="item-inner">
+                    <div class="item-title"> Topic1</div> 
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+          <div class="block-title">Test scroll</div>
+          <div id="list_topics" class="list links-list" style="height:60%; overflow:scroll;">
+            <ul>
+              <li>  Item 1 </li>
+              <li>  Item 2 </li>
+              <li>  Item3 </li>
+              <li>  Item4 </li>
+              <li>  Item5 </li>
+              <li>  Item6 </li>
+              <li>  Item7 </li>
+              <li>  Item8 </li>
+              <li>  Item9 </li>
+              <li>  Item10 </li>
+              <li>  Item11 </li>
+              <li>  Item12 </li>
+              <li>  Item13 </li>
+              <li>  Item14 </li>
+              <li>  Item15 </li>
+              <li>  Item16 </li>
+              <li>  Item17 </li>
+              <li>  Item18 </li>
+              <li>  Item19 </li>
+              <li>  Item20 </li>
+              <li>  Item21 </li>
+              <li>  Item22 </li>
+              <li>  Item23 </li>
+              <li>  Item24 </li>
+              <li>  Item25 </li>
+              <li>  Item26 </li>
+              <li>  Item27 </li>
+              <li>  Item28 </li>
+              <li>  Item29 </li>
+              <li>  Item30 </li>
+            </ul>
+          </div>
+          <div class="block">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum
+              neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus,
+              viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper
+              tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat
+              nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis
+              elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Your main view, should have "view-main" class -->
+    <div class="view view-main view-init safe-areas" data-master-detail-breakpoint="768">
+      <div class="page" data-name="home">
+<!------------------------->
+    <div class="navbar no-outline">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+          <a href="#" class="link icon-only panel-open" data-panel="left">
+            <i class="icon f7-icons if-not-md">menu</i>
+            <i class="icon material-icons md-only">menu</i>
+          </a>
+          <a href="#" class="link back">
+                <i class="icon icon-back"></i>
+                <span>F</span>
+          </a>
+        </div>
+        <div class="title">ChatBot</div>
+      </div>
+    </div>
+<!------------------------->
+        <!-- Scrollable page content-->
+        <div class="page-content">
+
+        <div class="block-title" id="myid">Not Logged</div>
+        <button id="btn-login" class="col-50 button button-large_ button-outline button-round">Login</button>
+        <button id="btn-test" class="col-50 button button-large_ button-outline button-round">Test</button>
+        <button id="btn-test1" class="col-50 button button-large_ button-outline button-round">Load Conversation</button>
+        <button id="btn-test2" class="col-50 button button-large_ button-outline button-round">Send new message</button>
+
+<!-- ============================================================ -->
+    <div class="block-title">Block title</div>
+    <div class="block">
+      <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+    </div>
+
+    <div class="block-title">Inset</div>
+    <div class="block block-strong inset">
+      <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+    </div>
+
+    <div class="block-title">Tablet Inset</div>
+    <div class="block block-strong medium-inset">
+      <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+    </div>
+
+
+
+<!-- ============================================================ -->
+
+          <div class="block hidden" id="block-ca-install">
+            <div class="row">
+              <button id="btn-ca-install" class="col button button-outline button-round button-raised btn-cmd">Install CA Signer Identity Card</button>
+            </div>
+          </div>
+
+          <div class="block hidden" id="block-install">
+            <div class="row">
+              <button id="btn-install" class="col button button-outline button-round button-raised btn-cmd">Install Identity Card & Private Key</button>
+            </div>
+          </div>
+
+          <div class="block hidden" id="block-view">
+            <div class="row">
+              <button id="btn-view" class="col button button-outline button-round button-raised btn-cmd">View Generated Profile Document</button>
+            </div>
+          </div>
+
+          <div class="block hidden" id="block-zip">
+            <div class="row">
+              <button id="btn-zip" class="col button button-outline button-round button-raised btn-cmd">Download ZIP Archive</button>
+            </div>
+          </div>
+
+          <div class="list no-hairlines-md" id="block-announce">
+            <ul>
+              <li id="announce_phone">
+                <div style="padding-top:5px">
+                  <p style="margin:10px">
+                  Announce your Certificate identity claims
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="row" style="padding:10px">
+                  <div id="announce_pad" class="hidden">
+                    Announce your Certificate identity claims
+                  </div>
+                  <button id="b_send" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                    <img class="svg_white" src="images/ios-share.svg">
+                    &nbsp;&nbsp; Send &nbsp;&nbsp;
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="list accordion-opposite accordion-list">
+            <ul>
+              <li id="n-text" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/text-64.png"> 
+                      <span class="acc_item">Plain Text</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-n-text" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_n_text" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="n-ttl" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/turtle-64.png"> 
+                      <span class="acc_item">RDF-Turtle</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-n-ttl" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_n_ttl" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="n-jsonld" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/json-ld-64.png"> 
+                      <span class="acc_item">JSON-LD</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-n-jsonld" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_n_jsonld" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="n-rdfxml" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/rdf-xml-64.png"> 
+                      <span class="acc_item">RDF-XML</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-n-rdfxml" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_n_rdfxml" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-ttl" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/turtle-64.png"> 
+                      <span class="acc_item">HTML+RDF-Turtle</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-ttl" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_ttl" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-jsonld" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/json-ld-64.png"> 
+                      <span class="acc_item">HTML+JSON-LD</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-jsonld" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_jsonld" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-rdfxml" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/rdf-xml-64.png"> 
+                      <span class="acc_item">HTML+RDF-XML</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-rdfxml" class="form-control pre500" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_rdfxml" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-fp" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/finger-64.png"> 
+                      <span class="acc_item">Fingerprint</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-fp" class="form-control pre300" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_fp" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-ni" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/finger-64.png"> 
+                      <span class="acc_item">Fingerprint (ni: scheme URI)</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-ni" class="form-control pre300" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_ni" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+      
+              <li id="i-di" class="accordion-item">
+                <a href="#" class="item-link item-content">
+                  <div class="item-inner">
+                    <div class="item-title acc_item">
+                      <img class="acc_item" src="images/finger-64.png"> 
+                      <span class="acc_item">Fingerprint (di: scheme URI)</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="accordion-item-content">
+                  <div class="block">
+                    <textarea readonly="" id="text-i-di" class="form-control pre300" >
+                    </textarea>
+                  </div>
+                  <div class="row" style="padding:20px">
+                    <button id="b_copy_i_di" style="width:10em" class="col-33 button button-outline button-round button-raised btn_cmd">
+                      <img class="img_btn" src="images/copy-64.jpg">
+                      &nbsp;&nbsp; Copy &nbsp;&nbsp;
+                    </button>
+                  </div>
+                </div>
+              </li>
+        
+            <ul>
+          </div>
+
+
+<!-- ========================================================================================= -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="js/lib/solid-client-authn.bundle.js"></script>
+<!--
+  <script type="text/javascript" src="js/lib/qrcode.js"></script>
+  <script type="text/javascript" src="js/lib/rdfstore_min.js"></script>
+  <script type="text/javascript" src="js/lib/rdflib.js"></script>
+  <script type="text/javascript" src="js/lib/jsonld.js"></script>
+  <script type="text/javascript" src="js/lib/RDFa.js"></script>
+  <script type="text/javascript" src="js/lib/forge.bundle.js"></script>
+  <script type="text/javascript" src="js/lib/oidc-web.min.js"></script>
+  <script type="text/javascript" src="js/lib/aws-sdk.js"></script>
+  <script type="text/javascript" src="js/lib/azure-sdk.js"></script>
+  <script type="text/javascript" src="js/lib/punycode.js"></script>
+  <script type="text/javascript" src="js/lib/emojimap.js"></script>
+  <script src="js/uploader.js"></script>
+  <script src="js/cert_manual.js"></script>
+-->
+  <script type="text/javascript" src="js/browser.js"></script>
+  <script src="js/utils.js"></script>
+  
+
+  
+  <!-- Framework7 library -->
+  <script src="framework7/framework7-bundle.js"></script>
+  
+  <!-- App routes -->
+  <script src="routes.js"></script>
+  <!-- App scripts -->
+  <script src="config.js"></script>
+
+  <script src="js/p_chat_main.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="p_app_main.js"></script>
+
+
+<script>
+</script>
+
+
+</body>
+</html>
