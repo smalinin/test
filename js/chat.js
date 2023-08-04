@@ -69,7 +69,7 @@ class ChatUI {
       const more = v.ts ? this.timeSince(v.ts) : '';
       html.push(`<li> ${title} <span class="timestamp">(${more})</span></li>`);
     }
-    DOM.qSel('#list_topics ul').innerHTML(html.join());
+    DOM.qSel('#list_topics ul').innerHTML = html.join();
   }
 }
 
