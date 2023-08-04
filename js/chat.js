@@ -66,7 +66,7 @@ class ChatUI {
     for(const v of list) {
       const title = v.title ?? v.chat_id;
       const is_system = v.chat_id.startsWith('system-') ;
-      const more = v.ts ? timeSince(v.ts) : '';
+      const more = v.ts ? this.timeSince(v.ts) : '';
       html.push(`<li> ${title} <span class="timestamp">(${more})</span></li>`);
     }
     DOM.qSel('#list_topics ul').innerHTML(html.join());
