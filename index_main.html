@@ -69,9 +69,14 @@
     div.acc_item {display:flex; flex-direction:row; align-items: center;}
     span.acc_item {padding-left:10px}
     img.acc_item {width:48px; height:48px}
+    .cur_item {
+      backgroud-color: aquamarine;
+      
+    }
     :root {
       --f7-label-font-size: 15px;
       --f7-panel-left-width: 360px;
+      --f7-list-item-title-font-size: 14px;
     }
   </style>
 </head>
@@ -97,8 +102,8 @@
           </div>
 
 
-          <div class="block-title">Test scroll</div>
-          <div id="list_topics" class="list list-strong list-outline-ios list-dividers inset-md" style="height:60%; overflow:scroll;">
+          <div class="block-title">Topics</div>
+          <div id="list_topics" class="list list-strong list-outline-ios list-dividers inset-md" style="height:60%; overflow-y:scroll;">
             <ul>
             </ul>
           </div>

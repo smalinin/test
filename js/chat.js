@@ -57,7 +57,7 @@ class ChatUI {
     }
 ]
   ***/
-  updateListTopics(list)
+  updateListTopics(list, cur_chat)
   {
     if (!list)
       return;
@@ -67,9 +67,10 @@ class ChatUI {
       const text = v.title ?? v.chat_id;
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
+      const add_clas = v.chat_id === cur_chat ? 'cur_item':'';
       if (is_system) {
         html.push(
-          `<li class="swipeout">`
+          `<li class="swipeout ${add_clas}">`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title">${text}</div>`
@@ -80,7 +81,7 @@ class ChatUI {
       else {
         const title = `${text} <span class="timestamp">(${more})</span>`;
         html.push(
-          `<li class="swipeout">`
+          `<li class="swipeout ${add_clas}">`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title">${title}</div>`
