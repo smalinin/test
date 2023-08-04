@@ -64,10 +64,30 @@ class ChatUI {
 
     let html = [];
     for(const v of list) {
-      const title = v.title ?? v.chat_id;
+      const text = v.title ?? v.chat_id;
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
-      html.push(`<li> ${title} <span class="timestamp">(${more})</span></li>`);
+      if (is_system)
+        html.push(`<li> ${text} </li>`);
+      else {
+        const title = `<li> ${text} <span class="timestamp">(${more})</span></li>`;
+        html.push(
+          `<li class="swipeout">`
+         +`  <div class="item-content swipeout-content">`
+         +`    <div class="item-inner">`
+         +`      <div class="item-title">${title}</div>`
+         +`    </div>`
+         +`  </div>`
+         +`  <div class="swipeout-actions-right" chat_id="${v.chat_id}">`
+         +`    <a class="color-green chat_edit">Edit</a>`
+         +`    <a class="color-red chat_del">Delete</a>`
+         +`  </div>`
+         +`</li>`)
+     }
+        
+        
+        
+        <li> ${title} <span class="timestamp">(${more})</span></li>`);
     }
     DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
