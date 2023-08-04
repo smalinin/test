@@ -472,7 +472,7 @@ class Chat {
 //            more = timeSince(v.ts);
 //          addSideBarItem(v.chat_it, title, more);
         }
-        this.view.ui.updateListTopics(chats);
+        this.view.ui.updateListTopics(chats, this.currentChatId);
 /***
             chats.forEach (function (item) {
                 const chat_id = item['chat_id'];
