@@ -73,7 +73,7 @@ class ChatUI {
           `<li class="swipeout" ${add_style}>`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
-         +`      <div class="item-title">${text}</div>`
+         +`      <div class="item-title topic_title">${text}</div>`
          +`    </div>`
          +`  </div>`
          +`</li>`)
@@ -84,7 +84,7 @@ class ChatUI {
           `<li class="swipeout" ${add_style}>`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
-         +`      <div class="item-title">${title}</div>`
+         +`      <div class="item-title topic_title">${title}</div>`
          +`    </div>`
          +`  </div>`
          +`  <div class="swipeout-actions-right" chat_id="${v.chat_id}">`
