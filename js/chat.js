@@ -68,7 +68,6 @@ class ChatUI {
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
       if (is_system) {
-        html.push(`<li> ${text} </li>`);
         html.push(
           `<li class="swipeout">`
          +`  <div class="item-content">`
