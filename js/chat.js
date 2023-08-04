@@ -73,7 +73,7 @@ class ChatUI {
           `<li class="swipeout">`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
-         +`      <div class="item-title">${title}</div>`
+         +`      <div class="item-title">${text}</div>`
          +`    </div>`
          +`  </div>`
          +`</li>`)
