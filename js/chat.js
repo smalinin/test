@@ -83,11 +83,7 @@ class ChatUI {
          +`    <a class="color-red chat_del">Delete</a>`
          +`  </div>`
          +`</li>`)
-     }
-        
-        
-        
-        <li> ${title} <span class="timestamp">(${more})</span></li>`);
+      }
     }
     DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
