@@ -78,7 +78,7 @@ class ChatUI {
          +`</li>`)
       }
       else {
-        const title = `<li> ${text} <span class="timestamp">(${more})</span></li>`;
+        const title = `${text} <span class="timestamp">(${more})</span>`;
         html.push(
           `<li class="swipeout">`
          +`  <div class="item-content swipeout-content">`
