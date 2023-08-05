@@ -96,6 +96,30 @@ class ChatUI {
     }
     DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
+
+  updateConversation(list, cur_chat)
+  {
+    if (!list)
+      return;
+
+    let html = [];
+    let id = 0;
+    for(const v of list) {
+      const title = (v.role === 'user') ? 'User' : 'AI';
+      
+      html.push(
+        `<div class="block-title">${title}</div>`);
+
+      html.push(
+        `<div class="block block-strong medium-inset" id="item_${id}">`
+       +`<p>${v.text}`
+       +`</div>`);
+
+      id++; 
+    }
+    DOM.qSel('#conversation').innerHTML = html.join('');
+  }
+
 }
 
 class Chat {
@@ -536,6 +560,8 @@ console.log(list);
             }
           }
         }
+        this.view.ui.updateConversation(list, chat_id);
+//        
 /***
             list.forEach (function (item) {
                 let role = item['role'];
@@ -565,8 +591,10 @@ console.log(list);
 //??            setModel (model);
 //??            updateShareLink();
 //??            $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300); 
-      } else
+      } else {
         this.showNotice ('Conversation failed to load failed: ' + resp.statusText);
+        await this.checkLoggedIn(resp.status);
+      }
     } catch (e) {
       this.showNotice('Loading conversation failed: ' + e);
     }
