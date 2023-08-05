@@ -140,7 +140,7 @@ class ChatUI {
         `<div class="block-title">${title}</div>`);
 
       html.push(
-        `<div class="block block-strong medium-inset" id="item_${id}">`
+        `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
        + this.md.render(v.text)
 //??--       +`<p>${v.text}`
        +`</div>`);
