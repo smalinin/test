@@ -27,7 +27,7 @@ class ChatUI {
             +'     <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>'
             +'     <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>'
             +'  </div>'
-            +`  <div class="code_block">${str}</div>`
+            +`  <div class="code_block">${text}</div>`
             +'</div>';
          }
 
