@@ -19,18 +19,46 @@ class ChatUI {
       quotes: '“”‘’',
 
       highlight: function (str, lang) {
+         function gen_block(text)
+         {
+           return
+             '<div class="chat_code">'
+            +'  <div class="code_header">'
+            +'     <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>'
+            +'     <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>'
+            +'  </div>'
+            +`  <div class="code_block">${str}</div>`
+            +'</div>';
+         }
+
          if (lang && hljs.getLanguage(lang)) {
            try {
-             return '<pre class="hljs"><code>' +
-                     hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-                   '</code></pre>';
+             var v = '<pre class="hljs"><code>' +
+                       hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                     '</code></pre>';
+             return gen_block(v);
            } catch (__) {}
          }
 
-         return '<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>';
+         return gen_block('<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>');
        }
      });
   }
+
+/*******
+     `<div class="chat_code">
+        <div class="code_header">
+           <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>
+           <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>
+        </div>
+        <div class="code_block">${str}</div>
+      </div>`
+
+
+
+**********/
+
+
 
   timeSince(date) 
   {

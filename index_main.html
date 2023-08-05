@@ -81,10 +81,45 @@
       display: flex;
     }
     :root {
+      color-schema: light dark;
       --f7-label-font-size: 15px;
       --f7-panel-left-width: 360px;
       --f7-list-item-title-font-size: 14px;
     }
+
+    div.code_header {
+      background: darkgrey;
+      border-radius: 5px;
+      height: 25px;
+      display: flex;
+      flex-direction: row-reverse;
+      padding: 5 10;
+    }
+
+    .code_header button{
+      display: flex;
+      align-items: center;
+    }
+    .code_header img.img20{
+      width: 20px;
+      height:  20px;
+      padding-right: 5px;
+    }
+
+    div.chat_code {
+      background: darkgrey;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    div.code_block {
+      width: calc(100% - 10px);
+      padding-left: 5px;
+      padding-bottom: 5px;
+    }
+
+
   </style>
 </head>
 <body>
