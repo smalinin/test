@@ -524,7 +524,7 @@ class Chat {
   async checkLoggedIn(status) 
   {
     if (status === 401 || status === 403) {
-      await this.soledClient.logout();
+      await this.solidClient.logout();
       this.onLogout();
     }
   }
