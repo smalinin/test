@@ -36,7 +36,8 @@ class ChatUI {
              var v = '<pre class="hljs"><code>' +
                        hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
                      '</code></pre>';
-             return gen_block(v);
+             const r = gen_block(v);
+             return r;
            } catch (__) {}
          }
 
