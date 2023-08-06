@@ -508,7 +508,7 @@
 .markdown-body pre,
 .markdown-body details {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 5px;
 }
 
 .markdown-body blockquote>:first-child {
@@ -823,7 +823,7 @@
 
 .markdown-body .highlight pre,
 .markdown-body pre {
-  padding: 16px;
+  padding: 5px;
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
