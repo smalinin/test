@@ -164,7 +164,7 @@ class ChatUI {
       if (v.role !== this.last_item_role) {
 //??--        html.push(`<div class="block-title">${title}</div>`);
         const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
-        this.chat_lst.appendChild(el); 
+        this.chat_list.appendChild(el); 
 
         this.last_item_text = '';
 
@@ -206,7 +206,7 @@ class ChatUI {
     const s = this._create_question_html(html, id);
     const el = DOM.htmlToElement(s);
 
-    this.chat_lst.appendChild(el); 
+    this.chat_list.appendChild(el); 
     this._update_scroll(disable_scroll);
 
   }
@@ -231,7 +231,7 @@ class ChatUI {
     const html_block = this._create_answer_html(html, id);
     const el = DOM.htmlToElement(html_block);
 
-    this.chat_lst.appendChild(el); 
+    this.chat_list.appendChild(el); 
     this._update_scroll(disable_scroll);
   }
 
@@ -265,8 +265,8 @@ class ChatUI {
     if (disable_scroll)
       return;
 
-    const v = this.chat_lst.scrollHeight
-    this.chat_lst.scrollTo(1,v);
+    const v = this.chat_list.scrollHeight
+    this.chat_list.scrollTo(1,v);
   }
 
   _create_answer_html(html, id) 
