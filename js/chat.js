@@ -31,7 +31,7 @@ class ChatUI {
          if (!code)
            code = '<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>';
 
-         return
+         var rc =
              '<div class="chat_code">'
             +'  <div class="code_header">'
             +'     <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>'
@@ -39,6 +39,8 @@ class ChatUI {
             +'  </div>'
             +`  <div class="code_block">${code}</div>`
             +'</div>';
+          console.log(rc);
+          return rc;
        }
      });
   }
