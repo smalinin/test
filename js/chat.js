@@ -1,6 +1,11 @@
 class ChatUI {
   constructor({view}) {
     this.view = view;
+    this.last_item_role = null;
+    this.last_item_text = '';
+    this.last_item_id = null;
+    this.chat_list = DOM.qSel('#conversation');
+
     this.md = markdownit({
       html:         true,
       xhtmlOut:     true,
@@ -19,28 +24,14 @@ class ChatUI {
       quotes: '“”‘’',
 
       highlight: function (str, lang) {
-         var code = null;
-
          if (lang && hljs.getLanguage(lang)) {
            try {
-             code = '<pre class="hljs"><code>' +
+             return '<pre class="hljs"><code>' +
                        hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-                     '</code></pre>';
+                    '</code></pre>';
            } catch (__) {}
          }
-         if (!code)
-           code = '<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>';
-
-         var rc =
-             '<div class="chat_code">'
-            +'  <div class="code_header">'
-            +'     <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>'
-            +'     <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>'
-            +'  </div>'
-            +`  <div class="code_block">${code}</div>`
-            +'</div>';
-          console.log(rc);
-          return rc;
+         return '<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>';
        }
      });
   }
@@ -159,24 +150,191 @@ class ChatUI {
     if (!list)
       return;
 
+    this.last_item_role = null;
+
     let html = [];
     let id = 0;
+    
+    this.chat_list.innerHTML = '';
+
     for(const v of list) {
       const title = (v.role === 'user') ? 'User' : 'AI';
-      
-      html.push(
-        `<div class="block-title">${title}</div>`);
+      if (v.role !== this.last_item_role) {
+        html.push(`<div class="block-title">${title}</div>`);
+        this.last_item_text = '';
 
-      html.push(
-        `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
-       + this.md.render(v.text)
-//??--       +`<p>${v.text}`
-       +`</div>`);
+        if (v.role === 'user') {
+          this.append_question(v.text, id);
+        } else {
+          this.append_ai(v.text, id);
+        }
 
-      id++; 
+        this.last_item_text = v.text;
+        this.last_item_id = id;
+        id++;
+      }
+      else {  //update last item
+        const text = this.last_item_text + v.text;
+        if (v.role === 'user') {
+          this.update_question(text, id);
+        } else {
+          this.update_ai(text, id);
+        }
+
+        this.last_item_text = text;
+        this.last_item_id = id;
+      }
+
+      this.last_item_role = v.role;
     }
-    DOM.qSel('#conversation').innerHTML = html.join('');
+//??    this.chat_list.innerHTML = html.join('');
   }
+
+  append_question(text, id, disable_scroll)
+  {
+    if (!text)
+      return;
+
+//    var s = this._create_question_html(DOMPurify.sanitize(this.md.render(str)), sid);
+    const html = this.md.render(text);
+    const s = this._create_question_html(html, id);
+    const el = DOM.htmlToElement(s);
+
+    this.chat_lst.appendChild(el); 
+    this._update_scroll(disable_scroll);
+
+  }
+
+  update_question(text, id, disable_scroll)
+  {
+    if (!text)
+      return;
+
+    const html = this.md.render(text);
+    this._update_block(html, id);
+    this._update_scroll(disable_scroll);
+  }
+
+
+  append_ai(text, id, disable_scroll)
+  {
+    if (!text)
+      return;
+   
+    const html = this._create_ai_html(text);
+    const html_block = this._create_answer_html(html, id);
+    const el = DOM.htmlToElement(html_block);
+
+    this.chat_lst.appendChild(el); 
+    this._update_scroll(disable_scroll);
+  }
+
+  update_ai(text, id, disable_scroll)
+  {
+    if (!text)
+      return;
+   
+    const html = this._create_ai_html(text);
+    this._update_block(html, id);
+    this._update_scroll(disable_scroll);
+  }
+
+  _update_block(html, id)
+  {
+    const content = DOM.qSel(`div#item_${id}`);
+    if (content)
+      content.innerHTML = html;
+  }
+
+
+  _create_question_html(html, id)
+  {
+    return `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
+          +   html
+          +`</div>`;
+  }
+
+  _update_scroll(disable_scroll)
+  {
+    if (disable_scroll)
+      return;
+
+    const v = this.chat_lst.scrollHeight
+    this.chat_lst.scrollTo(1,v);
+  }
+
+  _create_answer_html(html, id) 
+  {
+    const v = 
+           `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
+          +   html
+          +`</div>`;
+
+    return v;
+  }
+
+  _create_ai_html(str)
+  {
+    var block = [];
+    var lst = this._parse_answer(str);
+
+    for(const i of lst) {
+      if (i.type === 'c') // text
+//        block.push( this._create_code_block_html(DOMPurify.sanitize(this.md.render(i.str))) ) 
+        block.push( this._create_code_block_html(this.md.render(i.str)) ) 
+      else
+        block.push( this._create_text_block_html(this.md.render(i.str)) ) 
+    }
+  
+    return block.join('\n');
+  }
+
+  _create_text_block_html(str)
+  {
+    return str;
+  }
+
+  _create_code_block_html(str)
+  {
+    var v = 
+     `<div class="chat_code">
+        <div class="code_header">
+           <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>
+           <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>
+        </div>
+        <div class="code_block">${str}</div>
+      </div>`
+    return v;                              
+  }
+
+  
+  _parse_answer(str) 
+  {
+    var ret = [];
+    var pos = 0;
+    while(true) {
+      var i = str.indexOf('```', pos);
+      if (i == -1) {
+        ret.push({type:'t', str: str.substring(pos)});
+        break;
+      }
+      else {
+        ret.push({type:'t', str: str.substring(pos, i)});
+        pos = i;
+        i = str.indexOf("```", i+3);
+        if (i == -1) {
+          ret.push({type:'c', str: str.substring(pos)});
+          break;
+        }
+        else {
+          ret.push({type:'c', str: str.substring(pos, i+3)});
+          pos = i + 3;
+        }
+      }
+    }
+    return ret;
+  }
+
 
 }
 
