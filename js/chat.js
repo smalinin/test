@@ -151,6 +151,8 @@ class ChatUI {
       return;
 
     this.last_item_role = null;
+    this.last_item_text = '';
+    this.last_item_id = null;
 
     let html = [];
     let id = 0;
@@ -160,7 +162,10 @@ class ChatUI {
     for(const v of list) {
       const title = (v.role === 'user') ? 'User' : 'AI';
       if (v.role !== this.last_item_role) {
-        html.push(`<div class="block-title">${title}</div>`);
+//??--        html.push(`<div class="block-title">${title}</div>`);
+        const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
+        this.chat_lst.appendChild(el); 
+
         this.last_item_text = '';
 
         if (v.role === 'user') {
@@ -173,7 +178,8 @@ class ChatUI {
         this.last_item_id = id;
         id++;
       }
-      else {  //update last item
+      else   //update last item
+      {
         const text = this.last_item_text + v.text;
         if (v.role === 'user') {
           this.update_question(text, id);
