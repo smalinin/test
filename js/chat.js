@@ -110,10 +110,7 @@ class ChatUI {
     if (!list)
       return;
 
-//??    let html = [];
-    let el;
     const el_topics = DOM.qSel('#list_topics ul');
-    
     el_topics.innerHTML = '';
 
     for(const v of list) {
@@ -121,31 +118,21 @@ class ChatUI {
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
       const add_style = v.chat_id === cur_chat ? 'style="background-color:aquamarine;"':'';
+      let html;
 
       if (is_system) {
-        el = DOM.htmlToElement(
+        html = 
           `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title topic_title">${text}</div>`
          +`    </div>`
          +`  </div>`
-         +`</li>`)
-
-/**        
-        html.push(
-          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
-         +`  <div class="item-content">`
-         +`    <div class="item-inner">`
-         +`      <div class="item-title topic_title">${text}</div>`
-         +`    </div>`
-         +`  </div>`
-         +`</li>`)
-**/
+         +`</li>`
       }
       else {
         const title = `<span class="topic_item">${text} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
-        el = DOM.htmlToElement(
+        html = 
           `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
@@ -156,31 +143,20 @@ class ChatUI {
          +`    <a class="color-green chat_edit">Edit</a>`
          +`    <a class="color-red chat_del">Delete</a>`
          +`  </div>`
-         +`</li>`)
-/**
-        html.push(
-          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
-         +`  <div class="item-content swipeout-content">`
-         +`    <div class="item-inner">`
-         +`      <div class="item-title topic_title">${title}</div>`
-         +`    </div>`
-         +`  </div>`
-         +`  <div class="swipeout-actions-right" >`
-         +`    <a class="color-green chat_edit">Edit</a>`
-         +`    <a class="color-red chat_del">Delete</a>`
-         +`  </div>`
-         +`</li>`)
-**/
+         +`</li>`
       }
 
+      const el = DOM.htmlToElement(html);
       const item = el_topics.appendChild(el); 
       item.onclick = (e) => {
-        var target = e.target.closest('li.swipeout');
-        alert(target);
+        const listItem = e.target.closest('li.swipeout');
+        const chat_id = listItem.attributes['chat_id'];
+        if (chat_id) {
+           alert('CHAT=>'+chat_id.value);
+        }
       }
 
     }
-//??    DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
 
   updateConversation(list, cur_chat)
