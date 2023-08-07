@@ -136,7 +136,8 @@ class ChatUI {
       }
 
       const el = DOM.htmlToElement(html);
-      const item = el_topics.appendChild(el); 
+      el_topics.appendChild(el); 
+      const item = el.querySelector('.item-title');
       item.onclick = (e) => {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
