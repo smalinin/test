@@ -103,7 +103,8 @@ class ChatUI {
 
     for(const v of list) {
       const text = v.title ?? v.chat_id;
-      const is_system = v.chat_id.startsWith('system-') ;
+//??      const is_system = v.chat_id.startsWith('system-') ;
+      const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
       const add_style = v.chat_id === cur_chat ? 'style="background-color:aquamarine;"':'';
       let html;
@@ -713,7 +714,8 @@ class Chat {
           const title = v.title ?? v.chat_id;
           let more = '';
           const ts = v.ts;
-          if (!this.currentChatId && v.chat_id.indexOf('system-') === -1)
+//??          if (!this.currentChatId && v.chat_id.indexOf('system-') === -1)
+          if (!this.currentChatId && v.role === 'user')
             this.currentChatId = this.lastChatId = v.chat_id;
 //          if (v.ts)
 //            more = timeSince(v.ts);
