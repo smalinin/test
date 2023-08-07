@@ -106,12 +106,12 @@ class ChatUI {
 //??      const is_system = v.chat_id.startsWith('system-') ;
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
-      const add_style = v.chat_id === cur_chat ? 'style="background-color:aquamarine;"':'';
+      const add_class = v.chat_id === cur_chat ? 'cur_topic':'';
       let html;
 
       if (is_system) {
         html = 
-          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
+          `<li class="swipeout ${add_class}"  chat_id="${v.chat_id}">`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title topic_title">${text}</div>`
@@ -122,7 +122,7 @@ class ChatUI {
       else {
         const title = `<span class="topic_item">${text} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
         html = 
-          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
+          `<li class="swipeout ${add_class}"  chat_id="${v.chat_id}">`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title topic_title">${title}</div>`
@@ -163,6 +163,14 @@ class ChatUI {
     let id = 0;
     
     this.chat_list.innerHTML = '';
+
+    let topic = DOM.qSel('#list_topics li.cur_topic');
+    if (topic) 
+      topic.classList.remove('cur_topic');
+
+    topic = DOM.qSel(`#list_topics li[chat_id="${cur_chat}"]`);
+    if (topic)
+      topic.classList.add('cur_topic');
 
     for(const v of list) {
       const title = (v.role === 'user') ? 'User' : 'AI';
