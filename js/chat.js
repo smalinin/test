@@ -111,36 +111,72 @@ class ChatUI {
       return;
 
     let html = [];
+    let el;
     for(const v of list) {
       const text = v.title ?? v.chat_id;
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
       const add_style = v.chat_id === cur_chat ? 'style="background-color:aquamarine;"':'';
+      const el_topics = DOM.qSel('#list_topics ul');
+      el_topics.innerHTML = '';
+
       if (is_system) {
-        html.push(
-          `<li class="swipeout" ${add_style}>`
+        el = DOM.htmlToElement(
+          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
          +`  <div class="item-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title topic_title">${text}</div>`
          +`    </div>`
          +`  </div>`
          +`</li>`)
+
+/**        
+        html.push(
+          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
+         +`  <div class="item-content">`
+         +`    <div class="item-inner">`
+         +`      <div class="item-title topic_title">${text}</div>`
+         +`    </div>`
+         +`  </div>`
+         +`</li>`)
+**/
       }
       else {
         const title = `<span class="topic_item">${text} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
-        html.push(
-          `<li class="swipeout" ${add_style}>`
+        el = DOM.htmlToElement(
+          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
          +`      <div class="item-title topic_title">${title}</div>`
          +`    </div>`
          +`  </div>`
-         +`  <div class="swipeout-actions-right" chat_id="${v.chat_id}">`
+         +`  <div class="swipeout-actions-right" >`
          +`    <a class="color-green chat_edit">Edit</a>`
          +`    <a class="color-red chat_del">Delete</a>`
          +`  </div>`
          +`</li>`)
+/**
+        html.push(
+          `<li class="swipeout" ${add_style} chat_id="${v.chat_id}">`
+         +`  <div class="item-content swipeout-content">`
+         +`    <div class="item-inner">`
+         +`      <div class="item-title topic_title">${title}</div>`
+         +`    </div>`
+         +`  </div>`
+         +`  <div class="swipeout-actions-right" >`
+         +`    <a class="color-green chat_edit">Edit</a>`
+         +`    <a class="color-red chat_del">Delete</a>`
+         +`  </div>`
+         +`</li>`)
+**/
       }
+
+      item = this.chat_list.appendChild(el); 
+      item.onclick = (e) => {
+        var target = e.target;
+        alert(target);
+      }
+
     }
     DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
@@ -517,15 +553,13 @@ class Chat {
     this.webSocket.onclose = (e) => {this.ws_onClose(e) }
   }
 
-/**
-  ws_Reconnect(url)
+  ws_Reconnect()
   {
     this.ws_Init();
 //??    $('.reconnect').hide();
 //??    $('.message_input').prop('disabled', false);
 //??    $('.send_message').show();
   }
-**/
 
   ws_Continue()
   {
