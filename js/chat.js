@@ -110,15 +110,17 @@ class ChatUI {
     if (!list)
       return;
 
-    let html = [];
+//??    let html = [];
     let el;
+    const el_topics = DOM.qSel('#list_topics ul');
+    
+    el_topics.innerHTML = '';
+
     for(const v of list) {
       const text = v.title ?? v.chat_id;
       const is_system = v.chat_id.startsWith('system-') ;
       const more = v.ts ? this.timeSince(v.ts) : '';
       const add_style = v.chat_id === cur_chat ? 'style="background-color:aquamarine;"':'';
-      const el_topics = DOM.qSel('#list_topics ul');
-      el_topics.innerHTML = '';
 
       if (is_system) {
         el = DOM.htmlToElement(
