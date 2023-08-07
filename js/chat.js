@@ -173,7 +173,7 @@ class ChatUI {
 **/
       }
 
-      item = el_topics.appendChild(el); 
+      const item = el_topics.appendChild(el); 
       item.onclick = (e) => {
         var target = e.target;
         alert(target);
