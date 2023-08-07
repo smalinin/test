@@ -171,14 +171,14 @@ class ChatUI {
 **/
       }
 
-      item = this.chat_list.appendChild(el); 
+      item = el_topics.appendChild(el); 
       item.onclick = (e) => {
         var target = e.target;
         alert(target);
       }
 
     }
-    DOM.qSel('#list_topics ul').innerHTML = html.join('');
+//??    DOM.qSel('#list_topics ul').innerHTML = html.join('');
   }
 
   updateConversation(list, cur_chat)
