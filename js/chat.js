@@ -5,7 +5,7 @@ class ChatUI {
     this.last_item_text = '';
     this.last_item_id = null;
     this.chat_list = DOM.qSel('#conversation');
-    this.main_content = DOM.qSel('div.page-content');
+    this.main_content = DOM.qSel('div#main');
 
     this.md = markdownit({
       html:         true,
