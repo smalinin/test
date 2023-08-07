@@ -175,7 +175,7 @@ class ChatUI {
 
       const item = el_topics.appendChild(el); 
       item.onclick = (e) => {
-        var target = e.target;
+        var target = e.target.closest('li.swipeout');
         alert(target);
       }
 
