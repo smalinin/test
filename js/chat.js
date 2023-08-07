@@ -36,19 +36,6 @@ class ChatUI {
      });
   }
 
-/*******
-     `<div class="chat_code">
-        <div class="code_header">
-           <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>
-           <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>
-        </div>
-        <div class="code_block">${str}</div>
-      </div>`
-
-
-
-**********/
-
 
 
   timeSince(date) 
@@ -153,6 +140,7 @@ class ChatUI {
         const chat_id = listItem.attributes['chat_id'];
         if (chat_id) {
            alert('CHAT=>'+chat_id.value);
+           this.view.chat.loadConversation(chat_id.value);
         }
       }
 
