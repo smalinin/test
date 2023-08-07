@@ -5,6 +5,7 @@ class ChatUI {
     this.last_item_text = '';
     this.last_item_id = null;
     this.chat_list = DOM.qSel('#conversation');
+    this.main_content = DOM.qSel('div.page-content');
 
     this.md = markdownit({
       html:         true,
@@ -267,8 +268,8 @@ class ChatUI {
     if (disable_scroll)
       return;
 
-    const v = this.chat_list.scrollHeight
-    this.chat_list.scrollTo(1,v);
+    const v = this.main_content.scrollHeight
+    this.main_content.scrollTo(1,v);
   }
 
   _create_answer_html(html, id) 
