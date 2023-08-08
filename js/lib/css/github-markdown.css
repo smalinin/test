@@ -821,13 +821,20 @@
   word-break: normal;
 }
 
-.markdown-body .highlight pre,
-.markdown-body pre {
+.markdown-body .highlight pre {
   padding: 5px;
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
   background-color: var(--color-canvas-subtle);
+  border-radius: 6px;
+}
+
+.markdown-body pre {
+  padding: 5px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
   border-radius: 6px;
 }
 
