@@ -106,7 +106,6 @@ class ChatUI {
 
     for(const v of list) {
       const text = v.title ?? v.chat_id;
-//??      const is_system = v.chat_id.startsWith('system-') ;
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
       const add_class = v.chat_id === cur_chat ? 'cur_topic':'';
@@ -145,7 +144,9 @@ class ChatUI {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
         if (chat_id) {
-           alert('CHAT=>'+chat_id.value);
+//??           alert('CHAT=>'+chat_id.value);
+           this.showProgress();
+           this.view.app.panel.close('#left_panel');
            this.view.chat.loadConversation(chat_id.value);
         }
       }
@@ -717,7 +718,7 @@ class Chat {
     if (!this.helloSent) { // send init message e.g. Init or something else to cause Chat bot to answer 
       //console.log ('onOpen currentChatId:'+currentChatId);
       if (this.currentChatId)
-        this.loadConversation(this.currentChatId);
+        await this.loadConversation(this.currentChatId);
       this.helloSent = true;
     }
   }
