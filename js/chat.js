@@ -504,11 +504,16 @@ class Chat {
 
         const rc = await this.getTopic();
         if (rc && rc.error) {
-          this.onLogout();
+          await this.solidClient.logout();
+//??          this.onLogout();
           return;
+        } 
+        else if (rc && rc.chat_id) {
+           this.currentChatId = rc.chat_id
         }
-        this.view.ui.onLogin(this.webId);
+
         await this.updateLoginState();
+        this.view.ui.onLogin(this.webId);
       } 
     } catch (e) {
       console.log(e);
@@ -547,14 +552,13 @@ class Chat {
 
   async chatAuthenticate (currentChatId) 
   {
-//??    if (!currentChatId)
-//??      return;
+    if (!this.currentChatId)
+      return false;
 
     try {
       const url = new URL('/chat/api/chatAuthenticate', this.httpServer);
       let params = new URLSearchParams(url.search);
       params.append('session_id', this.sessionId);
-//??--      params.append('netid', this.webId);
 
       if (currentChatId)
         params.append('chat_id', currentChatId);
@@ -563,22 +567,20 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (!resp.ok) {
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate chat session' + resp.statusText});
-        //await this.authLogout(); //???? fixme ====????
         return false;
       }
     } catch (e) {
-        console.log('Error:' + e);
+//??        console.log('Error:' + e);
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
-        //await this.authLogout(); //???? fixme ====????
         return false;
     }
     return true;
   }
 
-
+/************ 
   async getCurrentChatId()
   {
-    /* here we should current chat if new */
+    // here we should current chat if new 
     if (!this.loggedIn)
       return null;
 
@@ -590,7 +592,7 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let chat = await resp.json();
-        /*console.log('resp:' + JSON.stringify(chat));*/
+        ////console.log('resp:' + JSON.stringify(chat));
         const chat_id = chat['chat_id'];
         const title = chat['title'];
 //??     addSidebarItem (chat_id, title, 'now', lastChatId);
@@ -605,9 +607,27 @@ class Chat {
     }
     return null;
   }
+  **********/
+
+  async getCurrentChatId()
+  {
+    const rc = this.getTopic();
+    if (!rc)
+      return null;
+
+    if (rc.error) {
+       this.view.ui.showNotification({title:'Error', text:rc.error});
+       return null;
+    } else {
+//??     addSidebarItem (chat_id, title, 'now', lastChatId);
+//??    updateShareLink();
+       return rc;
+    }
+  }
 
   async getTopic()
   {
+    // here we should current chat if new 
     if (!this.loggedIn)
       return null;
 
@@ -684,11 +704,15 @@ class Chat {
     console.log('ws_onOpen = '+JSON.stringify(ev));
     const rc = await this.chatAuthenticate (this.currentChatId); // used also to sent currentChatId 
     if (!rc) {
-//????TODO add call Logout here
+      await this.solidClient.logout();
+//??      this.onLogout();
       return;
     }
-    if (!this.webSocket)
+    if (!this.webSocket) {
+      await this.solidClient.logout();
+//??      this.onLogout();
       return;
+    }
 
     if (!this.helloSent) { // send init message e.g. Init or something else to cause Chat bot to answer 
       //console.log ('onOpen currentChatId:'+currentChatId);
@@ -829,14 +853,6 @@ class Chat {
       let url = new URL('/chat/api/listChats', this.httpServer);
       let params = new URLSearchParams(url.search);
       params.append('session_id', this.sessionId);
-/***
-        if (chatDebug) {
-            params.append('netid', 'http://localhost:8890/dataspace/person/imitko#this');
-        } else {
-            params.append('netid', this.session.info.webId);
-        }
-***/
-//??--      params.append('netid', this.session.info.webId);
       url.search = params.toString();
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
@@ -868,7 +884,6 @@ class Chat {
                 addSidebarItem (chat_id, title, more);
             });
 ***/
-            /*console.log ('currentChatId:'+currentChatId);*/
       } else {
         this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
@@ -883,7 +898,7 @@ class Chat {
   {
     if (status === 401 || status === 403) {
       await this.solidClient.logout();
-      this.onLogout();
+//??      this.onLogout();
     }
   }
 
@@ -919,7 +934,6 @@ console.log(list);
           }
         }
         this.view.ui.updateConversation(list, chat_id);
-//        
 /***
             list.forEach (function (item) {
                 let role = item['role'];
@@ -955,6 +969,8 @@ console.log(list);
       }
     } catch (e) {
       this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e});
+    } finally {
+      this.view.ui.hideProgress();
     }
     return;
   }
