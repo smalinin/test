@@ -152,30 +152,68 @@
     <div class="view view-main view-init safe-areas" data-master-detail-breakpoint="768">
       <div class="page" data-name="home">
 <!------------------------->
-    <div class="navbar no-outline">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner">
-        <div class="left">
-          <a href="#" class="link icon-only panel-open" data-panel="left">
-            <i class="icon f7-icons if-not-md">menu</i>
-            <i class="icon material-icons md-only">menu</i>
-          </a>
-          <a href="#" class="link back">
-                <i class="icon icon-back"></i>
-                <span>F</span>
+        <div class="navbar no-outline">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" class="link icon-only panel-open" data-panel="left">
+                <i class="icon f7-icons if-not-md">menu</i>
+                <i class="icon material-icons md-only">menu</i>
+              </a>
+              <a href="#" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>F</span>
+              </a>
+            </div>
+            <div class="title">ChatBot</div>
+            <div class="right">
+              <a id="login" href="#" class="link">
+                    <i class="icon f7-icons">square_arrow_right</i>
+              </a>
+              <a id="uid_menu" class="link popover-open hidden" data-popover=".popover-user"> 
+                <i class="icon f7-icons">person_fill</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+<!--
+        <div class="fab fab-extended fab-center-bottom">
+          <a>
+            <i class="icon f7-icons if-not-md">plus</i>
+            <div class="fab-text">Create</div>
           </a>
         </div>
-        <div class="title">ChatBot</div>
-        <div class="right">
-          <a id="login" href="#" class="link">
-                <i class="icon f7-icons">square_arrow_right</i>
-          </a>
-          <a id="uid_menu" class="link popover-open hidden" data-popover=".popover-user"> 
-            <i class="icon f7-icons">person_fill</i>
+      -->
+
+        <div class="fab fab-center-bottom fab-morph color-green" data-morph-to=".demo-fab-fullscreen-sheet.fab-morph-target">
+          <a>
+            <i class="icon f7-icons if-not-md">plus</i>
           </a>
         </div>
-      </div>
-    </div>
+
+<!---
+        <div class="list links-list demo-fab-sheet fab-morph-target">
+          <ul>
+            <li><a class="fab-close">Link 1</a></li>
+            <li><a class="fab-close">Link 2</a></li>
+            <li><a class="fab-close">Link 3</a></li>
+            <li><a class="fab-close">Link 4</a></li>
+          </ul>
+        </div>
+      -->        
+        <div class="demo-fab-fullscreen-sheet fab-morph-target">
+          <div class="block-title">Choose Something</div>
+          <div class="list links-list">
+            <ul>
+              <li><a class="fab-close">Link 1</a></li>
+              <li><a class="fab-close">Link 2</a></li>
+              <li><a class="fab-close">Link 3</a></li>
+              <li><a class="fab-close">Link 4</a></li>
+            </ul>
+          </div>
+        </div>
+
 <!------------------------->
         <!-- Scrollable page content-->
         <div class="page-content" id="main">
