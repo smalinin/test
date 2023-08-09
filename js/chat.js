@@ -367,6 +367,7 @@ class ChatUI {
   {
 //    opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="icon bubble_right"></i>`};
     if (this.notification) {
+      this.notification.close();
       this.notification.destroy()
       this.notification = null;
     }
