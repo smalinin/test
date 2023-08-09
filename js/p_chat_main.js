@@ -30,7 +30,7 @@ class ChatMain {
 
     const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
-      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
+//??--      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
       this.onLogin();
     }
 
