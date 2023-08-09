@@ -6,6 +6,8 @@ class ChatUI {
     this.last_item_id = null;
     this.chat_list = DOM.qSel('#conversation');
     this.main_content = DOM.qSel('div#main');
+    this.notification = null;
+    this.preloader = null;
 
     this.md = markdownit({
       html:         true,
@@ -159,7 +161,6 @@ class ChatUI {
     this.last_item_text = '';
     this.last_item_id = null;
 
-    let html = [];
     let id = 0;
     
     this.chat_list.innerHTML = '';
@@ -175,7 +176,6 @@ class ChatUI {
     for(const v of list) {
       const title = (v.role === 'user') ? 'User' : 'AI';
       if (v.role !== this.last_item_role) {
-//??--        html.push(`<div class="block-title">${title}</div>`);
         const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
         this.chat_list.appendChild(el); 
 
@@ -206,7 +206,6 @@ class ChatUI {
 
       this.last_item_role = v.role;
     }
-//??    this.chat_list.innerHTML = html.join('');
   }
 
   append_question(text, id, disable_scroll)
@@ -354,8 +353,105 @@ class ChatUI {
     return ret;
   }
 
+//??icons =>    
+//             function  gear  info  location_fill  paperplane_fill
+//             lock_fill  lock_open_fill  logo_android
+//             person  person_alt  person_fill
+//   square_on_square   square_pencil     f_cursive
+// forlogin => square_arrow_right
 
+
+
+  showNotification({title, subtitle, text})
+  {
+//    opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="icon bubble_right"></i>`};
+    if (this.notification) {
+      this.notification.destroy()
+      this.notification = null;
+    }
+            
+    opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="f7-icons">exclamationmark_bubble</i>`};
+
+    if (title) 
+      opt.title = title;
+    if (subtitle)
+      opt.subtitle = subtitle;
+    if (text)
+      opt.text = text;
+     
+    this.notification = this.view.app.notification.create(opt);
+    this.notification.open();
+  }
+
+//Preloader
+//Progress Bar
+  showPreloader(text)
+  {
+    if (this.preloader)
+      this.preloader.destroy();
+
+    this.preloader = this.view.app.dialog.preloader(text);
+
+    const openCustomPreloader = () => {
+      $f7.dialog.preloader('My text...');
+      setTimeout(function () {
+        $f7.dialog.close();
+      }, 3000);
+    }
+  }
+
+  closePreloader()
+  {
+    if (this.preloader) {
+      this.preloader.destroy();
+      this.preloader = null;
+    }
+  }
+
+  closeAllDialogs()
+  {
+    this.closePreloader();
+//??    if (this.notification) {
+//??      this.notification.destroy()
+//??      this.notification = null;
+//??    }
+  }
+
+  showProgress()
+  {
+     this.view.app.progressbar.show('multi');
+  }
+  hideProgress()
+  {
+     this.view.app.progressbar.hide();
+  }
+
+  onLogin(webId)
+  {
+    if (webId) {
+      this.showNotification({title:'Info', text:'Logged as ' + webId});
+    try {
+      DOM.qHide('#login');
+      DOM.qShow('#uid_menu')
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  onLogout()
+  {
+    try {
+      this.view.ui.hideProgress();
+      this.view.ui.closeAllDialogs();
+      DOM.qShow('#login');
+      DOM.qHide('#uid_menu')
+    } catch(e) {
+      console.log(e);
+    }
+  }
 }
+
+
 
 class Chat {
   constructor({httpServer, wsServer, view}) 
@@ -381,40 +477,32 @@ class Chat {
     this.curChats = [];
   }
 
-  showNotice(s)
-  {
-    alert(s);
-  }
 
   showMessage(text)
   {
     console.log('Chat msg: '+text);
   }
 
-/****
-        session.onLogin(function() {
-            loggedIn = (session && session.info && session.info.isLoggedIn);
-            updateLoginState();
-            if (session.info.webId != null)
-                showNotice ('Logged as ' + session.info.webId);
-        });
-****/
 
-
-  
   async onLogin()
   {
-    this.session = this.solidClient.getDefaultSession();
-    this.loggedIn = this.session.info.isLoggedIn;
-    if (!this.loggedIn) {
-      this.webId = null;
-      this.sessionId = null;
+    try {
+      this.session = this.solidClient.getDefaultSession();
+      this.loggedIn = this.session.info.isLoggedIn;
+      if (!this.loggedIn) {
+        this.webId = null;
+        this.sessionId = null;
+      }
+      else {
+        this.webId = this.session.info.webId;
+        this.sessionId = this.session.info.sessionId;
+
+        this.view.ui.onLogin(this.webId);
+        await this.updateLoginState();
+      } 
+    } catch (e) {
+      console.log(e);
     }
-    else {
-      this.webId = this.session.info.webId;
-      this.sessionId = this.session.info.sessionId;
-      await this.updateLoginState();
-    } 
   }
 
   async onLogout()
@@ -422,6 +510,7 @@ class Chat {
     this.session = null;
     this.loggedIn = false;
     this.webId = null;
+    this.view.ui.onLogout();
   }
 
 
@@ -429,7 +518,8 @@ class Chat {
   {
     if (!this.loggedIn)
       return;
-
+    
+    this.view.ui.showProgress();
 //??    console.log('AppState#updateLoginState: loggedIn:', this.loggedIn);
 
 //??      loginButton.classList.toggle('hidden', loggedIn)
@@ -462,13 +552,13 @@ class Chat {
       url.search = params.toString();
       const resp = await this.solidClient.fetch (url.toString());
       if (!resp.ok) {
-        this.showNotice ('Can not authenticate chat session' + resp.statusText);
+        this.view.ui.showNotification({title:'Error', text:'Can not authenticate chat session' + resp.statusText});
         //await this.authLogout(); //???? fixme ====????
         return false;
       }
     } catch (e) {
         console.log('Error:' + e);
-        this.showNotice('Can not authenticate ' + e);
+        this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
         //await this.authLogout(); //???? fixme ====????
         return false;
     }
@@ -497,11 +587,11 @@ class Chat {
         return {chat_id, title}; //    this.currentChatId = chat_id;
 //??    updateShareLink();
       } else {
-        this.showNotice ('Can not retrieve chatId ' + resp.statusText);
+        this.view.ui.showNotification({title:'Error', text:'Can not retrieve chatId ' + resp.statusText});
       }
     } catch (e) {
       console.log('Error:' + e);
-      this.showNotice('Can not getTopic ' + e);
+      this.view.ui.showNotification({title:'Error', text:'Can not getTopic ' + e});
     }
     return null;
   }
@@ -672,7 +762,7 @@ class Chat {
         return this.webSocket.send(JSON.stringify(request));
     }
     else {
-     this.showNotice ('Not logged in');
+     this.view.ui.showNotification({title:'Error', text:'Not logged in'});
      return;
     }
   }
@@ -746,11 +836,11 @@ class Chat {
 ***/
             /*console.log ('currentChatId:'+currentChatId);*/
       } else {
-        this.showNotice ('Loading chats failed: ' + resp.statusText);
+        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
       }
     } catch (e) {
-        this.showNotice('Loading chats failed: ' + e);
+        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + e});
     }
     return;
   }
@@ -826,11 +916,11 @@ console.log(list);
 //??            updateShareLink();
 //??            $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300); 
       } else {
-        this.showNotice ('Conversation failed to load failed: ' + resp.statusText);
+        this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
       }
     } catch (e) {
-      this.showNotice('Loading conversation failed: ' + e);
+      this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e});
     }
     return;
   }
@@ -893,9 +983,9 @@ console.log(list);
             this.currentChatId = chat['chat_id'];
             this.helloSent = true;
         } else
-            this.showNotice ('Resuming chat failed: ' + resp.statusText);
+            this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + resp.statusText});
     } catch (e) {
-        this.showNotice('Resuming chat failed: ' + e);
+        this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + e});
     }
   }
 

@@ -25,12 +25,27 @@ class ChatMain {
     this.app = app;
     this.solidClient = solidClient;
     this.callback = callback;
-    this.chat = null;
+    const chat = this.chat = new Chat({httpServer, wsServer, view:this});
     this.ui = new ChatUI({view:this});
 
     const session = this.solidClient.getDefaultSession();
-    if (session.info.isLoggedIn)
+    if (session.info.isLoggedIn) {
       DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
+      this.onLogin();
+    }
+
+
+    this.session.onLogin(()=> {
+      chat.onLogin();
+    })
+    this.session.onLogout(()=> {
+      chat.onLogout();
+    })
+
+    DOM.iSel("login")
+      .onclick = () => {
+        this.login();
+      };
 
     DOM.qSel('#btn-login')
       .onclick = () => {
@@ -115,7 +130,6 @@ class ChatMain {
       };
 ***/
   }
-
 
   login()
   {
