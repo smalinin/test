@@ -171,7 +171,7 @@ class ChatMain {
   {
     const session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
-      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
+//??--      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
       const chat = this.chat = new Chat({httpServer, wsServer, view:this});
       try{
         chat.onLogin();
