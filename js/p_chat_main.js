@@ -50,6 +50,7 @@ class ChatMain {
     
     DOM.iSel("btn-logout")
       .onclick = () => {
+        this.app.popover.close('.popover-user');
         this.logout();
       };
 
