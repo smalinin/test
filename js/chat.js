@@ -176,7 +176,7 @@ class ChatUI {
       topic.classList.add('cur_topic');
 
     for(const v of list) {
-      const title = (v.role === 'user') ? 'User' : 'AI';
+      const title = (v.role === 'user') ? 'User  <i class="icon f7-icons">person</i>' : 'AI <i class="icon f7-icons">logo_android</i>';
       if (v.role !== this.last_item_role) {
         const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
         this.chat_list.appendChild(el); 
