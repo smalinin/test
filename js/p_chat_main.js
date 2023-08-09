@@ -36,11 +36,11 @@ class ChatMain {
 
 
     session.onLogin(()=> {
-      chat.onLogin();
+      this.onLogin();
     })
 
     session.onLogout(()=> {
-      chat.onLogout();
+      this.onLogout();
     })
 
     DOM.iSel("login")
@@ -131,6 +131,18 @@ class ChatMain {
       };
 ***/
   }
+
+  onLogin()
+  {
+    this.chat.onLogin();
+  }
+
+  onLogout()
+  {
+    this.chat.onLogout();
+  }
+
+
 
   login()
   {
