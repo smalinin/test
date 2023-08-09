@@ -95,6 +95,7 @@ class ChatUI {
     }
 ]
   ***/
+
   updateListTopics(list, cur_chat)
   {
     if (!list)
@@ -421,6 +422,7 @@ class ChatUI {
   {
      this.view.app.progressbar.show('multi');
   }
+
   hideProgress()
   {
      this.view.app.progressbar.hide();
@@ -430,11 +432,13 @@ class ChatUI {
   {
     if (webId) {
       this.showNotification({title:'Info', text:'Logged as ' + webId});
-    try {
-      DOM.qHide('#login');
-      DOM.qShow('#uid_menu')
-    } catch(e) {
-      console.log(e);
+      
+      try {
+        DOM.qHide('#login');
+        DOM.qShow('#uid_menu')
+      } catch(e) {
+        console.log(e);
+      }
     }
   }
 

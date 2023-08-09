@@ -28,17 +28,18 @@ class ChatMain {
     const chat = this.chat = new Chat({httpServer, wsServer, view:this});
     this.ui = new ChatUI({view:this});
 
-    const session = this.solidClient.getDefaultSession();
+    const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
       DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
       this.onLogin();
     }
 
 
-    this.session.onLogin(()=> {
+    session.onLogin(()=> {
       chat.onLogin();
     })
-    this.session.onLogout(()=> {
+
+    session.onLogout(()=> {
       chat.onLogout();
     })
 
