@@ -613,7 +613,7 @@ class Chat {
 
     let url = new URL(this.wsServer);
     let params = new URLSearchParams(url.search);
-    params.append('sessionId', this.sessioId);
+    params.append('sessionId', this.sessionId);
     url.search = params.toString();
     
     console.log('ws_Init = '+url);
