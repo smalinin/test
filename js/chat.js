@@ -502,6 +502,11 @@ class Chat {
         this.webId = this.session.info.webId;
         this.sessionId = this.session.info.sessionId;
 
+        const rc = await this.getTopic();
+        if (rc && rc.error) {
+          this.onLogout();
+          return;
+        }
         this.view.ui.onLogin(this.webId);
         await this.updateLoginState();
       } 
@@ -599,6 +604,30 @@ class Chat {
       this.view.ui.showNotification({title:'Error', text:'Can not getTopic ' + e});
     }
     return null;
+  }
+
+  async getTopic()
+  {
+    if (!this.loggedIn)
+      return null;
+
+    try {
+      const url = new URL('/chat/api/getTopic', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('session_id', this.sessionId);
+      url.search = params.toString();
+      const resp = await this.solidClient.fetch (url.toString());
+      if (resp.status === 200) {
+        let chat = await resp.json();
+        const chat_id = chat['chat_id'];
+        const title = chat['title'];
+        return {chat_id, title};
+      } else {
+        return {error:'Can not retrieve chatId ' + resp.statusText}
+      }
+    } catch (e) {
+      return {error:'Can not getTopic ' + e};
+    }
   }
 
 
