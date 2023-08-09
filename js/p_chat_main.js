@@ -47,6 +47,15 @@ class ChatMain {
       .onclick = () => {
         this.login();
       };
+    
+    DOM.iSel("btn-logout")
+      .onclick = () => {
+        this.logout();
+      };
+
+
+
+//////////////////////////////////////////////////////
 
     DOM.qSel('#btn-login')
       .onclick = () => {
