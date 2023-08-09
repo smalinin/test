@@ -371,7 +371,7 @@ class ChatUI {
       this.notification = null;
     }
             
-    opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="f7-icons">exclamationmark_bubble</i>`};
+    let opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="f7-icons">exclamationmark_bubble</i>`};
 
     if (title) 
       opt.title = title;
@@ -432,7 +432,7 @@ class ChatUI {
   {
     if (webId) {
       this.showNotification({title:'Info', text:'Logged as ' + webId});
-      
+
       try {
         DOM.qHide('#login');
         DOM.qShow('#uid_menu')
