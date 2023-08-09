@@ -905,13 +905,17 @@ class Chat {
 
   async loadConversation(chat_id)
   {
-//??            var $messages = $('.messages');
-    let url = new URL('/chat/api/chatTopic', this.httpServer);
-    let params = new URLSearchParams(url.search);
-    params.append('session_id', this.sessionId);
-    params.append('chat_id', chat_id);
-//??    $messages.empty();
     try {
+      if (!this.loggedIn) {
+        this.view.ui.showNotification({title:'Info', text:'Session was disconnected'})
+        return;
+      }
+  
+      let url = new URL('/chat/api/chatTopic', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('session_id', this.sessionId);
+      params.append('chat_id', chat_id);
+
       url.search = params.toString();
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
