@@ -505,8 +505,7 @@ class Chat {
 
         const rc = await this.getTopic();
         if (rc && rc.error) {
-          await this.solidClient.logout();
-//??          this.onLogout();
+          await this.view.app.logout();
           return;
         } 
         else if (rc && rc.chat_id) {
@@ -705,13 +704,11 @@ class Chat {
     console.log('ws_onOpen = '+JSON.stringify(ev));
     const rc = await this.chatAuthenticate (this.currentChatId); // used also to sent currentChatId 
     if (!rc) {
-      await this.solidClient.logout();
-//??      this.onLogout();
+      this.view.app.logout();
       return;
     }
     if (!this.webSocket) {
-      await this.solidClient.logout();
-//??      this.onLogout();
+      this.view.app.logout();
       return;
     }
 
@@ -898,8 +895,7 @@ class Chat {
   async checkLoggedIn(status) 
   {
     if (status === 401 || status === 403) {
-      await this.solidClient.logout();
-//??      this.onLogout();
+      this.view.app.logout();
     }
   }
 

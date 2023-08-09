@@ -152,6 +152,11 @@ class ChatMain {
                             clientName:"ChatBot"});
   }
 
+  async logout()
+  {
+    await this.solidClient.logout();
+  }
+
   async test()
   {
     const session = this.solidClient.getDefaultSession();
