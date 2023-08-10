@@ -144,7 +144,6 @@ class ChatUI {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
         if (chat_id) {
-//??           alert('CHAT=>'+chat_id.value);
            this.showProgress();
            this.view.app.panel.close('#left_panel');
            this.view.chat.loadConversation(chat_id.value);
@@ -154,6 +153,7 @@ class ChatUI {
     }
   }
 
+  //??todo add func support
   updateConversation(list, cur_chat)
   {
     if (!list)
@@ -208,6 +208,19 @@ class ChatUI {
 
       this.last_item_role = v.role;
     }
+  }
+
+
+  new_question(text, disable_scroll)
+  {
+    if (!text)
+      return;
+    const id = this.last_item_id + 1;
+
+    this.append_question(text, id, disable_scroll);
+
+    this.last_item_text = text;
+    this.last_item_id = id;
   }
 
   append_question(text, id, disable_scroll)
@@ -803,22 +816,18 @@ class Chat {
 //++
     console.log('ws_sendMessage = '+text);
     if (this.loggedIn) {
-      if (!this.webSocket) {
-        this.ws_Init();
-//??TODO need wait, when auth was finished or etc
-      }
-
-       let request = { type: 'user', 
+        if (text.trim() === '' || !this.webSocket)
+          return;
+       const request = { type: 'user', 
                        question: text, 
-                       netid: this.webId, 
                        chat_id: this.currentChatId, 
                        model: this.currentModel, 
+//??todo                       apiKey: this.apiKey,
                        call: this.enabledCallbacks };
-//??        sendMessage(text, 'left');
-        if (text.trim() === '')
-            return;
-//??    $('.spinner').show();
-        return this.webSocket.send(JSON.stringify(request));
+        this.view.ui.showProgress();
+        this.view.ui.new_question(text);
+//??todo        cancelContinueAction();
+//??        return this.webSocket.send(JSON.stringify(request));
     }
     else {
      this.view.ui.showNotification({title:'Error', text:'Not logged in'});
