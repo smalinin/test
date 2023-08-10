@@ -55,26 +55,15 @@ class ChatMain {
       };
 
 
+    DOM.iSel("btn-send")
+      .onclick = () => {
+        this.app.popover.close('.popover-req');
+        const text = DOM.iSel('c_req').value;
+        this.send_req(text);
+    };
+
 
 //////////////////////////////////////////////////////
-
-    DOM.qSel('#btn-login')
-      .onclick = () => {
-          this.login();
-      };
-
-    DOM.qSel('#btn-test')
-      .onclick = () => {
-          this.test();
-      };
-    DOM.qSel('#btn-test1')
-      .onclick = () => {
-          this.test1();
-      };
-    DOM.qSel('#btn-test2')
-      .onclick = () => {
-          this.test2();
-      };
 
 /***
 
@@ -166,6 +155,13 @@ class ChatMain {
   {
     await this.solidClient.logout();
   }
+
+  async send_req(text)
+  {
+
+  }
+
+
 
   async test()
   {
