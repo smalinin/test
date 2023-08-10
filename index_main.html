@@ -123,6 +123,13 @@
       padding-bottom: 5px;
     }
 
+    textarea#c_req {
+      width: 100%;
+      height: 400px;
+      border: var(--f7-list-button-border-color);
+      border-style: solid;
+      border-radius: 5px;
+    }
 
   </style>
 </head>
@@ -235,25 +242,19 @@
       </div>
 
 
-      <div class="popover popover-req">
+      <div class="popover popover-req" style="width: 90%;">
         <div class="popover-angle"></div>
         <div class="popover-inner">
-          <div class="block">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus
-              perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex
-              adipisci.</p>
-            <p>Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis
-              facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam.
-              Consequatur, nisi, enim.</p>
-            <p>Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus
-              similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem
-              libero minus dignissimos repellat.</p>
-            <p>Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut
-              cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt,
-              perferendis voluptates doloribus?</p>
-            <p>Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam
-              obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt
-              praesentium velit ipsa illo iusto.</p>
+          <div class="block" style="margin-bottom:10px;">
+              <textarea type="text" id="c_req"> </textarea>
+<!--              
+              <a id="send_req" href="#" class="link">
+                <i class="icon f7-icons">paperplane_fill</i>
+              </a>
+            -->              
+          </div>
+          <div class="block" style="margin-top:10px; display: flex;flex-direction: row-reverse;">
+            <button id="btn-send" class="button button-large button-outline button-round" style="text-transform: inherit;width: 150px;"><i class="icon f7-icons">paperplane_fill</i> Send </button>
           </div>
         </div>
       </div>
@@ -266,11 +267,6 @@
   <script type="text/javascript" src="js/lib/markdown-it.js"></script>
   <script type="text/javascript" src="js/lib/highlight/highlight.js"></script>
 
-<!--
-  <link rel="stylesheet" href="js/lib/highlight/default.min.css" />
-
-  <link rel="stylesheet" href="js/lib/highlight/vs2015.css" />
--->
   <link rel="stylesheet" href="js/lib/highlight/atom-one-dark.css" />
   <link rel="stylesheet" href="js/lib/css/github-markdown.css" />
 
