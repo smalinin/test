@@ -176,10 +176,8 @@ class ChatUI {
       topic.classList.add('cur_topic');
 
     for(const v of list) {
-      const title = (v.role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons">logo_android</i> AI';
       if (v.role !== this.last_item_role) {
-        const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
-        this.chat_list.appendChild(el); 
+        this._append_block_title(v.role);
 
         this.last_item_text = '';
 
@@ -215,12 +213,17 @@ class ChatUI {
   {
     if (!text)
       return;
+    
+    if (this.last_item_role !== 'user')
+      this._append_block_title('user');
+
     const id = this.last_item_id + 1;
 
     this.append_question(text, id, disable_scroll);
 
     this.last_item_text = text;
     this.last_item_id = id;
+    this.last_item_role = 'user';
   }
 
   append_question(text, id, disable_scroll)
@@ -270,6 +273,13 @@ class ChatUI {
     const html = this._create_ai_html(text);
     this._update_block(html, id);
     this._update_scroll(disable_scroll);
+  }
+
+  _append_block_title(role)
+  {
+    const title = (role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons">logo_android</i> AI';
+    const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
+    this.chat_list.appendChild(el); 
   }
 
   _update_block(html, id)
