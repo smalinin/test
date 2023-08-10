@@ -158,52 +158,9 @@ class ChatMain {
 
   async send_req(text)
   {
-
+    this.chat.ws_sendMessage(text);
   }
 
-
-
-  async test()
-  {
-    const session = this.solidClient.getDefaultSession();
-    if (session.info.isLoggedIn) {
-//??--      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
-      const chat = this.chat = new Chat({httpServer, wsServer, view:this});
-      try{
-        chat.onLogin();
-
-
-      } catch(e) {
-      }
-    }
-  }
-
-  async test1()
-  {
-    const session = this.solidClient.getDefaultSession();
-    if (session.info.isLoggedIn) {
-      try{
-        this.chat.loadConversation('3093278f850cb8b65dc5dc3249f43e5a');
-                               
-
-      } catch(e) {
-      }
-    }
-  }
-
-
-  async test2()
-  {
-    const session = this.solidClient.getDefaultSession();
-    if (session.info.isLoggedIn) {
-      try{
-        this.chat.loadConversation('b23d7e47052508932d18596aa5006e0a');
-                               
-
-      } catch(e) {
-      }
-    }
-  }
 
 
   setData(_data)
