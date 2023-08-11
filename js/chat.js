@@ -137,7 +137,7 @@ class ChatUI {
           `<li class="swipeout ${add_class}"  chat_id="${v.chat_id}">`
          +`  <div class="item-content swipeout-content">`
          +`    <div class="item-inner">`
-         +`      <div class="item-title topic_title">${title}</div>`
+         +`      <div class="item-title topic_title">${title}</div> <a href="#${v.chat_id}"/>`
          +`    </div>`
          +`  </div>`
          +`  <div class="swipeout-actions-right" >`
@@ -1073,13 +1073,10 @@ console.log(list);
 
             });
 ***/
-//??            markdown_content.html('');
         this.receivingMessage = null;
         console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
         this.currentChatId = chat_id;
-//??            setModel (model);
 //??            updateShareLink();
-//??            $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300); 
       } else {
         this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);

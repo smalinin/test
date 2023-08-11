@@ -54,6 +54,11 @@ class ChatMain {
         this.logout();
       };
 
+    DOM.iSel("btn-new")
+      .onclick = () => {
+        this.new_chat();
+    };
+
 
     DOM.iSel("btn-send")
       .onclick = async () => {
@@ -63,6 +68,16 @@ class ChatMain {
         const rc = await this.send_req(text);
         if (rc)
           el.value = '';
+    };
+
+    DOM.iSel("fab-continue")
+      .onclick = () => {
+        this.send_continue();
+      };
+
+    DOM.iSel("fab-stop")
+      .onclick = () => {
+        this.send_stop();
     };
 
 
@@ -174,6 +189,10 @@ class ChatMain {
     return this.chat.ws_Stop();
   }
 
+  new_chat()
+  {
+    this.chat.selectSession('system-new');
+  }
 
 
   setData(_data)

@@ -138,9 +138,19 @@
     <div class="panel panel-left panel-cover panel-resizable panel-init" id="left_panel">
       <div class="page">
         <div class="page-content">
-          <div style="display:flex; flex-direction:row-reverse;"><a href="#" class="panel-close"><i class="icon f7-icons">multiply_circle</i></a>&nbsp;&nbsp;&nbsp;</div>
-          <div class="block-title">Topics</div>
-          <div id="list_topics" class="list list-strong list-outline-ios list-dividers inset-md" style="height:60%; overflow-y:scroll;">
+          <div style="display:flex; flex-direction:row-reverse;">
+            <a href="#" class="panel-close">
+              <i class="icon f7-icons">multiply_circle</i>
+            </a>
+            &nbsp;&nbsp;&nbsp;
+          </div>
+          <div class="block" style="margin-bottom: 10px;">
+            <button id="btn-new" class="button button-large button-outline" style="text-transform: inherit;justify-content: left;">
+              <i class="icon f7-icons">plus</i>
+              &nbsp;&nbsp;New chat
+            </button>
+          </div>
+          <div id="list_topics" class="list list-strong list-outline-ios list-dividers inset-md" style="height:60%; overflow-y:scroll; margin-top: 10px; margin-top: 10px;">
             <ul>
             </ul>
           </div>
@@ -167,10 +177,12 @@
                 <i class="icon f7-icons if-not-md">menu</i>
                 <i class="icon material-icons md-only">menu</i>
               </a>
+<!--
               <a href="#" class="link back">
                     <i class="icon icon-back"></i>
                     <span>F</span>
               </a>
+-->
             </div>
             <div class="title">ChatBot</div>
             <div class="right">
@@ -187,7 +199,7 @@
 
         <div class="fab fab-center-bottom color-green popover-open" id="fab-req" data-popover=".popover-req">
           <a>
-            <i class="icon f7-icons">plus</i>
+            <i class="icon f7-icons">paperplane_fill</i>
           </a>
         </div>
 
