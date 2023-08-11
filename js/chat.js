@@ -736,7 +736,7 @@ class Chat {
 
   async getCurrentChatId()
   {
-    const rc = this.getTopic();
+    const rc = await this.getTopic();
     if (!rc)
       return null;
 
