@@ -106,6 +106,12 @@ class ChatUI {
 ]
   ***/
 
+
+  openLeftPanel()
+  {
+    this.view.app.panel.open('#left_panel');
+  }
+
   updateListTopics(list, cur_chat)
   {
     if (!list)

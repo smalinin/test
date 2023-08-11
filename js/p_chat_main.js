@@ -80,6 +80,10 @@ class ChatMain {
         this.send_stop();
     };
 
+    DOM.iSel("panel-menu")
+      .onclick = () => {
+        this.panel_menu();
+    };
 
 //////////////////////////////////////////////////////
 
@@ -192,6 +196,11 @@ class ChatMain {
   new_chat()
   {
     this.chat.selectSession('system-new');
+  }
+
+  panel_menu()
+  {
+    this.ui.openLeftPanel();
   }
 
 
