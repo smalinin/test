@@ -118,6 +118,52 @@ class ChatUI {
     }
   }
 
+  _gen_topic_html(is_system, chat_id, title, more, cur_chat)
+  {
+    let html = '';
+    const add_class = chat_id === cur_chat ? 'cur_topic':'';
+
+    if (is_system) {
+      html = 
+      `<li class="swipeout ${add_class}"  chat_id="${chat_id}">`
+     +`  <div class="item-content">`
+     +`    <div class="item-inner">`
+     +`      <div class="item-title topic_title">${title}</div>`
+     +`    </div>`
+     +`  </div>`
+     +`</li>`
+    }
+    else {
+      const text = `<span class="topic_item">${title} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
+      html = 
+        `<li class="swipeout ${add_class}"  chat_id="${chat_id}">`
+       +`  <div class="item-content swipeout-content">`
+       +`    <div class="item-inner">`
+       +`      <div class="item-title topic_title">${text}</div> <a href="#${chat_id}"/>`
+       +`    </div>`
+       +`  </div>`
+       +`  <div class="swipeout-actions-right" >`
+       +`    <a class="color-green chat_edit">Edit</a>`
+       +`    <a class="color-red chat_del">Delete</a>`
+       +`  </div>`
+       +`</li>`
+    }
+  }
+
+  _set_topic_handler(el)
+  {
+    const item = el.querySelector('.item-title');
+    item.onclick = (e) => {
+      const listItem = e.target.closest('li.swipeout');
+      const chat_id = listItem.attributes['chat_id'];
+      if (chat_id) {
+         this.showProgress();
+         this.view.app.panel.close('#left_panel');
+         this.view.chat.selectSession(chat_id.value);
+      }
+    }
+  }
+
   updateListTopics(list, cur_chat)
   {
     if (!list)
@@ -131,48 +177,37 @@ class ChatUI {
       const text = v.title ?? v.chat_id;
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
-      const add_class = v.chat_id === cur_chat ? 'cur_topic':'';
-      let html;
 
-      if (is_system) {
-        html = 
-          `<li class="swipeout ${add_class}"  chat_id="${v.chat_id}">`
-         +`  <div class="item-content">`
-         +`    <div class="item-inner">`
-         +`      <div class="item-title topic_title">${text}</div>`
-         +`    </div>`
-         +`  </div>`
-         +`</li>`
-      }
-      else {
-        const title = `<span class="topic_item">${text} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
-        html = 
-          `<li class="swipeout ${add_class}"  chat_id="${v.chat_id}">`
-         +`  <div class="item-content swipeout-content">`
-         +`    <div class="item-inner">`
-         +`      <div class="item-title topic_title">${title}</div> <a href="#${v.chat_id}"/>`
-         +`    </div>`
-         +`  </div>`
-         +`  <div class="swipeout-actions-right" >`
-         +`    <a class="color-green chat_edit">Edit</a>`
-         +`    <a class="color-red chat_del">Delete</a>`
-         +`  </div>`
-         +`</li>`
-      }
+      let html = this._gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
 
       const el = DOM.htmlToElement(html);
       el_topics.appendChild(el); 
-      const item = el.querySelector('.item-title');
-      item.onclick = (e) => {
-        const listItem = e.target.closest('li.swipeout');
-        const chat_id = listItem.attributes['chat_id'];
-        if (chat_id) {
-           this.showProgress();
-           this.view.app.panel.close('#left_panel');
-           this.view.chat.selectSession(chat_id.value);
-        }
-      }
+      this._set_topic_handler(el);
     }
+
+
+    addNewTopic(chat_id, title, lastChatId)
+    {
+      let topic = DOM.qSel('#list_topics li.cur_topic');
+      if (topic) 
+        topic.classList.remove('cur_topic');
+
+      const text = title ?? chat_id;
+      let html = this._gen_topic_html(false, chat_id, text, 'now', chat_id);
+      const el = DOM.htmlToElement(html);
+      const last = DOM.qSel('#list_topics ul li[chat_id="'+lastChatId+'"]');
+
+      if (last && lastChatId) {
+        const parent = last.parentNode;
+        parent.insertBefore(el, last);
+      }
+      else {
+        DOM.qSel('#list_topics ul').appendChild(el);
+      }
+
+      this._set_topic_handler(el);
+    }
+
 
     const el = el_topics.querySelector('li[chat_id = "'+cur_chat+'"]');
     if (el)
@@ -709,8 +744,8 @@ class Chat {
        return null;
     } 
     else {
-//??todo     addSidebarItem (chat_id, title, 'now', lastChatId);
-//??    updateShareLink();
+      this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
+//??todo    updateShareLink();
       this.currentChatId = rc.chat_id;
       return rc;
     }
@@ -810,17 +845,6 @@ class Chat {
     }
   }
 
-/**
-        function cancelContinueAction () {
-            receivingMessage = null;
-            markdown_content.html('');
-            $('.continue_wrapper').hide();
-        }
- */
-
-
-
-
 
 //??
   async ws_onOpen(ev)
@@ -880,8 +904,13 @@ class Chat {
 //??            $('.continue_wrapper').hide();
           DOM.qHide('#fab-continue');
         }
-        if (!this.currentChatId)
-            this.getCurrentChatId();
+        if (!this.currentChatId) {
+            this.getCurrentChatId().then((rc) => {
+              if (rc.chat_id) {
+                this.lastChatId = rc.chat_id;
+              }
+            });
+        }
 
         DOM.qHide('#fab-stop');
     }
@@ -989,6 +1018,8 @@ class Chat {
   async loadChats() 
   {
     try {
+      this.lastChatId = null;
+
       let url = new URL('/chat/api/listChats', this.httpServer);
       let params = new URLSearchParams(url.search);
       params.append('session_id', this.sessionId);
