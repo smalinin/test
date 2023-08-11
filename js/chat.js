@@ -881,7 +881,7 @@ class Chat {
           DOM.qHide('#fab-continue');
         }
         if (!this.currentChatId)
-            getCurrentChatId();
+            this.getCurrentChatId();
 
         DOM.qHide('#fab-stop');
     }
