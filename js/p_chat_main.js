@@ -195,7 +195,7 @@ class ChatMain {
 
   new_chat()
   {
-    this.chat.selectSession('system-new');
+    this.chat.new_conversation();
   }
 
   panel_menu()

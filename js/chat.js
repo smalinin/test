@@ -236,6 +236,14 @@ class ChatUI {
     }
   }
 
+  new_conversation()
+  {
+    this.chat_list.innerHTML = '';
+    this.last_item_role = null;
+    this.last_item_text = '';
+    this.last_item_id = 0;
+    this.view.chat.selectSession('system-new');
+  }
 
   new_question(text, disable_scroll)
   {
