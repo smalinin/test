@@ -114,7 +114,8 @@ class ChatUI {
     const el_topics = DOM.qSel('#list_topics ul');
     el_topics.innerHTML = '';
 
-    for(const v of list) {
+    for(const v of list) 
+    {
       const text = v.title ?? v.chat_id;
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
@@ -159,8 +160,11 @@ class ChatUI {
            this.view.chat.selectSession(chat_id.value);
         }
       }
-
     }
+
+    const el = el_topics.querySelector('li[chat_id = "'+chat_id+'"]');
+    if (el)
+      el.scrollIntoView();
   }
 
   //??todo add func support
@@ -182,8 +186,10 @@ class ChatUI {
       topic.classList.remove('cur_topic');
 
     topic = DOM.qSel(`#list_topics li[chat_id="${cur_chat}"]`);
-    if (topic)
+    if (topic) {
       topic.classList.add('cur_topic');
+      topic.scrollIntoView();
+    }
 
     for(const v of list) {
       if (v.role !== this.last_item_role) {
