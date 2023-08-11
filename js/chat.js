@@ -271,7 +271,7 @@ class ChatUI {
     let id = this.last_item_id;
     let new_item = false;
 
-    if (this.last_item_role === 'user') {
+    if (this.last_item_role === 'user' || !this.last_item_role) {
       this._append_block_title('assistant');
       id++;
       new_item = true;
