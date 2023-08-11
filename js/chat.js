@@ -40,6 +40,16 @@ class ChatUI {
   }
 
 
+  getLastLine()
+  {
+    if (this.last_item_text) {
+      let lastBreak = this.last_item_text.lastIndexOf ('\n');
+      return lastBreak != -1 ? '\n' + this.last_item_text.substring(lastBreak) : '';
+    }
+    else
+      return '';
+  }
+
 
   timeSince(date) 
   {
@@ -146,7 +156,7 @@ class ChatUI {
         if (chat_id) {
            this.showProgress();
            this.view.app.panel.close('#left_panel');
-           this.view.chat.loadConversation(chat_id.value);
+           this.view.chat.selectSession(chat_id.value);
         }
       }
 
@@ -525,8 +535,8 @@ class Chat {
     this.webSocket = null;
     this.helloSent = false;
     this.currentModel = 'gpt-4';
-    this.enabledCallbacks = null;
-
+    this.enabledCallbacks = [];
+    this.apiKey = null;
 
     this.currentChatId = null;
     this.lastChatId = null;
@@ -737,20 +747,53 @@ class Chat {
 //??    $('.send_message').show();
   }
 
+
+
   ws_Continue()
   {
-    console.log('ws_onContinue = '+ev);
-    if (thisloggedIn && this.webSocket) {
-      let request = { type: 'system', 
-                      question: 'continue', 
-                      netid: this.webId, 
-                      chat_id: this.currentChatId, 
-                      model: this.currentModel, 
-                      call: this.enabledCallbacks };
-      this.webSocket.send(JSON.stringify(request));
-    }
-//??    $('.continue_wrapper').hide();
+    if (!this.loggedIn || !this.webSocket)
+      return;
+
+    const lastLine = this.view.ui.getLastLine();
+    let request = { type: 'system', 
+                    question: 'continue'+lastLine, 
+                    chat_id: this.currentChatId,
+                    apiKey: this.apiKey, 
+                    call: this.enabledCallbacks,
+                    model: this.currentModel,  
+                  };
+    this.webSocket.send(JSON.stringify(request));
+    DOM.qHide('#fab-continue');
   }
+
+
+  ws_Stop()
+  {
+    if (!this.loggedIn)
+      return;
+
+    let url = new URL('/chat/api/chatControl', this.httpServer);
+    let params = new URLSearchParams(url.search);
+    params.append('session_id', this.sessionId);
+    url.search = params.toString();
+    try {
+        this.solidClient.fetch (url.toString());
+        DOM.qHide('#fab-stop')
+    } catch (e) {
+      this.view.ui.showNotification({title:'Error', text:'Stop failed: ' + e});
+    }
+  }
+
+/**
+        function cancelContinueAction () {
+            receivingMessage = null;
+            markdown_content.html('');
+            $('.continue_wrapper').hide();
+        }
+ */
+
+
+
 
 
 //??
@@ -803,18 +846,21 @@ class Chat {
 //??            receivingMessage.find('a').attr('target','_blank');
 
         if (text.trim() === '[LENGTH]') {
-//??todo            $('.continue_wrapper').show();
+          DOM.qShow('#fab-continue');
          } 
          else { /// [DONE] 
 //??            receivingMessage = null;
 //??            markdown_content.html('');
 //??            $('.continue_wrapper').hide();
+          DOM.qHide('#fab-continue');
         }
         if (!this.currentChatId)
             getCurrentChatId();
 
+        DOM.qHide('#fab-stop');
     }
     else {
+      DOM.qShow('#fab-stop');
       this.view.ui.sys_answer(text);
     } 
 /********
@@ -878,11 +924,11 @@ class Chat {
                        question: text, 
                        chat_id: this.currentChatId, 
                        model: this.currentModel, 
-//??todo                       apiKey: this.apiKey,
+                       apiKey: this.apiKey,
                        call: this.enabledCallbacks };
         this.view.ui.showProgress();
         this.view.ui.new_question(text);
-//??todo        cancelContinueAction();
+        DOM.qHide('#fab-continue');
         this.webSocket.send(JSON.stringify(request));
         return true;
     }
@@ -974,7 +1020,8 @@ class Chat {
     try {
       if (!this.loggedIn) {
         this.view.ui.showNotification({title:'Info', text:'Session was disconnected'})
-        return;
+        this.view.app.logout();
+        return false;
       }
   
       let url = new URL('/chat/api/chatTopic', this.httpServer);
@@ -1036,13 +1083,18 @@ console.log(list);
       } else {
         this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
+        return false;
       }
-    } catch (e) {
+    } 
+    catch (e) {
       this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e});
-    } finally {
+      this.view.app.logout();
+      return false;
+    } 
+    finally {
       this.view.ui.hideProgress();
     }
-    return;
+    return true;
   }
 
 
@@ -1063,21 +1115,18 @@ console.log(list);
     });
   }
 
-//???TODO
+//##???TODO
   async selectSession(id)
   {
-//??    $('#slide-submenu').closest('.list-group').fadeOut('slide',function(){
-//??        $('.mini-submenu').fadeIn();
-//??    });
-//??    $('.messages').empty();
-    if (-1 == id.indexOf ("chat-"))
+    if (id.indexOf ("system-") === -1)
       await this.loadConversation (id);
-    if (0 == id.indexOf ("chat-") && this.webSocket) {
+    
+    if (id.startsWith('system-') && this.webSocket) {
       let request = { type: 'user', 
                       question: null, 
-                      netid: this.webId, 
                       chat_id: id, 
-                      model: this.currentModel, 
+                      model: this.currentModel,
+                      apiKey: this.apiKey, 
                       call: null };
       this.currentChatId = null;
       this.webSocket.send(JSON.stringify(request));
@@ -1116,6 +1165,8 @@ console.log(list);
 //??    $('#oai-model span.model').text(text.toUpperCase());
     this.currentModel = text;
   }
+
+
 
 /***
   async initFunctionList() 

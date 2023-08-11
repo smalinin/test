@@ -164,6 +164,16 @@ class ChatMain {
     return this.chat.ws_sendMessage(text);
   }
 
+  send_continue()
+  {
+    return this.chat.ws_Continue();
+  }
+
+  send_stop()
+  {
+    return this.chat.ws_Stop();
+  }
+
 
 
   setData(_data)
