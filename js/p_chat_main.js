@@ -195,7 +195,7 @@ class ChatMain {
 
   new_chat()
   {
-    this.chat.new_conversation();
+    this.ui.new_conversation();
   }
 
   panel_menu()
