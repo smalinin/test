@@ -882,7 +882,7 @@ class Chat {
         this.view.ui.showProgress();
         this.view.ui.new_question(text);
 //??todo        cancelContinueAction();
-//??        return this.webSocket.send(JSON.stringify(request));
+        return this.webSocket.send(JSON.stringify(request));
     }
     else {
      this.view.ui.showNotification({title:'Error', text:'Not logged in'});
