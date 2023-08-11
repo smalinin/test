@@ -160,6 +160,15 @@ class ChatUI {
       if (chat_id) {
          this.showProgress();
          this.view.app.panel.close('#left_panel');
+         const id = chat_id.value;
+
+         if (id.startsWith('system-')){
+          this.chat_list.innerHTML = '';
+          this.last_item_role = null;
+          this.last_item_text = '';
+          this.last_item_id = 0;
+         } 
+         
          this.view.chat.selectSession(chat_id.value);
       }
     }
@@ -280,6 +289,8 @@ class ChatUI {
     this.last_item_id = 0;
     this.view.chat.selectSession('system-new');
   }
+
+
 
   new_question(text, disable_scroll)
   {
