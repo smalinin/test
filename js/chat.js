@@ -777,9 +777,10 @@ class Chat {
 
   ws_onMessage(ev)
   {
-    console.log('ws_onMessage = '+JSON.stringify(ev));
-    const text = ev.data;
-    const kind = ev.kind;
+    console.log('ws_onMessage = '+JSON.stringify(ev.data));
+    const obj = JSON.parse(ev.data);
+    const text = obj.data;
+    const kind = obj.kind;
 
     if (kind === 'function') {
       //??todo
