@@ -185,34 +185,34 @@ class ChatUI {
       this._set_topic_handler(el);
     }
 
-
-    addNewTopic(chat_id, title, lastChatId)
-    {
-      let topic = DOM.qSel('#list_topics li.cur_topic');
-      if (topic) 
-        topic.classList.remove('cur_topic');
-
-      const text = title ?? chat_id;
-      let html = this._gen_topic_html(false, chat_id, text, 'now', chat_id);
-      const el = DOM.htmlToElement(html);
-      const last = DOM.qSel('#list_topics ul li[chat_id="'+lastChatId+'"]');
-
-      if (last && lastChatId) {
-        const parent = last.parentNode;
-        parent.insertBefore(el, last);
-      }
-      else {
-        DOM.qSel('#list_topics ul').appendChild(el);
-      }
-
-      this._set_topic_handler(el);
-    }
-
-
     const el = el_topics.querySelector('li[chat_id = "'+cur_chat+'"]');
     if (el)
       el.scrollIntoView();
   }
+
+
+  addNewTopic(chat_id, title, lastChatId)
+  {
+    let topic = DOM.qSel('#list_topics li.cur_topic');
+    if (topic) 
+      topic.classList.remove('cur_topic');
+
+    const text = title ?? chat_id;
+    let html = this._gen_topic_html(false, chat_id, text, 'now', chat_id);
+    const el = DOM.htmlToElement(html);
+    const last = DOM.qSel('#list_topics ul li[chat_id="'+lastChatId+'"]');
+
+    if (last && lastChatId) {
+      const parent = last.parentNode;
+      parent.insertBefore(el, last);
+    }
+    else {
+      DOM.qSel('#list_topics ul').appendChild(el);
+    }
+
+    this._set_topic_handler(el);
+  }
+
 
   //??todo add func support
   updateConversation(list, cur_chat)
