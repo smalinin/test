@@ -148,6 +148,7 @@ class ChatUI {
        +`  </div>`
        +`</li>`
     }
+    return html;
   }
 
   _set_topic_handler(el)
