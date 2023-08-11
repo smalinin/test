@@ -873,7 +873,7 @@ class Chat {
     console.log('ws_sendMessage = '+text);
     if (this.loggedIn) {
         if (text.trim() === '' || !this.webSocket)
-          return;
+          return false;
        const request = { type: 'user', 
                        question: text, 
                        chat_id: this.currentChatId, 
@@ -883,11 +883,12 @@ class Chat {
         this.view.ui.showProgress();
         this.view.ui.new_question(text);
 //??todo        cancelContinueAction();
-        return this.webSocket.send(JSON.stringify(request));
+        this.webSocket.send(JSON.stringify(request));
+        return true;
     }
     else {
      this.view.ui.showNotification({title:'Error', text:'Not logged in'});
-     return;
+     return false;
     }
   }
 

@@ -56,10 +56,13 @@ class ChatMain {
 
 
     DOM.iSel("btn-send")
-      .onclick = () => {
+      .onclick = async () => {
         this.app.popover.close('.popover-req');
-        const text = DOM.iSel('c_req').value;
-        this.send_req(text);
+        const el = DOM.iSel('c_req');
+        const text = el.value;
+        const rc = await this.send_req(text);
+        if (rc)
+          el.value = '';
     };
 
 
@@ -158,7 +161,7 @@ class ChatMain {
 
   async send_req(text)
   {
-    this.chat.ws_sendMessage(text);
+    return this.chat.ws_sendMessage(text);
   }
 
 
