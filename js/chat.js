@@ -221,10 +221,37 @@ class ChatUI {
 
     this.append_question(text, id, disable_scroll);
 
-    this.last_item_text = text;
+    this.last_item_text = '';
     this.last_item_id = id;
     this.last_item_role = 'user';
   }
+
+
+  sys_answer(text, disable_scroll)
+  {
+    if (!text)
+      return;
+
+    let id = this.last_item_id;
+    let new_item = false;
+
+    if (this.last_item_role === 'user') {
+      this._append_block_title('assistant');
+      id++;
+      new_item = true;
+      this.last_item_text = '';
+    }
+
+    this.last_item_text += text;
+    this.last_item_id = id;
+    this.last_item_role = 'assistant';
+
+    if (new_item)
+      this.append_ai(this.last_item_text, id);
+    else
+      this.update_ai(this.last_item_text, id);
+  }
+
 
   append_question(text, id, disable_scroll)
   {
@@ -644,10 +671,12 @@ class Chat {
     if (rc.error) {
        this.view.ui.showNotification({title:'Error', text:rc.error});
        return null;
-    } else {
-//??     addSidebarItem (chat_id, title, 'now', lastChatId);
+    } 
+    else {
+//??todo     addSidebarItem (chat_id, title, 'now', lastChatId);
 //??    updateShareLink();
-       return rc;
+      this.currentChatId = rc.chat_id;
+      return rc;
     }
   }
 
@@ -749,53 +778,68 @@ class Chat {
   ws_onMessage(ev)
   {
     console.log('ws_onMessage = '+JSON.stringify(ev));
-//??            $('.spinner').hide();
     const text = ev.data;
-//??    var $messages, message;
-//??    $messages = $('.messages');
-    if (text.trim() === '[DONE]' || text.trim() === '[LENGTH]') {
-        // make target
+    const kind = ev.kind;
+
+    if (kind === 'function') {
+      //??todo
+      //??todo
+      //??todo
+/**
+               let func_call = JSON.parse (text);
+              let title = 'Function: <b>' + func_call.func_title + '</b> ('+ func_call.func + ')';
+              let div = '\n**Arguments:**\n```json\n' + func_call.func_args + '\n```';
+              sendMessage (div, 'middle', false, title);
+              $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
+              receivingMessage = null;
+**/      
+    }
+    else if (text.trim() === '[DONE]' || text.trim() === '[LENGTH]') 
+    {
+      this.view.ui.hideProgress();
+      // make target
 //??        if (receivingMessage) 
 //??            receivingMessage.find('a').attr('target','_blank');
 
         if (text.trim() === '[LENGTH]') {
-//??            $('.continue_wrapper').show();
-        } else { /* [DONE] */
+//??todo            $('.continue_wrapper').show();
+         } 
+         else { /// [DONE] 
 //??            receivingMessage = null;
 //??            markdown_content.html('');
 //??            $('.continue_wrapper').hide();
         }
-//??        $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-        if (this.currentChatId)
+        if (!this.currentChatId)
             getCurrentChatId();
 
+    }
+    else {
+      this.view.ui.sys_answer(text);
     } 
-    else if (!this.receivingMessage) { //??
-      this.receivingMessage = text;
-      console.log('start= '+this.receivingMessage);
-/***
-        $('.message_input').val('');
-        message = new Message({
-                              text: text,
-                              message_side: 'right',
-                              currentAnswer: null
-        });
-        message.draw();
-        receivingMessage = message.currentAnswer;
-        $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-**/
+/********
+    else if (!this.receivingMessage) {
+
+      //this.receivingMessage = text;
+      //console.log('start= '+this.receivingMessage);
+        // $('.message_input').val('');
+        // message = new Message({
+        //                       text: text,
+        //                       message_side: 'right',
+        //                       currentAnswer: null
+        // });
+        // message.draw();
+        // receivingMessage = message.currentAnswer;
+        // $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
     } else {
       this.receivingMessage += text;
       console.log('cont= '+ this.receivingMessage)
-/***
-        markdown_content.append(text);
-        let html = md.render(markdown_content.text());
-        receivingMessage.html(html);
-        if (-1 != text.indexOf('\n'))
-            $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-**/
+        // markdown_content.append(text);
+        // let html = md.render(markdown_content.text());
+        // receivingMessage.html(html);
+        // if (-1 != text.indexOf('\n'))
+        //     $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
     }
-//??  $('.spinner').hide();
+****/    
   } 
 
   ws_onError(ev)
@@ -824,6 +868,7 @@ class Chat {
   ws_sendMessage(text)
   {
 //++
+//??todo add Ping for test connection
     console.log('ws_sendMessage = '+text);
     if (this.loggedIn) {
         if (text.trim() === '' || !this.webSocket)
