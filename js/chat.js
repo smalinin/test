@@ -9,6 +9,8 @@ class ChatUI {
     this.notification = null;
     this.preloader = null;
 
+    const self = this;
+    
     this.md = markdownit({
       html:         true,
       xhtmlOut:     true,
