@@ -162,7 +162,7 @@ class ChatUI {
       }
     }
 
-    const el = el_topics.querySelector('li[chat_id = "'+chat_id+'"]');
+    const el = el_topics.querySelector('li[chat_id = "'+cur_chat+'"]');
     if (el)
       el.scrollIntoView();
   }
