@@ -110,6 +110,12 @@ class ChatUI {
   openLeftPanel()
   {
     this.view.app.panel.open('#left_panel');
+    const cur_chat = this.view.chat.currentChatId;
+    if (cur_chat) {
+      const topic = DOM.qSel(`#list_topics li[chat_id="${cur_chat}"]`);
+      if (topic) 
+      topic.scrollIntoView();
+    }
   }
 
   updateListTopics(list, cur_chat)
