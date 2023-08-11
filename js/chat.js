@@ -168,7 +168,7 @@ class ChatUI {
           this.last_item_text = '';
           this.last_item_id = 0;
          } 
-         
+
          this.view.chat.selectSession(chat_id.value);
       }
     }
@@ -641,7 +641,7 @@ class Chat {
 
         const rc = await this.getTopic();
         if (rc && rc.error) {
-          await this.view.app.logout();
+          await this.view.logout();
           return;
         } 
         else if (rc && rc.chat_id) {
@@ -864,11 +864,11 @@ class Chat {
     console.log('ws_onOpen = '+JSON.stringify(ev));
     const rc = await this.chatAuthenticate (this.currentChatId); // used also to sent currentChatId 
     if (!rc) {
-      this.view.app.logout();
+      this.view.logout();
       return;
     }
     if (!this.webSocket) {
-      this.view.app.logout();
+      this.view.logout();
       return;
     }
 
@@ -1079,7 +1079,7 @@ class Chat {
   async checkLoggedIn(status) 
   {
     if (status === 401 || status === 403) {
-      this.view.app.logout();
+      this.view.logout();
     }
   }
 
@@ -1089,7 +1089,7 @@ class Chat {
     try {
       if (!this.loggedIn) {
         this.view.ui.showNotification({title:'Info', text:'Session was disconnected'})
-        this.view.app.logout();
+        this.view.logout();
         return false;
       }
   
@@ -1154,7 +1154,7 @@ console.log(list);
     } 
     catch (e) {
       this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e});
-      this.view.app.logout();
+      this.view.logout();
       return false;
     } 
     finally {
