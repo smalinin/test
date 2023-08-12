@@ -146,7 +146,7 @@
   color: var(--color-accent-fg);
   text-decoration: none;
 }
-
+/****
 .markdown-body abbr[title] {
   border-bottom: none;
   text-decoration: underline dotted;
@@ -185,6 +185,7 @@
   position: relative;
   vertical-align: baseline;
 }
+***/
 /***
 .markdown-body sub {
   bottom: -0.25em;
