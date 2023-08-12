@@ -185,7 +185,7 @@
   position: relative;
   vertical-align: baseline;
 }
-
+/***
 .markdown-body sub {
   bottom: -0.25em;
 }
@@ -1107,3 +1107,4 @@
 .markdown-body ::-webkit-calendar-picker-indicator {
   filter: invert(50%);
 }
+****/
