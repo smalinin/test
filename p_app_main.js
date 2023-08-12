@@ -115,6 +115,7 @@ async function init()
     theme: 'ios', // Automatic theme detection
     el: '#app', // App root element
     autoDarkTheme: true,
+    darkMode: 'auto',
 
     routes: routes,
 
