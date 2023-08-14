@@ -217,6 +217,7 @@ class ChatUI {
       }
   }
 
+
   updateListTopics(list, cur_chat)
   {
     if (!list)
@@ -845,6 +846,24 @@ class Chat {
       params.append('chat_id', chat_id);
       url.search = params.toString();
       if (action === 'delete') {
+        this.solidClient.fetch (url.toString(), { method:'DELETE' })
+          .then((resp) => {
+            if (resp.status !== 204) {
+              this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+              return;
+            } else {
+              if (chat_id === this.currentChatId)
+                this.currentChatId = null;
+    
+                this.loadChats()
+                  .then((rc) => {
+                    if (rc && this.currentChatId)
+                      this.loadConversation(this.currentChatId);
+                  })
+            }
+          })
+
+
         const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
         if (resp.status !== 204) {
           this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
@@ -1139,6 +1158,7 @@ class Chat {
 //          addSideBarItem(v.chat_it, title, more);
         }
         this.view.ui.updateListTopics(chats, this.currentChatId);
+        return true;
 /***
             chats.forEach (function (item) {
                 const chat_id = item['chat_id'];
@@ -1155,11 +1175,13 @@ class Chat {
       } else {
         this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
+        return false;
       }
     } catch (e) {
         this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + e});
+        return false;
     }
-    return;
+    return false;
   }
 
   async checkLoggedIn(status) 
