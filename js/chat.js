@@ -127,7 +127,7 @@ class ChatUI {
 
     if (is_system) {
       html = 
-      `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system}">`
+      `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}">`
      +`  <div class="item-content">`
      +`    <div class="item-inner">`
      +`      <div class="item-title topic_title">${title}</div>`
@@ -138,7 +138,7 @@ class ChatUI {
     else {
       const text = `<span class="topic_item">${title} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
       html = 
-        `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system}">`
+        `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}">`
        +`  <div class="item-content swipeout-content">`
        +`    <div class="item-inner">`
        +`      <div class="item-title topic_title">${text}</div> <a href="#${chat_id}"/>`
