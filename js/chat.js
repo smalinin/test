@@ -290,7 +290,7 @@ class ChatUI {
     this.last_item_role = null;
     this.last_item_text = '';
     this.last_item_id = 0;
-    this.view.chat.selectSession('system-new');
+    this.view.chat.selectSession('system-new', "1");
   }
 
 
@@ -1185,21 +1185,23 @@ console.log(list);
   }
 
 //##???TODO
-  async selectSession(id, is_system)
+  selectSession(id, is_system)
   {
-    if (id.indexOf ("system-") === -1)
-      await this.loadConversation (id);
-    
-    if (id.startsWith('system-') && this.webSocket) {
-      let request = { type: 'user', 
-                      question: null, 
-                      chat_id: id, 
-                      model: this.currentModel,
-                      apiKey: this.apiKey, 
-                      call: null };
-      this.currentChatId = null;
-      this.webSocket.send(JSON.stringify(request));
-//??      $('.spinner').show();
+    if (id.startsWith('system-') && is_system === '1') {
+      if (this.webSocket) {
+        let request = { type: 'user', 
+                        question: null, 
+                        chat_id: id, 
+                        model: this.currentModel,
+                        apiKey: this.apiKey, 
+                        call: null };
+        this.currentChatId = null;
+        this.webSocket.send(JSON.stringify(request));
+      }
+
+    }
+    else {
+      this.loadConversation (id);
     }
   }
 
