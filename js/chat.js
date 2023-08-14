@@ -188,7 +188,7 @@ class ChatUI {
           const text = listItem.attributes['title'].value;
 
           const dlg = this.view.app.dialog.prompt('Rename topic to', 'Info', (name) => {
-            updateTopic('rename', id, name)
+            this.view.chat.updateTopic('rename', id, name)
             dlg.close();
           }, 
           () => {
@@ -210,7 +210,7 @@ class ChatUI {
           const text = listItem.attributes['title'].value;
 
           const dlg = this.view.app.dialog.confirm('Do you want remove topic ['+text+']', 'Info', () => {
-            updateTopic('delete', id)
+            this.view.chat.updateTopic('delete', id)
             dlg.close();
           });
         }
