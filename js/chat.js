@@ -10,7 +10,7 @@ class ChatUI {
     this.preloader = null;
 
     const self = this;
-    
+
     this.md = markdownit({
       html:         true,
       xhtmlOut:     true,
@@ -127,7 +127,7 @@ class ChatUI {
 
     if (is_system) {
       html = 
-      `<li class="swipeout ${add_class}"  chat_id="${chat_id}">`
+      `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system}">`
      +`  <div class="item-content">`
      +`    <div class="item-inner">`
      +`      <div class="item-title topic_title">${title}</div>`
@@ -138,7 +138,7 @@ class ChatUI {
     else {
       const text = `<span class="topic_item">${title} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
       html = 
-        `<li class="swipeout ${add_class}"  chat_id="${chat_id}">`
+        `<li class="swipeout ${add_class}"  chat_id="${chat_id} is_system="${is_system}">`
        +`  <div class="item-content swipeout-content">`
        +`    <div class="item-inner">`
        +`      <div class="item-title topic_title">${text}</div> <a href="#${chat_id}"/>`
@@ -159,6 +159,7 @@ class ChatUI {
     item.onclick = (e) => {
       const listItem = e.target.closest('li.swipeout');
       const chat_id = listItem.attributes['chat_id'];
+      const is_system = listItem.attributes['is_system'];
       if (chat_id) {
          this.showProgress();
          this.view.app.panel.close('#left_panel');
@@ -171,7 +172,7 @@ class ChatUI {
           this.last_item_id = 0;
          } 
 
-         this.view.chat.selectSession(chat_id.value);
+         this.view.chat.selectSession(chat_id.value, is_system.value);
       }
     }
   }
@@ -190,7 +191,7 @@ class ChatUI {
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
 
-      let html = this._gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
+      let html = this.f_gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
 
       const el = DOM.htmlToElement(html);
       el_topics.appendChild(el); 
@@ -404,8 +405,7 @@ class ChatUI {
 
   _create_question_html(html, id)
   {
-//    return `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
-    return `<div class="block block-strong markdn-body" id="item_${id}">`
+    return `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
           +   html
           +`</div>`;
   }
@@ -422,8 +422,7 @@ class ChatUI {
   _create_answer_html(html, id) 
   {
     const v = 
-//           `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
-           `<div class="block block-strong markdn-body" id="item_${id}">`
+           `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
           +   html
           +`</div>`;
 
@@ -1186,7 +1185,7 @@ console.log(list);
   }
 
 //##???TODO
-  async selectSession(id)
+  async selectSession(id, is_system)
   {
     if (id.indexOf ("system-") === -1)
       await this.loadConversation (id);
