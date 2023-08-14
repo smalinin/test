@@ -5369,6 +5369,7 @@ i.icon {
 .dialog-inner {
   position: relative;
   padding: var(--f7-dialog-inner-padding);
+  overflow-wrap: anywhere;
 }
 .dialog-title {
   color: var(--f7-dialog-title-text-color);
