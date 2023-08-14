@@ -94,7 +94,6 @@
   }
 }
 
-
 .markdn-body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -102,7 +101,7 @@
   color: var(--color-fg-default);
   background-color: var(--color-canvas-default);
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-/*  font-size: 16px; */
+/*  font-size: 16px;*/
   line-height: 1.5;
   word-wrap: break-word;
 }
@@ -112,7 +111,6 @@
   fill: currentColor;
   vertical-align: text-bottom;
 }
-
 
 .markdn-body h1:hover .anchor .octicon-link:before,
 .markdn-body h2:hover .anchor .octicon-link:before,
@@ -148,7 +146,6 @@
   color: var(--color-accent-fg);
   text-decoration: none;
 }
-
 
 .markdn-body abbr[title] {
   border-bottom: none;
@@ -188,7 +185,6 @@
   position: relative;
   vertical-align: baseline;
 }
-
 
 .markdn-body sub {
   bottom: -0.25em;

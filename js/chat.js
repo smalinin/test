@@ -448,7 +448,7 @@ class ChatUI {
 
   _create_question_html(html, id)
   {
-    return `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
+    return `<div class="block block-strong medium-inset markdn-body" id="item_${id}">`
           +   html
           +`</div>`;
   }
@@ -465,7 +465,7 @@ class ChatUI {
   _create_answer_html(html, id) 
   {
     const v = 
-           `<div class="block block-strong medium-inset markdown-body" id="item_${id}">`
+           `<div class="block block-strong medium-inset markdn-body" id="item_${id}">`
           +   html
           +`</div>`;
 
