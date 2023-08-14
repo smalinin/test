@@ -138,7 +138,7 @@ class ChatUI {
     else {
       const text = `<span class="topic_item">${title} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
       html = 
-        `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}">`
+        `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}" title="${title}">`
        +`  <div class="item-content swipeout-content">`
        +`    <div class="item-inner">`
        +`      <div class="item-title topic_title">${text}</div> <a href="#${chat_id}"/>`
@@ -175,45 +175,43 @@ class ChatUI {
          this.view.chat.selectSession(id, is_system.value);
       }
     }
-/**
+
     item = el.querySelector('.chat_edit');
-    item.onclick = (e) => {
-      const listItem = e.target.closest('li.swipeout');
-      const chat_id = listItem.attributes['chat_id'];
-      const is_system = listItem.attributes['is_system'];
-      if (chat_id) {
-         this.showProgress();
-         this.view.app.panel.close('#left_panel');
-         const id = chat_id.value;
+    if (item)
+      item.onclick = (e) => {
+        const listItem = e.target.closest('li.swipeout');
+        const chat_id = listItem.attributes['chat_id'];
+        const is_system = listItem.attributes['is_system'].value;
+      
+        if (chat_id && is_system==='0') {
+          const id = chat_id.value;
+          const text = listItem.attributes['title'].value;
 
-         if (id.startsWith('system-')){
-          this.chat_list.innerHTML = '';
-          this.last_item_role = null;
-          this.last_item_text = '';
-          this.last_item_id = 0;
-         } 
-
-         this.view.chat.selectSession(chat_id.value, is_system.value);
+          const dlg = this.view.app.dialog.prompt('Do you want remove topic ['+text+']', 'Info', (name) => {
+            alert('rename session '+id+'  to '+name);
+//          this.view.chat.renameSession(id, name);
+            dlg.close();
+          }, text);
+        }
       }
-    }
-**/
+
+
     item = el.querySelector('.chat_del');
     if (item)
       item.onclick = (e) => {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
         const is_system = listItem.attributes['is_system'].value;
-        const text = listItem.querySelector('div.topic_title').textContent;
         
         if (chat_id && is_system==='0') {
           const id = chat_id.value;
+          const text = listItem.attributes['title'].value;
 
           const dlg = this.view.app.dialog.confirm('Do you want remove topic ['+text+']', 'Info', () => {
             alert('del session '+id);
 //          this.view.chat.deleteSession(id);
             dlg.close();
           });
-
         }
       }
   }
