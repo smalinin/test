@@ -187,11 +187,14 @@ class ChatUI {
           const id = chat_id.value;
           const text = listItem.attributes['title'].value;
 
-          const dlg = this.view.app.dialog.prompt('Do you want remove topic ['+text+']', 'Info', (name) => {
+          const dlg = this.view.app.dialog.prompt('Rename topic to', 'Info', (name) => {
             alert('rename session '+id+'  to '+name);
 //          this.view.chat.renameSession(id, name);
             dlg.close();
-          }, text);
+          }, 
+          () => {
+            dlg.close();
+          },text);
         }
       }
 
