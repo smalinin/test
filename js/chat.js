@@ -432,7 +432,7 @@ class ChatUI {
   _append_block_title(role)
   {
 //    const title = (role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons">logo_android</i> AI';
-    const title = (role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons"> <img src="./images/chat.png"> </i>';
+    const title = (role === 'user') ? '<i class="icon f7-icons">person</i>' : '<i class="icon f7-icons"> <img src="./images/chat.png"> </i>';
 
     const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
     this.chat_list.appendChild(el); 
