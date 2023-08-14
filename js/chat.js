@@ -203,10 +203,12 @@ class ChatUI {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
         const is_system = listItem.attributes['is_system'].value;
+        const text = listItem.querySelector('div.topic_title').textContent;
+        
         if (chat_id && is_system==='0') {
           const id = chat_id.value;
 
-          const dlg = this.view.app.dialog.confirm('Info', 'Do you want remove topic ['+id+']', () => {
+          const dlg = this.view.app.dialog.confirm('Do you want remove topic ['+text+']', 'Info', () => {
             alert('del session '+id);
 //          this.view.chat.deleteSession(id);
             dlg.close();
