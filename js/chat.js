@@ -188,8 +188,7 @@ class ChatUI {
           const text = listItem.attributes['title'].value;
 
           const dlg = this.view.app.dialog.prompt('Rename topic to', 'Info', (name) => {
-            alert('rename session '+id+'  to '+name);
-//          this.view.chat.renameSession(id, name);
+            updateTopic('rename', id, name)
             dlg.close();
           }, 
           () => {
@@ -211,8 +210,7 @@ class ChatUI {
           const text = listItem.attributes['title'].value;
 
           const dlg = this.view.app.dialog.confirm('Do you want remove topic ['+text+']', 'Info', () => {
-            alert('del session '+id);
-//          this.view.chat.deleteSession(id);
+            updateTopic('delete', id)
             dlg.close();
           });
         }
@@ -832,6 +830,46 @@ class Chat {
       return {error:'Can not getTopic ' + e};
     }
   }
+
+
+  async updateTopic(action, chat_id, name)
+  {
+    // here we should current chat if new 
+    if (!this.loggedIn)
+      return null;
+
+    try {
+      const url = new URL('/chat/api/chatTopic', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('session_id', this.sessionId);
+      params.append('chat_id', chat_id);
+      url.search = params.toString();
+      if (action === 'delete') {
+        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
+        if (resp.status !== 204) {
+          this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+        } else {
+          if (chat_id === this.currentChatId) {
+            this.currentChatId = null;
+            this.loadChats();
+          }
+        }
+      }
+      else if (action === 'rename' && name) {
+        const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
+        if (!resp.ok && resp.status !== 200) {
+          this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + resp.statusText});
+        }
+      }
+    } catch (e) {
+      if (action === 'delete') {
+        this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + e});
+      } else if (action === 'rename') {
+        this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + e});
+      }
+    }
+  }
+
 
 
 /***==================================
