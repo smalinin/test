@@ -43,6 +43,11 @@ class ChatMain {
       this.onLogout();
     })
 
+    DOM.iSel("reload")
+      .onclick = () => {
+        window.location.reload();
+      };
+
     DOM.iSel("login")
       .onclick = () => {
         this.login();
