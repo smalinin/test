@@ -155,7 +155,28 @@ class ChatUI {
 
   _set_topic_handler(el)
   {
-    const item = el.querySelector('.item-title');
+    let item = el.querySelector('.item-title');
+    item.onclick = (e) => {
+      const listItem = e.target.closest('li.swipeout');
+      const chat_id = listItem.attributes['chat_id'];
+      const is_system = listItem.attributes['is_system'];
+      if (chat_id) {
+         this.showProgress();
+         this.view.app.panel.close('#left_panel');
+         const id = chat_id.value;
+
+         if (id.startsWith('system-')){
+          this.chat_list.innerHTML = '';
+          this.last_item_role = null;
+          this.last_item_text = '';
+          this.last_item_id = 0;
+         } 
+
+         this.view.chat.selectSession(id, is_system.value);
+      }
+    }
+/**
+    item = el.querySelector('.chat_edit');
     item.onclick = (e) => {
       const listItem = e.target.closest('li.swipeout');
       const chat_id = listItem.attributes['chat_id'];
@@ -173,6 +194,23 @@ class ChatUI {
          } 
 
          this.view.chat.selectSession(chat_id.value, is_system.value);
+      }
+    }
+**/
+    item = el.querySelector('.chat_del');
+    item.onclick = (e) => {
+      const listItem = e.target.closest('li.swipeout');
+      const chat_id = listItem.attributes['chat_id'];
+      const is_system = listItem.attributes['is_system'].value;
+      if (chat_id && is_system==='0') {
+        const id = chat_id.value;
+
+        const dlg = this.view.app.dialog.confirm('Info', 'Do you want remove topic ['+id+']', () => {
+          alert('del session '+id);
+//          this.view.chat.deleteSession(id);
+          dlg.close();
+        });
+
       }
     }
   }
