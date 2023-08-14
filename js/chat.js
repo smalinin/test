@@ -191,7 +191,7 @@ class ChatUI {
       const is_system = v.role !== 'user';
       const more = v.ts ? this.timeSince(v.ts) : '';
 
-      let html = this.f_gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
+      let html = this._gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
 
       const el = DOM.htmlToElement(html);
       el_topics.appendChild(el); 
