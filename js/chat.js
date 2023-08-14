@@ -848,18 +848,21 @@ class Chat {
         const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
         if (resp.status !== 204) {
           this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+          return;
         } else {
-          if (chat_id === this.currentChatId) {
+          if (chat_id === this.currentChatId)
             this.currentChatId = null;
+
             this.loadChats();
-          }
         }
       }
       else if (action === 'rename' && name) {
         const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
         if (!resp.ok && resp.status !== 200) {
           this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + resp.statusText});
+          return;
         }
+        this.loadChats();
       }
     } catch (e) {
       if (action === 'delete') {
