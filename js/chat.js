@@ -198,21 +198,22 @@ class ChatUI {
     }
 **/
     item = el.querySelector('.chat_del');
-    item.onclick = (e) => {
-      const listItem = e.target.closest('li.swipeout');
-      const chat_id = listItem.attributes['chat_id'];
-      const is_system = listItem.attributes['is_system'].value;
-      if (chat_id && is_system==='0') {
-        const id = chat_id.value;
+    if (item)
+      item.onclick = (e) => {
+        const listItem = e.target.closest('li.swipeout');
+        const chat_id = listItem.attributes['chat_id'];
+        const is_system = listItem.attributes['is_system'].value;
+        if (chat_id && is_system==='0') {
+          const id = chat_id.value;
 
-        const dlg = this.view.app.dialog.confirm('Info', 'Do you want remove topic ['+id+']', () => {
-          alert('del session '+id);
+          const dlg = this.view.app.dialog.confirm('Info', 'Do you want remove topic ['+id+']', () => {
+            alert('del session '+id);
 //          this.view.chat.deleteSession(id);
-          dlg.close();
-        });
+            dlg.close();
+          });
 
+        }
       }
-    }
   }
 
   updateListTopics(list, cur_chat)
