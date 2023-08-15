@@ -209,7 +209,7 @@ class ChatUI {
           const id = chat_id.value;
           const text = listItem.attributes['title'].value;
 
-          const dlg = this.view.app.dialog.confirm('Do you want remove topic ['+text+']', 'Info', () => {
+          const dlg = this.view.app.dialog.confirm(`Do you want remove topic "${text}"`, 'Info', () => {
             this.view.chat.updateTopic('delete', id)
             dlg.close();
           });
@@ -545,14 +545,13 @@ class ChatUI {
 
   showNotification({title, subtitle, text})
   {
-//    opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="icon bubble_right"></i>`};
     if (this.notification) {
       this.notification.close();
       this.notification.destroy()
       this.notification = null;
     }
             
-    let opt = {closeTimeout: 3000, closeButton: true, icon:`<i class="f7-icons">exclamationmark_bubble</i>`};
+    let opt = {closeTimeout: 5000, closeButton: true, icon:`<i class="f7-icons">exclamationmark_bubble</i>`};
 
     if (title) 
       opt.title = title;
@@ -637,6 +636,17 @@ class ChatUI {
       console.log(e);
     }
   }
+
+  setModel(text)
+  {
+    const el = DOM.qSel(`select#c_model option[value="${text}"]`);
+    if (el) {
+      el.selected=true;
+      DOM.qSel('select#c_model').onchange({target:DOM.qSel('select#c_model')});
+    }
+  }
+
+
 }
 
 
@@ -1103,9 +1113,7 @@ class Chat {
 
   async initSidebar() 
   {
-//??    setModel(currentModel);
-    /* pre-defined */
-//??    addSidebarItem ('chat-new', 'New Chat', '');
+    this.setModel(this.currentModel, true);
     /* user chats */
     await this.loadChats ();
     /* init plink copy */
@@ -1200,14 +1208,14 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let list = await resp.json();
-console.log('========Chat======== '+chat_id)
-console.log(list);
+//??console.log('========Chat======== '+chat_id)
+//??console.log(list);
         this.curConversation = list;
         let lastMessage = null;
         for(const v of list) {
           if (v.role === 'user') {
             lastMessage = null;
-            this.setModel(v.model ?? 'gpt-4');
+            this.setModel(v.model ?? 'gpt-4', true);
           } 
           else if (v.role === 'assistant') {
             if (this.lastMessage === null) {
@@ -1218,28 +1226,6 @@ console.log(list);
           }
         }
         this.view.ui.updateConversation(list, chat_id);
-/***
-            list.forEach (function (item) {
-                let role = item['role'];
-                let text = item['text'];
-                if ('user' === role) {
-                    sendMessage (text, 'left', false);
-                    lastMessage = null;
-                    model = item['model'];
-                } else if ('assistant' === role) {
-                    if (null == lastMessage) {
-                        markdown_content.html('');
-                        markdown_content.append (text);
-                        lastMessage = sendMessage (text, 'right', false);
-                    } else {
-                        markdown_content.append(text);
-                        let html = md.render(markdown_content.text());
-                        lastMessage.html(html);
-                    }
-                }
-
-            });
-***/
         this.receivingMessage = null;
         console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
         this.currentChatId = chat_id;
@@ -1324,12 +1310,15 @@ console.log(list);
     }
   }
 
-  setModel(text)
+  setModel(text, update_ui)
   {
     if (!text)
       return;
-//??    $('#oai-model span.model').text(text.toUpperCase());
-    this.currentModel = text;
+    
+      this.currentModel = text;
+
+    if (update_ui)
+      this.view.ui.setModel(this.currentModel);
   }
 
 
@@ -1405,74 +1394,6 @@ console.log(list);
 
 ***/
 
-/**
-        async function confirmItem ($btn, approve) {
-            var $item = $btn.parent();
-            var id = $item.attr('id');
-            var action = $('#item-action').val();
-
-            if (approve === 'confirm') {
-                let url = new URL('/chat/api/chatTopic', httpServer);
-                let params = new URLSearchParams(url.search);
-                params.append('session_id', session.info.sessionId);
-                params.append('chat_id', id);
-                url.search = params.toString();
-                if (action === 'delete') {
-                    try {
-                        resp = await solidClient.fetch(url.toString(), { method:'DELETE' })
-                        if (resp.status != 204) {
-                            showNotice('Delete failed: ' + resp.statusText);
-                        } else {
-                            $('#'+id).hide(); /// contrary to logic we just hide to keep DOM consistent 
-                            if (currentChatId === id) {
-                                $('.messages').empty();
-                                currentChatId = null;
-                            }
-                        }
-                    } catch (e) {
-                        showNotice('Delete failed: ' + e);
-                    }
-                }
-                else if (action === 'edit') {
-                    var text = $item.children('.list-item-edit').val();
-                    $item.children('.list-item-text').text(text);
-                    try {
-                        resp = await solidClient.fetch(url.toString(), { method:'POST', body: JSON.stringify ({title: text, model: currentModel}) })
-                        if (!resp.ok || resp.status != 200) {
-                            showNotice('Edit failed: ' + resp.statusText);
-                        }
-                    } catch (e) {
-                        showNotice('Edit failed: ' + e);
-                    }
-                }
-            }
-
-            $('#item-action').val('');
-
-            $item.children('.btn-confirm').hide();
-            $item.children('.btn-cancel').hide();
-            $item.children('.list-item-edit').hide();
-
-            $item.children('.btn-edit').show();
-            $item.children('.btn-delete').show();
-            $item.children('.list-item-text').show();
-        }
-***/
 
 }
 
-/**********
-options.tokens = null
-storeSessionId = e2cf
-codeVerifier = fd086...
-iis = null
-->>getClient()
-  storedClientId = 57163...
-  return
-
-
--1 needUpdate for BearerToken  ???
-parameter=> stored_tokens  
-
-=> CryptoKey
-*********/

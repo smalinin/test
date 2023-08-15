@@ -156,7 +156,7 @@
           </div>
           
           <div class="block">
-            <p>Settings . 
+            <p>Settings ... 
             </p>
           </div>
         </div>
@@ -185,10 +185,12 @@
               </a>
 -->
             </div>
-            <div class="title">ChatBot</div>
+            <div class="title">ChatBot
+              <span class="subtitle">gpt-4</span>
+            </div>
             <div class="right">
               <a id="reload" href="#" class="link">
-                <i class="icon f7-icons">arrow_2_circlepath</i>
+                <i class="icon f7-icons">arrow_clockwise</i>
               </a>
               &nbsp;
               <a id="login" href="#" class="link">
@@ -225,15 +227,25 @@
 <!------------------------->
         <!-- Scrollable page content-->
         <div class="page-content" id="main">
-<!--
-        <div class="block-title" id="myid">Not Logged</div>
-        <button id="btn-login" class="col-50 button button-large_ button-outline button-round">Login</button>
-        <button id="btn-test" class="col-50 button button-large_ button-outline button-round">Test</button>
-        <button id="btn-test1" class="col-50 button button-large_ button-outline button-round">Load Conversation</button>
-        <button id="btn-test2" class="col-50 button button-large_ button-outline button-round">Send new message</button>
--->        
 
-<!-- ============================================================ -->
+          <div style="display: flex; justify-content: center;">
+            <button style="width: 16em;text-transform:initial; display: flex; justify-content: end;" class="button button-fill smart-select smart-select-init" data-open-in="popover">
+              <select id="c_model" placeholder="Please choose...">
+                <option value="gpt-4" selected>GPT-4</option>
+                <option value="gpt-4-0613" >GPT-4-0613</option>
+                <option value="gpt-4-0314" >GPT-4-0314</option>
+                <option value="gpt-3.5-turbo" >GPT-3.5-turbo</option>
+                <option value="gpt-3.5-turbo-16k" >GPT-3.5-turbo-16k</option>
+                <option value="gpt-3.5-turbo-16k-0613" >GPT-3.5-turbo-16k-0613</option>
+                <option value="gpt-3.5-turbo-0613" >GPT-3.5-turbo-0613</option>
+                <option value="gpt-3.5-turbo-0301" >GPT-3.5-turbo-0301</option>
+              </select>
+              <span id="model">GPT-4</span>
+              &nbsp;&nbsp;
+              <i class="f7-icons">arrowtriangle_right_circle_fill</i> 
+            </button>
+         </div>
+
          <div id="conversation">
          </div>
          <div class="block-title">&nbsp;&nbsp;</div>

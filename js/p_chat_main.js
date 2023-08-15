@@ -89,6 +89,23 @@ class ChatMain {
       .onclick = () => {
         this.panel_menu();
     };
+ 
+    DOM.qSel('select#c_model')
+      .onchange = (e) => {
+        const el = e.target.querySelector('option:checked');
+        const v = el.value;
+        const text = el.innerText;
+        if (text) {
+          const model = e.target.parentNode.querySelector('span#model');
+          if (model) {
+            model.innerText = text;
+            this.chat.setModel(text, false);
+          }
+        }
+      }
+      
+
+
 
 //////////////////////////////////////////////////////
 
