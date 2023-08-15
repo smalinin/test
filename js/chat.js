@@ -644,6 +644,7 @@ class ChatUI {
       el.selected=true;
       DOM.qSel('select#c_model').onchange({target:DOM.qSel('select#c_model')});
     }
+    DOM.qSel('span#subtitle').innerText = text;
   }
 
 
