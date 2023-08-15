@@ -139,7 +139,7 @@ async function init()
 
   function sendToiOS(cmd) 
   {
-    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
+//??    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
   }
 
 
