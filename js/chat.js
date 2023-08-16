@@ -4,6 +4,7 @@ class ChatUI {
     this.last_item_role = null;
     this.last_item_text = '';
     this.last_item_id = null;
+    this.last_item_func = false;
     this.chat_list = DOM.qSel('#conversation');
     this.main_content = DOM.qSel('div#main');
     this.notification = null;
@@ -277,6 +278,7 @@ class ChatUI {
     this.last_item_role = null;
     this.last_item_text = '';
     this.last_item_id = null;
+    this.last_item_func = null;
 
     let id = 0;
     
@@ -293,21 +295,37 @@ class ChatUI {
     }
 
     for(const v of list) {
-      if (v.role !== this.last_item_role) {
-        this._append_block_title(v.role);
+      if (v.role !== this.last_item_role || (v.role === this.last_item_role && this.last_item_func)) {
+        if (this.last_item_func) {
+          if (this.last_item_role!=v.role)
+            this._append_block_title(v.role);
+        } else {
+          this._append_block_title(v.role);
+        }
 
         this.last_item_text = '';
 
-        if (v.text) {
-          if (v.role === 'user') {
-            this.append_question(v.text, id);
-          } else {
-            this.append_ai(v.text, id);
-          }
-  
+        if (v.role === 'user') {
+          this.append_question(v.text, id);
           this.last_item_text = v.text;
-          this.last_item_id = id;
-          id++;
+        } 
+        else {
+          if (v.text) {
+            this.append_ai(v.text, id);
+            this.last_item_text = v.text;
+            this.last_item_id = id;
+            id++;
+          } 
+          else if (v.func) {
+            const text = 
+                `Function: ${v.func_title}(${v.func})\n`
+               +`   Arguments: \n`
+               +' ``` \n '+v.func_args+'```\n';
+            this.append_ai(text, id);
+            this.last_item_text = text;
+            this.last_item_id = id;
+            id++;
+          }
         }
       }
       else   //update last item
@@ -326,6 +344,7 @@ class ChatUI {
       }
 
       this.last_item_role = v.role;
+      this.last_item_func = v.func;
     }
   }
 
@@ -1212,6 +1231,7 @@ class Chat {
 //??-- console.log('========Chat======== '+chat_id)
 //??-- console.log(list);
         this.curConversation = list;
+/**         
         let lastMessage = null;
         for(const v of list) {
           if (v.role === 'user') {
@@ -1228,9 +1248,13 @@ class Chat {
             }
           }
         }
+**/        
+        for(const v of list) {
+          if (v.role === 'user')
+            this.setModel(v.model ?? 'gpt-4', true);
+        }
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
-//??--        console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
         this.currentChatId = chat_id;
 //??            updateShareLink();
         this.initFunctionList();
