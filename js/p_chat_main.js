@@ -100,6 +100,7 @@ class ChatMain {
           if (model) {
             model.innerText = text;
             this.chat.setModel(text, false);
+            DOM.qSel('span#subtitle').innerText = text;
           }
         }
       }

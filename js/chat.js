@@ -541,6 +541,30 @@ class ChatUI {
 //   square_on_square   square_pencil     f_cursive
 // forlogin => square_arrow_right
 
+  _create_funcs_html(list)
+  {
+    let html = [];
+    for(const v of list) {
+      let s =
+             `<li>`
+            +`  <label class="fitem-checkbox item-checkbox-icon-start item-content">`
+            +`    <input type="checkbox" value="${v}" />`
+            +`    <i class="icon icon-checkbox"></i>`
+            +`    <div class="item-inner">`
+            +`      <div class="item-title">${v}</div>`
+            +`    </div>`
+            +`  </label>`
+            +`</li>`;
+       html.push(s);
+    }
+    return html.join('\n');
+  }
+
+  updateFuncsList(list)
+  {
+    const el = DOM.qSel('ul#funcs-list');
+    el.innerHTML = this._create_funcs_html(list);
+  }
 
 
   showNotification({title, subtitle, text})
@@ -816,6 +840,7 @@ class Chat {
       this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
 //??todo    updateShareLink();
       this.currentChatId = rc.chat_id;
+      this.view.ui.updateFuncsList(rc.funcs)
       return rc;
     }
   }
