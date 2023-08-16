@@ -563,7 +563,7 @@ class ChatUI {
   updateFuncsList(list)
   {
     const el = DOM.qSel('ul#funcs-list');
-    el.innerHTML = this._create_funcs_html(list);
+//    el.innerHTML = this._create_funcs_html(list);
   }
 
 
