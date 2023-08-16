@@ -1253,9 +1253,10 @@ class Chat {
         }
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
-        console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
+//??        console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
         this.currentChatId = chat_id;
 //??            updateShareLink();
+        this.initFunctionList();
       } else {
         this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
@@ -1348,6 +1349,42 @@ class Chat {
   }
 
 
+  async initFunctionList() 
+  {
+    try {
+      let url = new URL('/chat/api/listFunctions', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('chat_id', this.currentChatId); //?? != null ? currentChatId : plink);
+      url.search = params.toString();
+      const resp = await fetch (url.toString());
+      if (resp.status === 200) {
+          let list = await resp.json();
+//??          console.log('initFunctionList:'+currentChatId);
+          this.view.ui.updateFuncsList(list)
+/***           
+          funcs.forEach (function (item) {
+             const fn = item['function'];
+             const title = item['title'];
+             const sel = item['selected'];
+             if (sel) {
+                 if (null == enabledCallbacks)
+                   enabledCallbacks = new Array();  
+                 enabledCallbacks.push (fn);
+             }
+             let li = $('<li><input type="checkbox"/><label></label></li>'); 
+             li.children('input').attr('id', fn);
+             li.children('input').checked = sel;
+             li.children('label').attr('for', fn);
+             li.children('label').html(title);
+             funcList.append (li);
+          });
+**/          
+      } else
+          this.view.ui.showNotification({title:'Error', text:'Loading helper functions failed: ' + resp.statusText});
+    } catch(e) {
+      console.log(e);
+    }
+  }
 
 /***
   async initFunctionList() 
