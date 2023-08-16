@@ -560,12 +560,28 @@ class ChatUI {
     return html.join('\n');
   }
 
+  initFuncsList(list)
+  {
+    const el = DOM.qSel('ul#funcs-list');
+    el.innerHTML = this._create_funcs_html(list);
+  }
+
   updateFuncsList(list)
   {
     const el = DOM.qSel('ul#funcs-list');
     el.innerHTML = this._create_funcs_html(list);
   }
 
+  getFuncsList()
+  {
+    let rc = [];
+    const lst = DOM.qSelAll('ul#funcs-list li input');
+    for(const v of lst) {
+      if (v.checked)
+        rc.push(v.value);
+    }
+    return rc;
+  }
 
   showNotification({title, subtitle, text})
   {
@@ -689,7 +705,8 @@ class Chat {
     this.webSocket = null;
     this.helloSent = false;
     this.currentModel = 'gpt-4';
-    this.enabledCallbacks = [];
+    this.funcsList = [];
+//??    this.enabledCallbacks = [];
     this.apiKey = null;
 
     this.currentChatId = null;
@@ -706,6 +723,11 @@ class Chat {
     console.log('Chat msg: '+text);
   }
 
+
+  getEnableCallbacks() 
+  {
+    return this.view.ui.getFuncsList();
+  }
 
   async onLogin()
   {
@@ -787,44 +809,12 @@ class Chat {
         return false;
       }
     } catch (e) {
-//??        console.log('Error:' + e);
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
         return false;
     }
     return true;
   }
 
-/************ 
-  async getCurrentChatId()
-  {
-    // here we should current chat if new 
-    if (!this.loggedIn)
-      return null;
-
-    try {
-      const url = new URL('/chat/api/getTopic', this.httpServer);
-      let params = new URLSearchParams(url.search);
-      params.append('session_id', this.sessionId);
-      url.search = params.toString();
-      const resp = await this.solidClient.fetch (url.toString());
-      if (resp.status === 200) {
-        let chat = await resp.json();
-        ////console.log('resp:' + JSON.stringify(chat));
-        const chat_id = chat['chat_id'];
-        const title = chat['title'];
-//??     addSidebarItem (chat_id, title, 'now', lastChatId);
-        return {chat_id, title}; //    this.currentChatId = chat_id;
-//??    updateShareLink();
-      } else {
-        this.view.ui.showNotification({title:'Error', text:'Can not retrieve chatId ' + resp.statusText});
-      }
-    } catch (e) {
-      console.log('Error:' + e);
-      this.view.ui.showNotification({title:'Error', text:'Can not getTopic ' + e});
-    }
-    return null;
-  }
-  **********/
 
   async getCurrentChatId()
   {
@@ -840,7 +830,7 @@ class Chat {
       this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
 //??todo    updateShareLink();
       this.currentChatId = rc.chat_id;
-      this.view.ui.updateFuncsList(rc.funcs)
+//??todo FIXME      this.view.ui.updateFuncsList(rc.funcs)
       return rc;
     }
   }
@@ -963,7 +953,7 @@ class Chat {
                     question: 'continue'+lastLine, 
                     chat_id: this.currentChatId,
                     apiKey: this.apiKey, 
-                    call: this.enabledCallbacks,
+                    call: this.getEnableCallbacks(),
                     model: this.currentModel,  
                   };
     this.webSocket.send(JSON.stringify(request));
@@ -1123,7 +1113,7 @@ class Chat {
                        chat_id: this.currentChatId, 
                        model: this.currentModel, 
                        apiKey: this.apiKey,
-                       call: this.enabledCallbacks };
+                       call: this.getEnableCallbacks() };
         this.view.ui.showProgress();
         this.view.ui.new_question(text);
         DOM.qHide('#fab-continue');
@@ -1168,35 +1158,16 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let chats = await resp.json();
-//??
-        console.log(chats); //???
+//??--        console.log(chats); 
         for(const v of chats) {
-          const title = v.title ?? v.chat_id;
-          let more = '';
-          const ts = v.ts;
-//??          if (!this.currentChatId && v.chat_id.indexOf('system-') === -1)
           if (!this.currentChatId && v.role === 'user')
             this.currentChatId = this.lastChatId = v.chat_id;
-//          if (v.ts)
-//            more = timeSince(v.ts);
-//          addSideBarItem(v.chat_it, title, more);
         }
+
         this.view.ui.updateListTopics(chats, this.currentChatId);
         return true;
-/***
-            chats.forEach (function (item) {
-                const chat_id = item['chat_id'];
-                let title = (item['title'] != null ? item['title'] : item['chat_id']);
-                let more = '';
-                const ts = item['ts'];
-                if (null == currentChatId && -1 == chat_id.indexOf('chat-'))
-                  currentChatId = lastChatId = chat_id;
-                if (null != ts)
-                  more = ' <span class="timestamp">(' + timeSince(ts) + ')</span>';  
-                addSidebarItem (chat_id, title, more);
-            });
-***/
-      } else {
+      } 
+      else {
         this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
         return false;
@@ -1234,8 +1205,8 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let list = await resp.json();
-//??console.log('========Chat======== '+chat_id)
-//??console.log(list);
+//??-- console.log('========Chat======== '+chat_id)
+//??-- console.log(list);
         this.curConversation = list;
         let lastMessage = null;
         for(const v of list) {
@@ -1253,7 +1224,7 @@ class Chat {
         }
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
-//??        console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
+//??--        console.log ('loadConversation#model:'+this.currentModel+' chat_id:'+chat_id);
         this.currentChatId = chat_id;
 //??            updateShareLink();
         this.initFunctionList();
@@ -1320,7 +1291,7 @@ class Chat {
     let url = new URL('/chat/api/createTopic', this.httpServer);
     let params = new URLSearchParams(url.search);
     params.append('session_id', this.session.info.sessionId);
-    params.append('netid', this.session.info.webId);
+//??    params.append('netid', this.session.info.webId);
     params.append('chat_id', chat_id);
     url.search = params.toString();
     try {
@@ -1336,6 +1307,7 @@ class Chat {
         this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + e});
     }
   }
+
 
   setModel(text, update_ui)
   {
@@ -1359,26 +1331,9 @@ class Chat {
       const resp = await fetch (url.toString());
       if (resp.status === 200) {
           let list = await resp.json();
-//??          console.log('initFunctionList:'+currentChatId);
-          this.view.ui.updateFuncsList(list)
-/***           
-          funcs.forEach (function (item) {
-             const fn = item['function'];
-             const title = item['title'];
-             const sel = item['selected'];
-             if (sel) {
-                 if (null == enabledCallbacks)
-                   enabledCallbacks = new Array();  
-                 enabledCallbacks.push (fn);
-             }
-             let li = $('<li><input type="checkbox"/><label></label></li>'); 
-             li.children('input').attr('id', fn);
-             li.children('input').checked = sel;
-             li.children('label').attr('for', fn);
-             li.children('label').html(title);
-             funcList.append (li);
-          });
-**/          
+//??--          console.log('initFunctionList:'+currentChatId);
+          this.funcsList = list;
+          this.view.ui.initFuncsList(list)
       } else
           this.view.ui.showNotification({title:'Error', text:'Loading helper functions failed: ' + resp.statusText});
     } catch(e) {
@@ -1386,6 +1341,7 @@ class Chat {
     }
   }
 
+//??--  
 /***
   async initFunctionList() 
   {
