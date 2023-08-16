@@ -547,7 +547,7 @@ class ChatUI {
     for(const v of list) {
       let s =
              `<li>`
-            +`  <label class="fitem-checkbox item-checkbox-icon-start item-content">`
+            +`  <label class="item-checkbox item-checkbox-icon-start item-content">`
             +`    <input type="checkbox" value="${v.function}" id="${v.function}" ${v.selected?'checked':''}/>`
             +`    <i class="icon icon-checkbox"></i>`
             +`    <div class="item-inner">`
