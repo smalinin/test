@@ -1216,7 +1216,7 @@ class Chat {
           } 
           else if (v.role === 'assistant') {
             if (v.text) {
-              if (this.lastMessage === null) {
+              if (lastMessage === null) {
                 lastMessage = v.text;
               } else {
                 lastMessage += v.text;
