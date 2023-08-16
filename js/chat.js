@@ -548,7 +548,7 @@ class ChatUI {
       let s =
              `<li>`
             +`  <label class="fitem-checkbox item-checkbox-icon-start item-content">`
-            +`    <input type="checkbox" value="${v.function}" id="${v.function}" ${v.selected?'selected':''}/>`
+            +`    <input type="checkbox" value="${v.function}" id="${v.function}" ${v.selected?'checked':''}/>`
             +`    <i class="icon icon-checkbox"></i>`
             +`    <div class="item-inner">`
             +`      <div class="item-title">${v.title}</div>`
@@ -563,7 +563,7 @@ class ChatUI {
   updateFuncsList(list)
   {
     const el = DOM.qSel('ul#funcs-list');
-//    el.innerHTML = this._create_funcs_html(list);
+    el.innerHTML = this._create_funcs_html(list);
   }
 
 
