@@ -548,10 +548,10 @@ class ChatUI {
       let s =
              `<li>`
             +`  <label class="fitem-checkbox item-checkbox-icon-start item-content">`
-            +`    <input type="checkbox" value="${v}" />`
+            +`    <input type="checkbox" value="${v.function}" id="${v.function}" ${v.selected?'selected':''}/>`
             +`    <i class="icon icon-checkbox"></i>`
             +`    <div class="item-inner">`
-            +`      <div class="item-title">${v}</div>`
+            +`      <div class="item-title">${v.title}</div>`
             +`    </div>`
             +`  </label>`
             +`</li>`;
