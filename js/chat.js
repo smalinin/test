@@ -298,27 +298,31 @@ class ChatUI {
 
         this.last_item_text = '';
 
-        if (v.role === 'user') {
-          this.append_question(v.text, id);
-        } else {
-          this.append_ai(v.text, id);
+        if (v.text) {
+          if (v.role === 'user') {
+            this.append_question(v.text, id);
+          } else {
+            this.append_ai(v.text, id);
+          }
+  
+          this.last_item_text = v.text;
+          this.last_item_id = id;
+          id++;
         }
-
-        this.last_item_text = v.text;
-        this.last_item_id = id;
-        id++;
       }
       else   //update last item
       {
-        const text = this.last_item_text + v.text;
-        if (v.role === 'user') {
-          this.update_question(text, id);
-        } else {
-          this.update_ai(text, id);
-        }
+        if (v.text) {
+          const text = this.last_item_text + v.text;
+          if (v.role === 'user') {
+            this.update_question(text, id);
+          } else {
+            this.update_ai(text, id);
+          }
 
-        this.last_item_text = text;
-        this.last_item_id = id;
+          this.last_item_text = text;
+          this.last_item_id = id;
+        }
       }
 
       this.last_item_role = v.role;
