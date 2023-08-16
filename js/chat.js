@@ -1215,10 +1215,12 @@ class Chat {
             this.setModel(v.model ?? 'gpt-4', true);
           } 
           else if (v.role === 'assistant') {
-            if (this.lastMessage === null) {
-              lastMessage = v.text;
-            } else {
-              lastMessage += v.text;
+            if (v.text) {
+              if (this.lastMessage === null) {
+                lastMessage = v.text;
+              } else {
+                lastMessage += v.text;
+              }
             }
           }
         }
