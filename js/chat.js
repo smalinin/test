@@ -269,7 +269,6 @@ class ChatUI {
   }
 
 
-  //??todo add func support
   updateConversation(list, cur_chat)
   {
     if (!list)
@@ -317,13 +316,8 @@ class ChatUI {
             id++;
           } 
           else if (v.func) {
-            const text = 
-                `> Function: **${v.func_title}**(*${v.func}*)\n`
-               +'>  *`Arguments:`*\n'
-               +'```json\n'+v.func_args+'\n```';
-//               this.append_ai_func(text, id);
             this.append_ai_func(v, id);
-            this.last_item_text = text;
+            this.last_item_text = '';
             this.last_item_id = id;
             id++;
           }
@@ -422,17 +416,11 @@ class ChatUI {
       this.last_item_text = '';
     }
 
-    const text = 
-           `> Function: **${func.func_title}**(*${func.func}*)\n`
-          +'>  *`Arguments:`*\n'
-          +'```json\n'+func.func_args+'\n```';
-
     this.last_item_text = '';
     this.last_item_id = id;
     this.last_item_role = 'assistant';
     this.last_item_func = func.func;
 
-//    this.append_ai_func(text, id);
     this.append_ai_func(func, id);
   }
 
@@ -561,18 +549,16 @@ class ChatUI {
 
   _create_ai_func_html(v)
   {
-    //return this._create_text_block_html(this.md.render(str))
     const title = `Function: <strong>${v.func_title}</strong>(<em>${v.func}</em>)`;
     const text = 
            ' ***`Arguments:`***\n'
           +'```json\n'+v.func_args+'\n```';
-//??          '>  *`Arguments:`*\n'
 
     const html = 
              '<div class="list accordion-list">\n'
             +' <ul style="padding-left:0px">\n'
             +'  <li class="accordion-item">\n'
-            +'    <a href="" class="item-link item-content">\n'
+            +'    <a href="" class="item-link item-content" style="padding-left:5px">\n'
             +'      <div class="item-inner">\n'
             +`        <div class="item-title">${title}</div>\n`
             +'      </div>\n'
@@ -582,36 +568,6 @@ class ChatUI {
             +' </ul>\n'
             +'</div>'
     return html;
-
-/**
-<blockquote>
-<p>Function: <strong>VOS KB Search</strong>(<em>vos_howto_search</em>)<br>
-<em><code class="">Arguments:</code></em></p>
-</blockquote>
-
- * 
-<div class="list accordion-list">
-    <ul>
-        <li class="accordion-item">
-            <a href="" class="item-link item-content">
-                <div class="item-inner">
-                    <div class="item-title">Item 1</div>
-                </div>
-            </a>
-            <div class="accordion-item-content">Item 1 content ...</div>
-        </li>
-        <li class="accordion-item">
-            <a href="" class="item-link item-content">
-                <div class="item-inner">
-                    <div class="item-title">Item 2</div>
-                </div>
-            </a>
-            <div class="accordion-item-content">Item 2 content ...</div>
-        </li>
-    </ul>
-</div> 
- */
-
   }
 
   _create_text_block_html(str)
