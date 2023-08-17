@@ -585,7 +585,7 @@ class ChatUI {
      `<div class="chat_code">
         <div class="code_header">
            <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>
-           <button id="copy_code"><i class="icon f7-icons">doc_on_clipboard</i>Copy code</button>
+           <button id="copy_code"><i class="icon f7-icons" style="font-size: 20px;">doc_on_clipboard</i>&nbsp;Copy code</button>
         </div>
         <div class="code_block">${str}</div>
       </div>`
