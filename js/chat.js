@@ -321,7 +321,8 @@ class ChatUI {
                 `> Function: **${v.func_title}**(*${v.func}*)\n`
                +'>  *`Arguments:`*\n'
                +'```json\n'+v.func_args+'\n```';
-            this.append_ai_func(text, id);
+//               this.append_ai_func(text, id);
+            this.append_ai_func(v, id);
             this.last_item_text = text;
             this.last_item_id = id;
             id++;
@@ -431,7 +432,8 @@ class ChatUI {
     this.last_item_role = 'assistant';
     this.last_item_func = func.func;
 
-    this.append_ai_func(text, id);
+//    this.append_ai_func(text, id);
+    this.append_ai_func(func, id);
   }
 
 
@@ -485,12 +487,13 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
-  append_ai_func(text, id, disable_scroll)
+  
+  append_ai_func(func, id, disable_scroll)
   {
     if (!text)
       return;
    
-    const html = this._create_ai_func_html(text);
+    const html = this._create_ai_func_html(func);
     const html_block = this._create_answer_html(html, id);
     const el = DOM.htmlToElement(html_block);
 
@@ -500,7 +503,6 @@ class ChatUI {
 
   _append_block_title(role)
   {
-//    const title = (role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons">logo_android</i> AI';
     const title = (role === 'user') ? '<i class="icon f7-icons">person</i>' : '<i class="icon f7-icons"> <img src="./images/chat.png"> </i>';
 
     const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
@@ -557,9 +559,58 @@ class ChatUI {
     return block.join('\n');
   }
 
-  _create_ai_func_html(str)
+  _create_ai_func_html(v)
   {
-    return this._create_text_block_html(this.md.render(str))
+    //return this._create_text_block_html(this.md.render(str))
+    const title = `Function: <strong>${v.func_title}</strong>(<em>${v.func}</em>)`;
+    const text = 
+          +'>  *`Arguments:`*\n'
+          +'```json\n'+v.func_args+'\n```';
+
+    const html = 
+             '<div class="list accordion-list">\n'
+            +' <ul>\n'
+            +'  <li class="accordion-item">\n'
+            +'    <a href="" class="item-link item-content">\n'
+            +'      <div class="item-inner">\n'
+            +`        <div class="item-title">${title}</div>\n`
+            +'      </div>\n'
+            +'    </a>\n'
+            +`    <div class="accordion-item-content">${this.md.render(text)}</div>\n`
+            +'  </li>\n'
+            +' </ul>\n'
+            +'</div>'
+    return html;
+
+/**
+<blockquote>
+<p>Function: <strong>VOS KB Search</strong>(<em>vos_howto_search</em>)<br>
+<em><code class="">Arguments:</code></em></p>
+</blockquote>
+
+ * 
+<div class="list accordion-list">
+    <ul>
+        <li class="accordion-item">
+            <a href="" class="item-link item-content">
+                <div class="item-inner">
+                    <div class="item-title">Item 1</div>
+                </div>
+            </a>
+            <div class="accordion-item-content">Item 1 content ...</div>
+        </li>
+        <li class="accordion-item">
+            <a href="" class="item-link item-content">
+                <div class="item-inner">
+                    <div class="item-title">Item 2</div>
+                </div>
+            </a>
+            <div class="accordion-item-content">Item 2 content ...</div>
+        </li>
+    </ul>
+</div> 
+ */
+
   }
 
   _create_text_block_html(str)
@@ -608,12 +659,6 @@ class ChatUI {
     return ret;
   }
 
-//??icons =>    
-//             function  gear  info  location_fill  paperplane_fill
-//             lock_fill  lock_open_fill  logo_android
-//             person  person_alt  person_fill
-//   square_on_square   square_pencil     f_cursive
-// forlogin => square_arrow_right
 
   _create_funcs_html(list)
   {
