@@ -564,7 +564,7 @@ class ChatUI {
     //return this._create_text_block_html(this.md.render(str))
     const title = `Function: <strong>${v.func_title}</strong>(<em>${v.func}</em>)`;
     const text = 
-          +'>  *`Arguments:`*\n'
+           '>  *`Arguments:`*\n'
           +'```json\n'+v.func_args+'\n```';
 
     const html = 
