@@ -326,7 +326,7 @@ class ChatUI {
                +`   Arguments: \n`
                +' ```\n'+v.func_args+'\n```';
 **/               
-            this.append_ai(text, id);
+            this.append_ai_func(text, id);
             this.last_item_text = text;
             this.last_item_id = id;
             id++;
