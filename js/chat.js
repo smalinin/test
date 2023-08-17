@@ -321,11 +321,6 @@ class ChatUI {
                 `> Function: **${v.func_title}**(*${v.func}*)\n`
                +'>  *`Arguments:`*\n'
                +'```\n'+v.func_args+'\n```';
-/** 
-                `Function: ${v.func_title}(${v.func})\n`
-               +`   Arguments: \n`
-               +' ```\n'+v.func_args+'\n```';
-**/               
             this.append_ai_func(text, id);
             this.last_item_text = text;
             this.last_item_id = id;
@@ -390,8 +385,9 @@ class ChatUI {
     let id = this.last_item_id;
     let new_item = false;
 
-    if (this.last_item_role === 'user' || !this.last_item_role) {
+    if (this.last_item_role === 'user' || !this.last_item_role ) {
       this._append_block_title('assistant');
+
       id++;
       new_item = true;
       this.last_item_text = '';
@@ -400,12 +396,44 @@ class ChatUI {
     this.last_item_text += text;
     this.last_item_id = id;
     this.last_item_role = 'assistant';
+    this.last_item_func = null;
 
     if (new_item)
       this.append_ai(this.last_item_text, id);
     else
       this.update_ai(this.last_item_text, id);
   }
+
+
+  sys_func_answer(func, disable_scroll)
+  {
+    if (!func)
+      return;
+
+    let id = this.last_item_id;
+    let new_item = false;
+
+    if (this.last_item_role === 'user' || !this.last_item_role) {
+
+      this._append_block_title('assistant');
+      id++;
+      new_item = true;
+      this.last_item_text = '';
+    }
+
+    const text = 
+           `> Function: **${func.func_title}**(*${func.func}*)\n`
+          +'>  *`Arguments:`*\n'
+          +'```\n'+func.func_args+'\n```';
+
+    this.last_item_text = text;
+    this.last_item_id = id;
+    this.last_item_role = 'assistant';
+    this.last_item_func = func.func;
+
+    this.append_ai_func(this.last_item_text, id);
+  }
+
 
 
   append_question(text, id, disable_scroll)
@@ -1058,8 +1086,11 @@ class Chat {
       console.log(obj);
       const func = JSON.parse (text);
       console.log(func);
+// func.func  func.func_arg  func.func_title
+      DOM.qShow('#fab-stop');
+      this.view.ui.sys_func_answer(func);
 
-      //??todo
+//??todo
       //??todo
       //??todo
 /**
