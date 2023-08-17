@@ -564,12 +564,13 @@ class ChatUI {
     //return this._create_text_block_html(this.md.render(str))
     const title = `Function: <strong>${v.func_title}</strong>(<em>${v.func}</em>)`;
     const text = 
-           '>  *`Arguments:`*\n'
+           ' ***`Arguments:`***\n'
           +'```json\n'+v.func_args+'\n```';
+//??          '>  *`Arguments:`*\n'
 
     const html = 
              '<div class="list accordion-list">\n'
-            +' <ul>\n'
+            +' <ul style="padding-left:0px">\n'
             +'  <li class="accordion-item">\n'
             +'    <a href="" class="item-link item-content">\n'
             +'      <div class="item-inner">\n'
