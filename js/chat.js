@@ -577,6 +577,7 @@ class ChatUI {
   }
 
 
+  //??<button id="copy_code" class="button button-outline" style="text-transform: inherit;justify-content: left;"><i class="icon f7-icons">doc_on_clipboard</i>&nbsp;Copy code</button>
   //??  <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>
   _create_code_block_html(str)
   {
@@ -584,7 +585,7 @@ class ChatUI {
      `<div class="chat_code">
         <div class="code_header">
            <span id="copied" class="hidden">Copied!&nbsp;&nbsp;</span>
-           <button id="copy_code" class="button button-outline" style="text-transform: inherit;justify-content: left;"><i class="icon f7-icons">doc_on_clipboard</i>&nbsp;Copy code</button>
+           <button id="copy_code"><i class="icon f7-icons">doc_on_clipboard</i>Copy code</button>
         </div>
         <div class="code_block">${str}</div>
       </div>`
