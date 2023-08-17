@@ -1055,6 +1055,10 @@ class Chat {
     const kind = obj.kind;
 
     if (kind === 'function') {
+      console.log(obj);
+      const func = JSON.parse (text);
+      console.log(func);
+
       //??todo
       //??todo
       //??todo
