@@ -105,6 +105,10 @@ class ChatMain {
         }
       }
       
+    DOM.iSel("btn-api-key")
+      .onclick = () => {
+        this.api_key();
+    };
 
 
 
@@ -225,6 +229,12 @@ class ChatMain {
   {
     this.ui.openLeftPanel();
   }
+
+  api_key()
+  {
+    this.ui.api_key();
+  }
+
 
 
   setData(_data)

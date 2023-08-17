@@ -1,3 +1,22 @@
+/**
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" data-toggle="tooltip" data-placement="top" data-bs-original-title="You can find your API key at https://platform.openai.com/account/api-keys.">OpenAI API key</h3>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="api-key" placeholder="Enter your API Key">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" id="btn-api-key-remove">Remove</button>
+                        <button type="button" class="btn" id="btn-api-key-save">Set</button>
+                    </div>
+                </div>
+            </div> 
+
+
+ */
+
 class ChatUI {
   constructor({view}) {
     this.view = view;
@@ -217,6 +236,43 @@ class ChatUI {
         }
       }
   }
+
+
+  api_key()
+  {
+    if (!this.view.chat.apiKeyRequired) {
+      this.showNotification({title:'Info', text:'API Key is already set on this system.'});
+      return;
+    }
+
+    const dlg = this.view.app.dialog.prompt('Enter your OpenAI API key', 'Info', (text) => {
+      if (text && text.trim()) {
+        this.view.chat.apiKey = text.trim();
+        this.view.chat.apiKeyRequired = false;
+        this.set_api_unlock();
+        dlg.close();
+      }
+    }, 
+    () => {
+      dlg.close();
+    },'OpenAI key...');
+
+  }
+
+  set_api_lock()
+  {
+    const el = DOM.qSel('i#api-lock');
+    if (el)
+      el.innerHTML = 'lock';
+  }
+
+  set_api_unlock()
+  {
+    const el = DOM.qSel('i#api-lock');
+    if (el)
+      el.innerHTML = 'lock-open';
+  }
+
 
 
   updateListTopics(list, cur_chat)
@@ -782,8 +838,8 @@ class Chat {
     this.helloSent = false;
     this.currentModel = 'gpt-4';
     this.funcsList = [];
-//??    this.enabledCallbacks = [];
     this.apiKey = null;
+    this.apiKeyRequired = true;
 
     this.currentChatId = null;
     this.lastChatId = null;
@@ -884,6 +940,12 @@ class Chat {
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate chat session' + resp.statusText});
         return false;
       }
+      const obj = await resp.json();
+      this.apiKeyRequired = obj.apiKeyRequired
+      if (!this.apiKeyRequired)
+        this.view.ui.set_api_lock();
+      else
+      this.view.ui.set_api_unlock();
     } catch (e) {
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
         return false;
