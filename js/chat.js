@@ -487,10 +487,10 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
-  
+
   append_ai_func(func, id, disable_scroll)
   {
-    if (!text)
+    if (!func)
       return;
    
     const html = this._create_ai_func_html(func);
