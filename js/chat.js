@@ -320,7 +320,7 @@ class ChatUI {
             const text = 
                 `> Function: **${v.func_title}**(*${v.func}*)\n`
                +'>  *`Arguments:`*\n'
-               +'```\n'+v.func_args+'\n```';
+               +'```json\n'+v.func_args+'\n```';
             this.append_ai_func(text, id);
             this.last_item_text = text;
             this.last_item_id = id;
@@ -424,7 +424,7 @@ class ChatUI {
     const text = 
            `> Function: **${func.func_title}**(*${func.func}*)\n`
           +'>  *`Arguments:`*\n'
-          +'```\n'+func.func_args+'\n```';
+          +'```json\n'+func.func_args+'\n```';
 
     this.last_item_text = '';
     this.last_item_id = id;
