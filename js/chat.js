@@ -270,7 +270,7 @@ class ChatUI {
   {
     const el = DOM.qSel('i#api-lock');
     if (el)
-      el.innerHTML = 'lock-open';
+      el.innerHTML = 'lock_open';
   }
 
 
