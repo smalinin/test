@@ -426,12 +426,12 @@ class ChatUI {
           +'>  *`Arguments:`*\n'
           +'```\n'+func.func_args+'\n```';
 
-    this.last_item_text = text;
+    this.last_item_text = '';
     this.last_item_id = id;
     this.last_item_role = 'assistant';
     this.last_item_func = func.func;
 
-    this.append_ai_func(this.last_item_text, id);
+    this.append_ai_func(text, id);
   }
 
 
@@ -1077,15 +1077,15 @@ class Chat {
 
   ws_onMessage(ev)
   {
-    console.log('ws_onMessage = '+JSON.stringify(ev.data));
+//??--    console.log('ws_onMessage = '+JSON.stringify(ev.data));
     const obj = JSON.parse(ev.data);
     const text = obj.data;
     const kind = obj.kind;
 
     if (kind === 'function') {
-      console.log(obj);
+//??      console.log(obj);
       const func = JSON.parse (text);
-      console.log(func);
+//??      console.log(func);
 // func.func  func.func_arg  func.func_title
       DOM.qShow('#fab-stop');
       this.view.ui.sys_func_answer(func);
