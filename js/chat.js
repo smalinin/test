@@ -943,9 +943,9 @@ class Chat {
       const obj = await resp.json();
       this.apiKeyRequired = obj.apiKeyRequired
       if (!this.apiKeyRequired)
-        this.view.ui.set_api_lock();
+        this.view.ui.set_api_unlock();
       else
-      this.view.ui.set_api_unlock();
+      this.view.ui.set_api_lock();
     } catch (e) {
         this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
         return false;
