@@ -319,7 +319,7 @@ class ChatUI {
           else if (v.func) {
             const text = 
                 `> Function: **${v.func_title}**(*${v.func}*)\n`
-               +'>  *`Arguments:`*'
+               +'>  *`Arguments:`*\n'
                +'> ```\n'+v.func_args+'\n```';
 /** 
                 `Function: ${v.func_title}(${v.func})\n`
@@ -457,6 +457,19 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
+  append_ai_func(text, id, disable_scroll)
+  {
+    if (!text)
+      return;
+   
+    const html = this._create_ai_func_html(text);
+    const html_block = this._create_answer_html(html, id);
+    const el = DOM.htmlToElement(html_block);
+
+    this.chat_list.appendChild(el); 
+    this._update_scroll(disable_scroll);
+  }
+
   _append_block_title(role)
   {
 //    const title = (role === 'user') ? '<i class="icon f7-icons">person</i> User' : '<i class="icon f7-icons">logo_android</i> AI';
@@ -514,6 +527,11 @@ class ChatUI {
     }
   
     return block.join('\n');
+  }
+
+  _create_ai_func_html(str)
+  {
+    return this._create_text_block_html(this.md.render(str))
   }
 
   _create_text_block_html(str)
