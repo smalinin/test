@@ -320,7 +320,7 @@ class ChatUI {
             const text = 
                 `> Function: **${v.func_title}**(*${v.func}*)\n`
                +'>  *`Arguments:`*\n'
-               +'> ```\n'+v.func_args+'\n```';
+               +'```\n'+v.func_args+'\n```';
 /** 
                 `Function: ${v.func_title}(${v.func})\n`
                +`   Arguments: \n`
