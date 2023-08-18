@@ -342,7 +342,35 @@ class ChatUI {
       this.last_item_role = v.role;
       this.last_item_func = v.func;
     }
+    this.update_copy_handlers();
   }
+
+
+  update_copy_handlers()
+  {
+    var lst = DOM.qSelAll('.code_header button#copy_code');
+    for(var el of lst) {
+      el.onclick = (e) => {
+        var block = e.target.closest('div.chat_code');
+        var code = block.querySelector('div.code_block');
+        if (code) {
+          navigator.clipboard.writeText(code.textContent).then(() => {
+              const btn = e.target.closest('#copy_code');
+              const copied = block.querySelector("#copied");
+              DOM.Hide(btn);
+              DOM.Show(copied);
+
+              setTimeout(() => { 
+                  DOM.Hide(copied);
+                  DOM.Show(btn);
+               }, 2000);
+            }, 
+            () => { /* failed */ });
+        }
+      }
+    }
+  }
+
 
   new_conversation()
   {
@@ -577,8 +605,6 @@ class ChatUI {
   }
 
 
-  //??<button id="copy_code" class="button button-outline" style="text-transform: inherit;justify-content: left;"><i class="icon f7-icons">doc_on_clipboard</i>&nbsp;Copy code</button>
-  //??  <button id="copy_code"><img class="img20" src="images/copy-icon.svg"/>Copy code</button>
   _create_code_block_html(str)
   {
     var v = 
@@ -591,7 +617,6 @@ class ChatUI {
       </div>`
     return v;                              
   }
-
 
 
   _parse_answer(str) 
@@ -1130,85 +1155,41 @@ class Chat {
 
   ws_onMessage(ev)
   {
-//??--    console.log('ws_onMessage = '+JSON.stringify(ev.data));
     const obj = JSON.parse(ev.data);
     const text = obj.data;
     const kind = obj.kind;
 
     if (kind === 'function') {
-//??      console.log(obj);
       const func = JSON.parse (text);
-//??      console.log(func);
-// func.func  func.func_arg  func.func_title
       DOM.qShow('#fab-stop');
       this.view.ui.sys_func_answer(func);
-
-//??todo
-      //??todo
-      //??todo
-/**
-               let func_call = JSON.parse (text);
-              let title = 'Function: <b>' + func_call.func_title + '</b> ('+ func_call.func + ')';
-              let div = '\n**Arguments:**\n```json\n' + func_call.func_args + '\n```';
-              sendMessage (div, 'middle', false, title);
-              $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-              receivingMessage = null;
-**/      
     }
     else if (text.trim() === '[DONE]' || text.trim() === '[LENGTH]') 
     {
       this.view.ui.hideProgress();
-      // make target
-//??        if (receivingMessage) 
-//??            receivingMessage.find('a').attr('target','_blank');
 
-        if (text.trim() === '[LENGTH]') {
+      if (text.trim() === '[LENGTH]') {
           DOM.qShow('#fab-continue');
-         } 
-         else { /// [DONE] 
-//??            receivingMessage = null;
-//??            markdown_content.html('');
-//??            $('.continue_wrapper').hide();
+      } 
+      else { /// [DONE] 
           DOM.qHide('#fab-continue');
-        }
-        if (!this.currentChatId) {
-            this.getCurrentChatId().then((rc) => {
-              if (rc.chat_id) {
-                this.lastChatId = rc.chat_id;
-              }
-            });
-        }
+      }
+      
+      if (!this.currentChatId) {
+        this.getCurrentChatId().then((rc) => {
+          if (rc.chat_id) {
+            this.lastChatId = rc.chat_id;
+          }
+        });
+      }
 
-        DOM.qHide('#fab-stop');
+      DOM.qHide('#fab-stop');
+      this.view.ui.update_copy_handlers();
     }
     else {
       DOM.qShow('#fab-stop');
       this.view.ui.sys_answer(text);
     } 
-/********
-    else if (!this.receivingMessage) {
-
-      //this.receivingMessage = text;
-      //console.log('start= '+this.receivingMessage);
-        // $('.message_input').val('');
-        // message = new Message({
-        //                       text: text,
-        //                       message_side: 'right',
-        //                       currentAnswer: null
-        // });
-        // message.draw();
-        // receivingMessage = message.currentAnswer;
-        // $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-    } else {
-      this.receivingMessage += text;
-      console.log('cont= '+ this.receivingMessage)
-        // markdown_content.append(text);
-        // let html = md.render(markdown_content.text());
-        // receivingMessage.html(html);
-        // if (-1 != text.indexOf('\n'))
-        //     $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
-    }
-****/    
   } 
 
   ws_onError(ev)
@@ -1339,31 +1320,15 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let list = await resp.json();
+        this.curConversation = list;
 //??-- console.log('========Chat======== '+chat_id)
 //??-- console.log(list);
-        this.curConversation = list;
-/**         
-        let lastMessage = null;
-        for(const v of list) {
-          if (v.role === 'user') {
-            lastMessage = null;
-            this.setModel(v.model ?? 'gpt-4', true);
-          } 
-          else if (v.role === 'assistant') {
-            if (v.text) {
-              if (lastMessage === null) {
-                lastMessage = v.text;
-              } else {
-                lastMessage += v.text;
-              }
-            }
-          }
-        }
-**/        
+
         for(const v of list) {
           if (v.role === 'user')
             this.setModel(v.model ?? 'gpt-4', true);
         }
+
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
         this.currentChatId = chat_id;
