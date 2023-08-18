@@ -764,6 +764,9 @@ class ChatUI {
         DOM.qShow('#uid_menu')
         DOM.iSel('netid').innerHTML = `<a href="${webId}" target="_blank" >${webId}</a>`
 
+        DOM.qShow('a#a_model');
+        DOM.qShow('a#api-lock');
+
       } catch(e) {
         console.log(e);
       }
@@ -778,6 +781,10 @@ class ChatUI {
       DOM.qShow('#login');
       DOM.qHide('#uid_menu')
       DOM.iSel('netid').innerHTML = '';
+
+      DOM.qHide('a#a_model');
+      DOM.qHide('a#api-lock');
+
     } catch(e) {
       console.log(e);
     }

@@ -96,16 +96,12 @@ class ChatMain {
         const v = el.value;
         const text = el.innerText;
         if (text) {
-          const model = e.target.parentNode.querySelector('span#model');
-          if (model) {
-            model.innerText = text;
-            this.chat.setModel(text, false);
-            DOM.qSel('span#subtitle').innerText = text;
-          }
+          this.chat.setModel(text, false);
+          DOM.qSel('span#subtitle').innerText = text;
         }
       }
       
-    DOM.iSel("btn-api-key")
+    DOM.iSel("api-lock")
       .onclick = () => {
         this.api_key();
     };
