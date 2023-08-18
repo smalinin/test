@@ -67,12 +67,11 @@ class ChatMain {
 
     DOM.iSel("btn-send")
       .onclick = async () => {
-        this.app.popover.close('.popover-req');
-        const el = DOM.iSel('c_req');
-        const text = el.value;
+        const el = DOM.iSel('s_req');
+        const text = el.innerText;
         const rc = await this.send_req(text);
         if (rc)
-          el.value = '';
+          el.innerText = '';
     };
 
     DOM.iSel("fab-continue")
@@ -83,15 +82,6 @@ class ChatMain {
       DOM.iSel("fab-stop")
       .onclick = () => {
         this.send_stop();
-    };
-
-    DOM.iSel("msg-input")
-      .onclick = () => {
-        this.app.popover.open('.popover-req');
-    };
-    DOM.iSel("msg-btn")
-      .onclick = () => {
-        this.app.popover.open('.popover-req');
     };
 
     DOM.iSel("panel-menu")

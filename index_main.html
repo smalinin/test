@@ -123,25 +123,34 @@
       padding-bottom: 5px;
     }
 
-    textarea#c_req {
-      width: 100%;
-      height: calc(40vh);
+    span#s_req {
       border: var(--f7-list-button-border-color);
       border-style: solid;
       border-radius: 5px;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: calc(40vh);
+      overflow-wrap: inherit;
     }
-    input#msg-input {
-      width: calc(100% - 50px);
-      height: 30px;
-      border: var(--f7-list-button-border-color);
-      border-style: solid;
-      border-radius: 5px;
+
+    .textarea {
+      display: block;
+      width: 100%;
+      min-height: 30px;
+      line-height: 20px;
+      font-family: inherit;
+      font-size: inherit;
+      padding: 1px 6px;
     }
 
     .mtoolbar {
       bottom: var(--f7-toolbar-height);
       display: flex;
       z-index: 9999;
+      height: fit-content;
+      min-height: 20px;
+      margin-bottom: 0px;
+      margin-top: 0px;
     }
 
   </style>
@@ -230,13 +239,6 @@
           </div>          
          </div>
 
-<!--
-        <div class="fab fab-center-bottom color-green popover-open" id="fab-req" data-popover=".popover-req">
-          <a>
-            <i class="icon f7-icons">paperplane_fill</i>
-          </a>
-        </div>
-      -->
         <div class="fab fab-extended fab-left-bottom color-blue hidden" id="fab-continue">
           <a>
             <i class="icon f7-icons">arrowtriangle_right_fill</i>
@@ -254,8 +256,8 @@
 <!-----end navbar -------------------->
 
         <div class="toolbar toolbar-bottom mtoolbar block block-strong">
-          <input id="msg-input"> 
-          <a id="msg-btn" href="#" class="link" style="width: 30px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
+          <span id="s_req" class="textarea" role="textbox" contenteditable></span>
+          <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
         </div>
 
         <!-- Scrollable page content-->
@@ -264,12 +266,6 @@
           <div id="conversation"> </div>
 
           <div class="block-title">&nbsp;&nbsp;</div>
-<!--          
-          <div class="block block-strong">
-            <input id="msg-input"> 
-            <a id="msg-btn" href="#" class="link" style="width: 30px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
-          </div>
-        -->          
 
         </div>
 <!-- ========================================================================================= -->
@@ -287,18 +283,6 @@
         </div>
       </div>
 
-
-      <div class="popover popover-req" style="width: 90%;">
-        <div class="popover-angle"></div>
-        <div class="popover-inner">
-          <div class="block" style="margin-bottom:10px;">
-              <textarea type="text" id="c_req"> </textarea>
-          </div>
-          <div class="block" style="margin-top:10px; margin-bottom:10px; display: flex;flex-direction: row-reverse;">
-            <button id="btn-send" class="button button-large button-outline button-round" style="text-transform: inherit;width: 150px;"><i class="icon f7-icons">paperplane_fill</i> Send </button>
-          </div>
-        </div>
-      </div>
 
       <div class="popover popover-funcs">
         <div class="popover-angle"></div>
