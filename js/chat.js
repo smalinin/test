@@ -816,14 +816,14 @@ class ChatUI {
 
   set_api_lock()
   {
-    const el = DOM.qSel('i#api-lock');
+    const el = DOM.qSel('a#api-lock i');   //('i#api-lock');
     if (el)
       el.innerHTML = 'lock';
   }
 
   set_api_unlock()
   {
-    const el = DOM.qSel('i#api-lock');
+    const el = DOM.qSel('a#api-lock i');   //('i#api-lock');
     if (el)
       el.innerHTML = 'lock_open';
   }
