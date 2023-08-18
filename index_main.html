@@ -130,6 +130,19 @@
       border-style: solid;
       border-radius: 5px;
     }
+    input#msg-input {
+      width: calc(100% - 50px);
+      height: 30px;
+      border: var(--f7-list-button-border-color);
+      border-style: solid;
+      border-radius: 5px;
+    }
+
+    .mtoolbar {
+      bottom: var(--f7-toolbar-height);
+      display: flex;
+      z-index: 9999;
+    }
 
   </style>
 </head>
@@ -217,13 +230,13 @@
           </div>          
          </div>
 
-
+<!--
         <div class="fab fab-center-bottom color-green popover-open" id="fab-req" data-popover=".popover-req">
           <a>
             <i class="icon f7-icons">paperplane_fill</i>
           </a>
         </div>
-
+      -->
         <div class="fab fab-extended fab-left-bottom color-blue hidden" id="fab-continue">
           <a>
             <i class="icon f7-icons">arrowtriangle_right_fill</i>
@@ -239,12 +252,24 @@
         </div>
 
 <!-----end navbar -------------------->
+
+        <div class="toolbar toolbar-bottom mtoolbar block block-strong">
+          <input id="msg-input"> 
+          <a id="msg-btn" href="#" class="link" style="width: 30px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
+        </div>
+
         <!-- Scrollable page content-->
         <div class="page-content" id="main">
 
           <div id="conversation"> </div>
 
           <div class="block-title">&nbsp;&nbsp;</div>
+<!--          
+          <div class="block block-strong">
+            <input id="msg-input"> 
+            <a id="msg-btn" href="#" class="link" style="width: 30px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
+          </div>
+        -->          
 
         </div>
 <!-- ========================================================================================= -->

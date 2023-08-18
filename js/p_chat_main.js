@@ -80,9 +80,18 @@ class ChatMain {
         this.send_continue();
       };
 
-    DOM.iSel("fab-stop")
+      DOM.iSel("fab-stop")
       .onclick = () => {
         this.send_stop();
+    };
+
+    DOM.iSel("msg-input")
+      .onclick = () => {
+        this.app.popover.open('.popover-req');
+    };
+    DOM.iSel("msg-btn")
+      .onclick = () => {
+        this.app.popover.open('.popover-req');
     };
 
     DOM.iSel("panel-menu")
@@ -113,71 +122,6 @@ class ChatMain {
 
 
 //////////////////////////////////////////////////////
-
-/***
-
-    DOM.qSel('#btn-install')
-      .onclick = () => {
-        sendToiOS({cmd:'install'})
-      };
-
-    DOM.qSel('#btn-ca-install')
-      .onclick = () => {
-        sendToiOS({cmd:'ca-install'})
-      };
-
-    DOM.qSel('#btn-view')
-      .onclick = () => {
-        sendToiOS({cmd:'view_card'})
-      };
-
-    DOM.qSel('#btn-zip')
-      .onclick = () => {
-        sendToiOS({cmd:'download_zip'})
-      };
-
-    DOM.qSel('#b_copy_n_text')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-n-text').value);
-      };
-
-    DOM.qSel('#b_copy_n_ttl')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-n-ttl').value);
-      };
-    DOM.qSel('#b_copy_n_jsonld')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-n-jsonld').value);
-      };
-    DOM.qSel('#b_copy_n_rdfxml')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-n-rdfxml').value);
-      };
-    DOM.qSel('#b_copy_i_ttl')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-ttl').value);
-      };
-    DOM.qSel('#b_copy_i_jsonld')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-jsonld').value);
-      };
-    DOM.qSel('#b_copy_i_rdfxml')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-rdfxml').value);
-      };
-    DOM.qSel('#b_copy_i_fp')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-fp').value);
-      };
-    DOM.qSel('#b_copy_i_ni')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-ni').value);
-      };
-    DOM.qSel('#b_copy_i_di')
-      .onclick = () => {
-        navigator.clipboard.writeText(DOM.iSel('text-i-di').value);
-      };
-***/
   }
 
   onLogin()
