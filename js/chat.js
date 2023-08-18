@@ -838,7 +838,17 @@ class ChatUI {
 
   share()
   {
-//??    this.showNotification({title:'Info', text:'API Key is already set on this system.'});
+     if (this.view.chat.currentChatId) {
+        this.showNotification({title:'Info', text:'Permalink was copied to clipboard'});
+        //https://netid-qa.openlinksw.com:8443/chat/?chat_id=8152710b229f4328bff953dcb982753c
+        let url = new URL('/chat/', this.httpServer);
+        let params = new URLSearchParams(url.search);
+        params.append('chat_id', this.view.chat.currentChatId);
+        url.search = params.toString();
+        navigator.clipboard.writeText(url.toString());
+     } else {
+      this.showNotification({title:'Info', text:'Not LoggedIn'});
+     }
   }
 
 }
