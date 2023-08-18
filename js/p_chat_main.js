@@ -110,6 +110,10 @@ class ChatMain {
         this.api_key();
     };
 
+    DOM.iSel("share")
+      .onclick = () => {
+        this.share();
+    };
 
 
 //////////////////////////////////////////////////////
@@ -233,6 +237,11 @@ class ChatMain {
   api_key()
   {
     this.ui.api_key();
+  }
+
+  share()
+  {
+    this.ui.share();
   }
 
 

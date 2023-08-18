@@ -812,7 +812,6 @@ class ChatUI {
     () => {
       dlg.close();
     },'OpenAI key...');
-
   }
 
   set_api_lock()
@@ -830,6 +829,10 @@ class ChatUI {
   }
 
 
+  share()
+  {
+//??    this.showNotification({title:'Info', text:'API Key is already set on this system.'});
+  }
 
 }
 
