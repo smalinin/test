@@ -144,7 +144,7 @@
     }
 
     .mtoolbar {
-      bottom: var(--f7-toolbar-height);
+/*      bottom: calc(var(--f7-toolbar-height)+ 20px);*/
       display: flex;
       z-index: 9999;
       height: fit-content;
@@ -232,14 +232,19 @@
         </div>
         <!-----end navbar -------------------->
 
+        <!-- bottom toolbar for req -->
+        <div class="toolbar toolbar-bottom mtoolbar block block-strong" style="bottom: calc(var(--f7-toolbar-height) + 20px);">
+          <span id="s_req" class="textarea" role="textbox" contenteditable></span>
+          <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
+        </div>
         <!-- toolbar bottom -->
-        <div class="toolbar toolbar-bottom">
+        <div class="toolbar toolbar-bottom no-outline" style="height: calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom) + 20px);">
           <div class="toolbar-inner">
-            <a id="reload" href="#" class="link" style="padding-left: 10px;" ><i class="icon f7-icons">arrow_clockwise</i> </a>
-            <a href="#" class="link popover-open" data-popover=".popover-funcs">
+            <a id="reload" href="#" class="link" style="padding-left: 30px; padding-bottom: 30px;" ><i class="icon f7-icons">arrow_clockwise</i> </a>
+            <a href="#" class="link popover-open" style="padding-bottom: 30px;" data-popover=".popover-funcs">
               <i class="icon f7-icons">f_cursive<span id="func_badge" class="badge color-red hidden">1</span></i>
             </a>
-            <a id="share" href="#" class="link" style="padding-right: 10px;"> <i class="icon f7-icons">square_arrow_up</i> </a>
+            <a id="share" href="#" class="link" style="padding-right: 30px; padding-bottom: 30px;"> <i class="icon f7-icons">square_arrow_up</i> </a>
           </div>          
         </div>
 
@@ -257,11 +262,6 @@
           </a>
         </div>
 
-        <!-- bottom toolbar for req -->
-        <div class="toolbar toolbar-bottom mtoolbar block block-strong no-outline">
-          <span id="s_req" class="textarea" role="textbox" contenteditable></span>
-          <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
-        </div>
 
         <!-- Scrollable page content-->
         <div class="page-content hide-toolbar-on-scroll" id="main" >
