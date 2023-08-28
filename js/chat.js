@@ -295,15 +295,17 @@ class ChatUI {
     }
 
     for(const v of list) {
-      //       if (v.role !== this.last_item_role || (v.role === this.last_item_role && this.last_item_func)) {
       if (v.role !== this.last_item_role) {
-
+/** 
         if (this.last_item_func) {
           if (this.last_item_role!=v.role)
             this._append_block_title(v.role);
         } else {
           this._append_block_title(v.role);
         }
+**/     
+        if (this.last_item_role === 'user' || v.role === 'user')   
+          this._append_block_title(v.role);
 
         this.last_item_text = '';
         id++;
@@ -346,7 +348,6 @@ class ChatUI {
       }
 
       this.last_item_role = v.role;
-//??      this.last_item_func = v.func;
     }
     this.update_copy_handlers();
   }
