@@ -14,6 +14,8 @@
 //
 
 var $ = Dom7;
+var app;
+var c_main;
 
 var purl = new URL(window.location.href)
 const purl_hash = purl.hash;
@@ -87,30 +89,22 @@ async function init()
 
   if (authData)
     try {
-      //??  this.IdP = extractIdp(authData.url, data);
       var options = {url:authData.url, restorePreviousSession: true};
       if (oidc_saved_tokens)
         options['tokens'] = JSON.parse(oidc_saved_tokens);
 
       const ret = await solidClient.handleIncomingRedirect(options);
-      if (ret) {
-        console.log(ret.tokens);
-        // ret.tokens.dpopKey.privateKey
-        if (ret.tokens)
+      if (ret && ret.tokens) {
           storage.setItem('oidc_saved_tokens', JSON.stringify(ret.tokens));
       }
 
-
       const session = solidClient.getDefaultSession();
-      console.log(session);
-//??      if (session.info && session.info.isLoggedIn && session.info.webId)
-//??        return session.info.webId;
     } catch(e) {
       console.log(e);
     }
   
 
-  var app = new Framework7({
+  app = new Framework7({
     name: 'ChatBot', // App name
     theme: 'ios', // Automatic theme detection
     el: '#app', // App root element
@@ -126,43 +120,75 @@ async function init()
       closeOnSelect: true,
       scrollToSelectedItem: true,
     },
+    input: {
+      scrollIntoViewOnFocus: true,
+      scrollIntoViewOnCentered: true,
+    }
 
   });
 
-  var c_main = new ChatMain(app, solidClient, pcallback);
+  c_main = new ChatMain(app, solidClient, pcallback);
 
   app.on('smartSelectOpened', ()=>{
     sendToiOS({cmd:'smartSelectOpened'})
   })
 
 
-
-  function sendToiOS(cmd) 
+  function sendToiOS(cmd)
   {
-//??    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
-  }
-
-
-  function oauth_token(data) 
-  {
-  //??  uinfo.fetchOAuthInfo(data.pdp, data.accessToken, data.context)
-  }
-
-  function next_page() 
-  {
-  }
-
-  function init_page(_data) 
-  {
-    try {
-      const data = window.atob(_data);
-      c_main.setData(data);
-
-    } catch(e) {
-      console.log(e);
-    }
+    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
   }
 
 
 }
 
+function setCallback(url)
+{
+    
+}
+
+function handle_callback(url_str)
+{
+    try {
+        const url = new URL(url_str);
+        const authCode =
+            url.searchParams.get("code") ||
+            url.searchParams.get("access_token");
+
+        handle_authCode(authCode, url_str);
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+
+async function handle_authCode(authCode, url)
+{
+    var authData = null;
+    const storage = (window.localStorage) ? window.localStorage : window.sessionStorage
+    
+    
+    if (authCode) {
+        authData = {url}
+        
+        for(var i=0; i < storage.length; i++) {
+            var key = storage.key(i);
+            if (key.startsWith('issuerConfig:') || key.startsWith('solidClientAuthenticationUser:') || key.startsWith('oidc.'))
+                authData[key] = storage.getItem(key);
+        }
+        storage.setItem('oidc_code', btoa(JSON.stringify(authData)));
+    }
+    
+    if (authData)
+        try {
+            var options = {url:authData.url, restorePreviousSession: true};
+            const ret = await solidClient.handleIncomingRedirect(options);
+            if (ret && ret.tokens)
+                    storage.setItem('oidc_saved_tokens', JSON.stringify(ret.tokens));
+            
+            const session = solidClient.getDefaultSession();
+            console.log(session);
+        } catch(e) {
+            console.log(e);
+        }
+}

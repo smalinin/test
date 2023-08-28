@@ -23,6 +23,7 @@ function showNotice(s)
 class ChatMain {
   constructor(app, solidClient, callback) {
     this.app = app;
+    this.app_url = new URL(location.href);
     this.solidClient = solidClient;
     this.callback = callback;
     const chat = this.chat = new Chat({httpServer, wsServer, view:this});
@@ -30,7 +31,6 @@ class ChatMain {
 
     const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
-//??--      DOM.qSel('#myid').innerText = 'LoggedIn: '+session.info.webId;
       this.onLogin();
     }
 
@@ -128,14 +128,19 @@ class ChatMain {
 
   login()
   {
-    this.solidClient.login({oidcIssuer:httpServer, 
+    if (this.app_url.protocol === 'file://')
+      this.sendToiOS({cmd:'login'})
+    else
+      this.solidClient.login({oidcIssuer:httpServer, 
                             redirectUrl: this.callback, 
                             tokenType: "Bearer",
-                            clientName:"ChatBot"});
+                            clientName:"OpenLink Personal Assistant"});
   }
 
   async logout()
   {
+    const storage = (window.localStorage) ? window.localStorage : window.sessionStorage
+    storage.removeItem("oidc_saved_tokens");
     await this.solidClient.logout();
   }
 
@@ -171,99 +176,26 @@ class ChatMain {
 
   share()
   {
-    this.ui.share();
+    const url = this.chat.getSharedLink();
+    if (!url) {
+      this.showNotification({title:'Info', text:'Not LoggedIn'});
+      return;
+    }
+    
+    if (this.app_url.protocol === 'file://')
+      this.sendToiOS({cmd:'share', url})
+    else
+      this.ui.share();
   }
 
+  sendToiOS(cmd)
+  {
+    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
+  }
 
 
   setData(_data)
   {
-/***
-    this.certPEM = _certPEM;
-    this.card_url = _card_url;
-    try {
-      _relations = JSON.parse(_data);
-    } catch(e) {}
-***/
-/**
-    try {
-      if (_card_url && _card_url.length > 0)
-        DOM.qShow('#block-view');
-
-      if (_filename && _filename.length > 0)
-        DOM.qShow('#block-install');
-
-      if (_ca_filename && _ca_filename.length > 0)
-        DOM.qShow('#block-ca-install');
-
-      if (_zip_fname && _zip_fname.length > 0)
-        DOM.qShow('#block-zip');
-
-      if (_onlyText == 1) {
-        DOM.qHide('#block-announce');
-        DOM.qHide('#n-ttl');
-        DOM.qHide('#n-jsonld');
-        DOM.qHide('#n-rdfxml');
-        DOM.qHide('#i-jsonld');
-        DOM.qHide('#i-rdfxml');
-        DOM.qHide('#i-fp');
-        DOM.qHide('#i-ni');
-        DOM.qHide('#i-di');
-      }
-
-      this.certData = parse_cert(_certPEM);
-
-      var webid = this.certData.webid;
-
-      if (webid && (webid.startsWith('bitcoin:') || webid.startsWith('ethereum:'))) {
-          DOM.qHide('#n-ttl');
-          DOM.qHide('#n-jsonld');
-          DOM.qHide('#n-rdfxml');
-          DOM.qHide('#i-ttl');
-          DOM.qHide('#i-jsonld');
-          DOM.qHide('#i-rdfxml');
-      }
-
-
-
-      DOM.iSel('text-n-text').value = _certTXT;
-
-      var {ttl, jsonld, rdfxml} = genManualUploads(null, this.certData, _relations);
-      if (_onlyText != 1) 
-      {
-        if (ttl && jsonld && rdfxml) {
-          DOM.iSel('text-n-ttl').value = '## Turtle Start ##\n'+ttl+'\n## Turtle End ##\n';
-          DOM.iSel('text-n-jsonld').value = '## JSON-LD Start ##\n'+jsonld+'\n## JSON-LD End ##\n';
-          DOM.iSel('text-n-rdfxml').value = '## RDF-XML Start ##\n'+rdfxml+'\n## RDF-XML End ##\n';
-
-          DOM.iSel('text-i-ttl').value = '<!-- start rdf-turtle profile 1 -->\n<script type="text/turtle">\n'
-                                     +ttl
-                                    +'\n</script>\n';
-          DOM.iSel('text-i-jsonld').value = '<!-- start json-ld profile 2 -->\n<script type="application/ld+json">\n'
-                                       +jsonld
-                                       +'\n</script>\n';
-          DOM.iSel('text-i-rdfxml').value = '<!-- start rdf/xml profile 3 -->\n<script type="application/rdf+xml">\n'
-                                       +rdfxml
-                                       +'\n</script>\n';
-        }
-        else {
-          DOM.qHide('#n-ttl');
-          DOM.qHide('#n-jsonld');
-          DOM.qHide('#n-rdfxml');
-          DOM.qHide('#i-ttl');
-          DOM.qHide('#i-jsonld');
-          DOM.qHide('#i-rdfxml');
-        }
-      }
-
-      DOM.iSel('text-i-fp').value = this.certData.fingerprint_tab;
-      DOM.iSel('text-i-ni').value = this.certData.fingerprint_ni_tab;
-      DOM.iSel('text-i-di').value = this.certData.fingerprint_di_tab;
-
-    } catch (e) {
-      console.log(e);
-    }
-***/
   }
 
 

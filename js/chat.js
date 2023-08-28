@@ -5,7 +5,7 @@ class ChatUI {
     this.last_item_role = null;
     this.last_item_text = '';
     this.last_item_id = null;
-    this.last_item_func = false;
+    this.last_item_func = null;
     this.chat_list = DOM.qSel('#conversation');
     this.main_content = DOM.qSel('div#main');
     this.notification = null;
@@ -316,10 +316,12 @@ class ChatUI {
             this.last_item_id = id;
             id++;
           } 
-          else if (v.func) {
+          else if (v.func || v.role === 'function') {
             this.append_ai_func(v, id);
             this.last_item_text = '';
             this.last_item_id = id;
+            v.role = 'function';
+            this.last_item_func = {func:v.func, func_args:v.func_args, func_title:v.func_title};
             id++;
           }
         }
@@ -330,6 +332,8 @@ class ChatUI {
           const text = this.last_item_text + v.text;
           if (v.role === 'user') {
             this.update_question(text, id);
+          } else if (v.role === 'function') {
+            this.update_ai_func(text, id);
           } else {
             this.update_ai(text, id);
           }
@@ -518,6 +522,16 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
+  update_ai_func(text, id, disable_scroll)
+  {
+    if (!text || !this.last_item_func)
+      return;
+   
+    const html = this._create_ai_func_html(this.last_item_func, text);
+    this._update_block(html, id);
+    this._update_scroll(disable_scroll);
+  }
+
   _append_block_title(role)
   {
     const title = (role === 'user') ? '<i class="icon f7-icons">person</i>' : '<i class="icon f7-icons"> <img src="./images/chat.png"> </i>';
@@ -576,12 +590,19 @@ class ChatUI {
     return block.join('\n');
   }
 
-  _create_ai_func_html(v)
+  _create_ai_func_html(v, result)
   {
     const title = `Function: <strong>${v.func_title}</strong>(<em>${v.func}</em>)`;
     const text = 
            ' ***`Arguments:`***\n'
           +'```json\n'+v.func_args+'\n```';
+
+    let text_result = '';
+    if (result) {
+      text_result = 
+        '\n ***`Results:`***\n'
+       +'```json '+result+'\n```';
+    }
 
     const html = 
              '<div class="list accordion-list">\n'
@@ -592,7 +613,7 @@ class ChatUI {
             +`        <div class="item-title">${title}</div>\n`
             +'      </div>\n'
             +'    </a>\n'
-            +`    <div class="accordion-item-content">${this.md.render(text)}</div>\n`
+            +`    <div class="accordion-item-content">${this.md.render(text+text_result)}</div>\n`
             +'  </li>\n'
             +' </ul>\n'
             +'</div>'
@@ -764,7 +785,6 @@ class ChatUI {
         DOM.qShow('#uid_menu')
         DOM.iSel('netid').innerHTML = `<a href="${webId}" target="_blank" >${webId}</a>`
 
-        DOM.qShow('a#a_model');
         DOM.qShow('a#api-lock');
 
       } catch(e) {
@@ -782,7 +802,6 @@ class ChatUI {
       DOM.qHide('#uid_menu')
       DOM.iSel('netid').innerHTML = '';
 
-      DOM.qHide('a#a_model');
       DOM.qHide('a#api-lock');
 
     } catch(e) {
@@ -838,17 +857,13 @@ class ChatUI {
 
   share()
   {
-     if (this.view.chat.currentChatId) {
-        this.showNotification({title:'Info', text:'Permalink was copied to clipboard'});
-        //https://netid-qa.openlinksw.com:8443/chat/?chat_id=8152710b229f4328bff953dcb982753c
-        let url = new URL('/chat/', this.view.chat.httpServer);
-        let params = new URLSearchParams(url.search);
-        params.append('chat_id', this.view.chat.currentChatId);
-        url.search = params.toString();
-        navigator.clipboard.writeText(url.toString());
-     } else {
+    const url = this.view.chat.getSharedLink();
+    if (url) {
+      this.showNotification({title:'Info', text:'Permalink was copied to clipboard'});
+      navigator.clipboard.writeText(url);
+    } else {
       this.showNotification({title:'Info', text:'Not LoggedIn'});
-     }
+    }
   }
 
 }
@@ -886,7 +901,20 @@ class Chat {
     console.log('Chat msg: '+text);
   }
 
+  getSharedLink()
+  {
+    if (this.currentChatId) {
+      let url = new URL('/chat/', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('chat_id', this.currentChatId);
+      url.search = params.toString();
+      return url.toString();
+    } else {
+      return null;
+    }
+  }
 
+    
   getEnableCallbacks() 
   {
     return this.view.ui.getFuncsList();
@@ -1268,17 +1296,6 @@ class Chat {
     /* user chats */
     await this.loadChats ();
     /* init plink copy */
-/***
-    $('.share-btn').click(function (e) {
-        e.preventDefault();
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val($(this).attr('href')).select();
-        document.execCommand('copy');
-        $temp.remove();
-        showNotice('Permalink to the chat copied.');
-    });
-***/
   }
 
   async loadChats() 
@@ -1293,7 +1310,7 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let chats = await resp.json();
-//??--        console.log(chats); 
+
         for(const v of chats) {
           if (!this.currentChatId && v.role === 'user')
             this.currentChatId = this.lastChatId = v.chat_id;
@@ -1352,7 +1369,6 @@ class Chat {
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
         this.currentChatId = chat_id;
-//??            updateShareLink();
         this.initFunctionList();
       } else {
         this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
@@ -1389,7 +1405,7 @@ class Chat {
     });
   }
 
-//##???TODO
+
   selectSession(id, is_system)
   {
     if (id.startsWith('system-') && is_system === '1') {
@@ -1467,77 +1483,6 @@ class Chat {
     }
   }
 
-//??--  
-/***
-  async initFunctionList() 
-  {
-      var funcList = $('#available-functions');
-      funcList.empty();
-      enabledCallbacks = null;
-      try {
-          let url = new URL('/chat/api/listFunctions', httpServer);
-          let params = new URLSearchParams(url.search);
-          params.append('chat_id', currentChatId != null ? currentChatId : plink);
-          url.search = params.toString();
-          const resp = await fetch (url.toString());
-          if (resp.status === 200) {
-              let funcs = await resp.json();
-              console.log('initFunctionList:'+currentChatId);
-              funcs.forEach (function (item) {
-                 const fn = item['function'];
-                 const title = item['title'];
-                 const sel = item['selected'];
-                 if (sel) {
-                     if (null == enabledCallbacks)
-                       enabledCallbacks = new Array();  
-                     enabledCallbacks.push (fn);
-                 }
-                 let li = $('<li><input type="checkbox"/><label></label></li>'); 
-                 li.children('input').attr('id', fn);
-                 li.children('input').checked = sel;
-                 li.children('label').attr('for', fn);
-                 li.children('label').html(title);
-                 funcList.append (li);
-              });
-          } else
-              showNotice ('Loading helper functions failed: ' + resp.statusText);
-      } catch (e) {
-          showNotice('Loading helper functions failed: ' + e);
-      }
-      if (null != enabledCallbacks && enabledCallbacks.length)
-          $('#fn-count').html(`[${enabledCallbacks.length}]`);
-      $('#btn-fn-save').on('click', function() {
-          enabledCallbacks = new Array();
-          $('#available-functions > li input').each(function () { 
-              if (this.checked) {
-                  enabledCallbacks.push (this.id);
-              }
-          });
-          console.log(JSON.stringify(enabledCallbacks));
-          if (!enabledCallbacks.length) {
-              $('#fn-count').html('');
-            enabledCallbacks = null;
-          } else {
-              $('#fn-count').html(`[${enabledCallbacks.length}]`);
-          }
-          $('.bd-modal-fn-sel').modal('hide');
-      });
-      $('.bd-modal-fn-sel').on('hide.bs.modal', function (e) {
-           $('#available-functions > li input').each (function () {
-               if (enabledCallbacks == null || -1 == enabledCallbacks.indexOf(this.id))
-                   this.checked = false; 
-           });
-      });
-      $('.bd-modal-fn-sel').on('show.bs.modal', function (e) {
-           $('#available-functions > li input').each (function () {
-               if (enabledCallbacks != null && -1 != enabledCallbacks.indexOf(this.id))
-                 this.checked = true;
-           });
-      });
-      $('#function-btn').tooltip();
-  }
-
-***/
 
 
 }
