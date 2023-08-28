@@ -346,7 +346,7 @@ class ChatUI {
       }
 
       this.last_item_role = v.role;
-      this.last_item_func = v.func;
+//??      this.last_item_func = v.func;
     }
     this.update_copy_handlers();
   }
