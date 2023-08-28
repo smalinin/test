@@ -295,7 +295,9 @@ class ChatUI {
     }
 
     for(const v of list) {
-      if (v.role !== this.last_item_role || (v.role === this.last_item_role && this.last_item_func)) {
+      //       if (v.role !== this.last_item_role || (v.role === this.last_item_role && this.last_item_func)) {
+      if (v.role !== this.last_item_role) {
+
         if (this.last_item_func) {
           if (this.last_item_role!=v.role)
             this._append_block_title(v.role);
@@ -304,26 +306,26 @@ class ChatUI {
         }
 
         this.last_item_text = '';
+        id++;
 
         if (v.role === 'user') {
           this.append_question(v.text, id);
           this.last_item_text = v.text;
+          //id++;
         } 
-        else {
-          if (v.text) {
-            this.append_ai(v.text, id);
-            this.last_item_text = v.text;
-            this.last_item_id = id;
-            id++;
-          } 
-          else if (v.func || v.role === 'function') {
-            this.append_ai_func(v, id);
-            this.last_item_text = '';
-            this.last_item_id = id;
-            v.role = 'function';
-            this.last_item_func = {func:v.func, func_args:v.func_args, func_title:v.func_title};
-            id++;
-          }
+        else if (v.func || v.role === 'function') {
+          this.append_ai_func(v, id);
+          this.last_item_text = '';
+          this.last_item_id = id;
+          v.role = 'function';
+          this.last_item_func = {func:v.func, func_args:v.func_args, func_title:v.func_title};
+          //id++;
+        }
+        else if (v.text) {
+          this.append_ai(v.text, id);
+          this.last_item_text = v.text;
+          this.last_item_id = id;
+          //id++;
         }
       }
       else   //update last item
