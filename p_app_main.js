@@ -140,7 +140,11 @@ async function init()
   }
 
   $(document).on('click', 'a', function (e) {
-    console.log('link clicked====');
+    const n = e.target;
+    if (n.nodeName === 'A') {
+      console.log('link clicked==== '+n.href);
+
+    }
   });
 
 }
