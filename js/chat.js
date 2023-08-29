@@ -796,7 +796,7 @@ class ChatUI {
       try {
         DOM.qHide('#login');
         DOM.qShow('#uid_menu')
-        DOM.iSel('netid').innerHTML = `<a href="${webId}" target="_blank" >${webId}</a>`
+        DOM.iSel('netid').innerHTML = `<a href="${webId}" target="_blank" class="external">${webId}</a>`
 
         DOM.qShow('a#api-lock');
 
