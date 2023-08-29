@@ -158,6 +158,7 @@ async function init()
         //??console.log('link clicked==== '+n.href);
         e.stopImmediatePropagation();
         window.open(n.href);
+        return false;
       }
     }
   });
