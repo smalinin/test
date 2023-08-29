@@ -42,8 +42,11 @@ class ChatUI {
        }
      });
 
+     this.defaultRender = this.md.renderer.rules.link_open || function(tokens, idx, options, env, self_) {
+      return self_.renderToken(tokens, idx, options);
+    };     
 
-     this.md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+     this.md.renderer.rules.link_open = function (tokens, idx, options, env, self_) {
       // If you are sure other plugins can't add `target` - drop check below
       var aIndex = tokens[idx].attrIndex('class');
     
@@ -54,7 +57,7 @@ class ChatUI {
       }
     
       // pass token to default renderer.
-      return defaultRender(tokens, idx, options, env, self);
+      return self.defaultRender(tokens, idx, options, env, self_);
     };
   }
 
