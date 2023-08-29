@@ -17,7 +17,8 @@ var $ = Dom7;
 var app;
 var c_main;
 
-var purl = new URL(window.location.href)
+const purl = new URL(window.location.href)
+const app_hostname = purl.hostname;
 const purl_hash = purl.hash;
 const pcallback = purl.origin + purl.pathname;
 const authCode =
@@ -142,8 +143,10 @@ async function init()
   $(document).on('click', 'a', function (e) {
     const n = e.target;
     if (n.nodeName === 'A') {
-      console.log('link clicked==== '+n.href);
-
+      if (n.hostname != app_hostname) {
+        //??console.log('link clicked==== '+n.href);
+        window.open(n.href);
+      }
     }
   });
 
