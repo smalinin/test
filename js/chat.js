@@ -296,14 +296,7 @@ class ChatUI {
 
     for(const v of list) {
       if (v.role !== this.last_item_role) {
-/** 
-        if (this.last_item_func) {
-          if (this.last_item_role!=v.role)
-            this._append_block_title(v.role);
-        } else {
-          this._append_block_title(v.role);
-        }
-**/     
+
         if (this.last_item_role === 'user' || v.role === 'user')   
           this._append_block_title(v.role);
 
@@ -313,7 +306,6 @@ class ChatUI {
         if (v.role === 'user') {
           this.append_question(v.text, id);
           this.last_item_text = v.text;
-          //id++;
         } 
         else if (v.func || v.role === 'function') {
           this.append_ai_func(v, id);
@@ -321,13 +313,11 @@ class ChatUI {
           this.last_item_id = id;
           v.role = 'function';
           this.last_item_func = {func:v.func, func_args:v.func_args, func_title:v.func_title};
-          //id++;
         }
         else if (v.text) {
           this.append_ai(v.text, id);
           this.last_item_text = v.text;
           this.last_item_id = id;
-          //id++;
         }
       }
       else   //update last item
@@ -455,11 +445,31 @@ class ChatUI {
     this.last_item_text = '';
     this.last_item_id = id;
     this.last_item_role = 'assistant';
-    this.last_item_func = func.func;
+    this.last_item_func = {func:func.func, func_args:func.func_args, func_title:func.func_title};
 
     this.append_ai_func(func, id);
   }
 
+  sys_func_result_answer(text, disable_scroll)
+  {
+    if (!text || !this.last_item_func)
+      return;
+
+    let id = this.last_item_id;
+    let new_item = false;
+
+    if (this.last_item_role === 'user' || !this.last_item_role) {
+
+      this._append_block_title('assistant');
+      id++;
+      new_item = true;
+      this.last_item_text = '';
+    }
+
+    this.last_item_text = text;
+
+    this.update_ai_func(text, id);
+  }
 
 
   append_question(text, id, disable_scroll)
@@ -1031,7 +1041,6 @@ class Chat {
     } 
     else {
       this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
-//??todo    updateShareLink();
       this.currentChatId = rc.chat_id;
 //??todo FIXME      this.view.ui.updateFuncsList(rc.funcs)
       return rc;
@@ -1214,6 +1223,9 @@ class Chat {
       const func = JSON.parse (text);
       DOM.qShow('#fab-stop');
       this.view.ui.sys_func_answer(func);
+    }
+    else if (kind === 'function_response') {
+      this.view.ui.sys_func_result_answer(text);
     }
     else if (text.trim() === '[DONE]' || text.trim() === '[LENGTH]') 
     {
