@@ -41,6 +41,21 @@ class ChatUI {
          return '<pre class="hljs"><code>' + self.md.utils.escapeHtml(str) + '</code></pre>';
        }
      });
+
+
+     this.md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+      // If you are sure other plugins can't add `target` - drop check below
+      var aIndex = tokens[idx].attrIndex('class');
+    
+      if (aIndex < 0) {
+        tokens[idx].attrPush(['class', 'external']); // add new attribute
+      } else {
+        tokens[idx].attrs[aIndex][1] = 'external';    // replace value of existing attr
+      }
+    
+      // pass token to default renderer.
+      return defaultRender(tokens, idx, options, env, self);
+    };
   }
 
 
