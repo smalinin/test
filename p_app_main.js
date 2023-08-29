@@ -140,6 +140,16 @@ async function init()
     window.webkit.messageHandlers.iOSNative.postMessage(cmd);
   }
 
+  document.onclick = (ev) => {
+    const n = ev.target;
+    if (n.nodeName === 'A') {
+      if (n.hostname != app_hostname) {
+        ev.preventDefault();
+        window.open(n.href);
+      }
+    }
+  };
+
   $(document).on('click', 'a', function (e) {
     const n = e.target;
     if (n.nodeName === 'A') {
