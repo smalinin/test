@@ -139,7 +139,7 @@ async function init()
     window.webkit.messageHandlers.iOSNative.postMessage(cmd);
   }
 
-  $$(document).on('click', 'a', function (e) {
+  $(document).on('click', 'a', function (e) {
     console.log('link clicked====');
   });
 
