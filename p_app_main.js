@@ -17,15 +17,13 @@ var $ = Dom7;
 var app;
 var c_main;
 
-const purl = new URL(window.location.href)
-const app_hostname = purl.hostname;
-const purl_hash = purl.hash;
-const pcallback = purl.origin + purl.pathname;
+const app_url = new URL(window.location.href)
+const pcallback = app_url.origin + app_url.pathname;
 const authCode =
-    purl.searchParams.get("code") ||
+    app_url.searchParams.get("code") ||
     // FIXME: Temporarily handle both auth code and implicit flow.
     // Should be either removed or refactored.
-    purl.searchParams.get("access_token");
+    app_url.searchParams.get("access_token");
 
 
 
@@ -98,9 +96,8 @@ async function init()
       if (ret && ret.tokens) {
           storage.setItem('oidc_saved_tokens', JSON.stringify(ret.tokens));
       }
-
-      const session = solidClient.getDefaultSession();
-    } catch(e) {
+    } 
+    catch(e) {
       console.log(e);
     }
   
@@ -135,36 +132,27 @@ async function init()
   })
 
 
-//  function sendToiOS(cmd)
-//  {
-//    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
-//  }
-
 
   document.onclick = (ev) => {
     const n = ev.target;
     if (n.nodeName === 'A') {
-      if (n.hostname != app_hostname) {
+      if (n.hostname != app_url.hostname) {
         ev.stopImmediatePropagation();
-        window.open(n.href);
+        if (app_url.protocol === 'file://')
+          sendToiOS({cmd:'open_url', url:n.href})
+        else
+          window.open(n.href);
         return false;
       }
     }
   };
 
-/*
-  $(document).on('click', 'a', function (e) {
-    const n = e.target;
-    if (n.nodeName === 'A') {
-      if (n.hostname != app_hostname) {
-        //??console.log('link clicked==== '+n.href);
-        e.stopImmediatePropagation();
-        window.open(n.href);
-        return false;
-      }
-    }
-  });
-*/
+}
+
+function sendToiOS(cmd)
+{
+  if (app_url.protocol === 'file://')
+    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
 }
 
 function setCallback(url)

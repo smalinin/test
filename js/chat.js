@@ -100,33 +100,6 @@ class ChatUI {
       return Math.floor(seconds) + 's';
   }
 
-  /***
-    list 
-
-[
-    {
-        "chat_id": "system-chat-help",
-        "title": "VirtuosoHelp",
-        "ts": 1687293687,
-        "role": "system",
-        "model": "gpt-4"
-    },
-    {
-        "chat_id": "system-virtuoso-support-bot-with-fine-tunning-and-plugin-support-9",
-        "title": "Virtuoso Support Agent",
-        "ts": 1691162946,
-        "role": "system",
-        "model": "gpt-4"
-    },
-    {
-        "chat_id": "b23d7e47052508932d18596aa5006e0a",
-        "title": "b23d7e47052508932d18596aa5006e0a",
-        "ts": 1690417714,
-        "model": "gpt-4",
-        "role": "user"
-    }
-]
-  ***/
 
 
   openLeftPanel()
@@ -430,6 +403,11 @@ class ChatUI {
       id++;
       new_item = true;
       this.last_item_text = '';
+    } 
+    else if (this.last_item_role === 'assistant' && this.last_item_func) {
+      id++;
+      new_item = true;
+      this.last_item_text = '';
     }
 
     this.last_item_text += text;
@@ -458,6 +436,9 @@ class ChatUI {
       id++;
       new_item = true;
       this.last_item_text = '';
+    }
+    else if (this.last_item_role === 'assistant') {
+      id++;
     }
 
     this.last_item_text = '';
@@ -553,6 +534,7 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
+
   update_ai_func(text, id, disable_scroll)
   {
     if (!text || !this.last_item_func)
@@ -563,6 +545,7 @@ class ChatUI {
     this._update_scroll(disable_scroll);
   }
 
+
   _append_block_title(role)
   {
     const title = (role === 'user') ? '<i class="icon f7-icons">person</i>' : '<i class="icon f7-icons"> <img src="./images/chat.png"> </i>';
@@ -570,6 +553,7 @@ class ChatUI {
     const el = DOM.htmlToElement(`<div class="block-title">${title}</div>`);
     this.chat_list.appendChild(el); 
   }
+
 
   _update_block(html, id)
   {
@@ -586,6 +570,7 @@ class ChatUI {
           +`</div>`;
   }
 
+
   _update_scroll(disable_scroll)
   {
     if (disable_scroll)
@@ -594,6 +579,7 @@ class ChatUI {
     const v = this.main_content.scrollHeight
     this.main_content.scrollTo(1,v);
   }
+
 
   _create_answer_html(html, id) 
   {
@@ -604,6 +590,7 @@ class ChatUI {
 
     return v;
   }
+
 
   _create_ai_html(str)
   {
@@ -620,6 +607,7 @@ class ChatUI {
   
     return block.join('\n');
   }
+
 
   _create_ai_func_html(v, result)
   {
@@ -650,6 +638,7 @@ class ChatUI {
             +'</div>'
     return html;
   }
+
 
   _create_text_block_html(str)
   {
