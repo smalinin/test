@@ -145,6 +145,7 @@ async function init()
     if (n.nodeName === 'A') {
       if (n.hostname != app_hostname) {
         //??console.log('link clicked==== '+n.href);
+        e.preventDefault();
         window.open(n.href);
       }
     }
