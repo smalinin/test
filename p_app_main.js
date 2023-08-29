@@ -140,7 +140,7 @@ async function init()
 //    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
 //  }
 
-/*
+
   document.onclick = (ev) => {
     const n = ev.target;
     if (n.nodeName === 'A') {
@@ -151,7 +151,8 @@ async function init()
       }
     }
   };
-*/
+
+/*
   $(document).on('click', 'a', function (e) {
     const n = e.target;
     if (n.nodeName === 'A') {
@@ -163,7 +164,7 @@ async function init()
       }
     }
   });
-
+*/
 }
 
 function setCallback(url)
