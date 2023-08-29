@@ -135,10 +135,10 @@ async function init()
   })
 
 
-  function sendToiOS(cmd)
-  {
-    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
-  }
+//  function sendToiOS(cmd)
+//  {
+//    window.webkit.messageHandlers.iOSNative.postMessage(cmd);
+//  }
 
   document.onclick = (ev) => {
     const n = ev.target;
