@@ -850,14 +850,14 @@ class ChatUI {
     const dlg = this.view.app.dialog.prompt('Enter your OpenAI API key', 'Info', (text) => {
       if (text && text.trim()) {
         this.view.chat.apiKey = text.trim();
-        this.view.chat.apiKeyRequired = false;
+//??        this.view.chat.apiKeyRequired = false;
         this.set_api_unlock();
         dlg.close();
       }
     }, 
     () => {
       dlg.close();
-    },'OpenAI key...');
+    }, (this.view.chat.apiKey || 'OpenAI key...'));
   }
 
   set_api_lock()
