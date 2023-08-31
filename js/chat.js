@@ -882,6 +882,41 @@ class ChatUI {
                 text: 'Set',
                 strong: true,
               }],
+            onClick: (dialog, index) => {
+                const newVal = dialog.$el.find('.dialog-input').val().trim();
+                if (index ===0) {
+                  //remove Val
+                  this.view.chat.apiKey = null;
+                  if (this.view.chat.apiKeyRequired)
+                    this.set_api_lock();
+                  else
+                    this.set_api_unlock();
+                 
+                  dialog.close();
+                }
+                else if (index === 1) {
+                  //set Val
+                  this.view.chat.apiKey = text.trim();
+                  this.set_api_unlock();
+                  dialog.close();
+                }
+              }
+        }).open();
+/********
+     const dialog = this.view.app.dialog.create({
+            title: 'Info',
+            text: 'Enter your OpenAI API key',
+            closeByBackdropClick: true,
+            destroyOnClose: true,
+            content: `<div class="dialog-input-field input"><input type="text" class="dialog-input" value="${defVal}"></div>`,
+            buttons: [
+              {
+                text: 'Remove',
+                color: null
+              }, {
+                text: 'Set',
+                strong: true,
+              }],
             onClick(dialog, index) {
                 const newVal = dialog.$el.find('.dialog-input').val().trim();
                 if (index ===0) {
@@ -902,6 +937,8 @@ class ChatUI {
                 }
               }
         }).open();
+
+ */
   }
 
   set_api_lock()
