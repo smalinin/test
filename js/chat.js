@@ -902,6 +902,8 @@ class ChatUI {
                 }
               }
         })
+
+    this.view.app.dialog.open(dialog);
   }
 
   set_api_lock()
