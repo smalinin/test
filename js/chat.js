@@ -880,7 +880,7 @@ class ChatUI {
                 color: null
               }, {
                 text: 'Set',
-                strong: isIosTheme,
+                strong: true,
               }],
             onClick(dialog, index) {
                 const newVal = dialog.$el.find('.dialog-input').val().trim();
