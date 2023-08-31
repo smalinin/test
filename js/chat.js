@@ -877,7 +877,7 @@ class ChatUI {
                 }
                 else if (index === 1) {
                   //set Val
-                  this.view.chat.apiKey = text.trim();
+                  this.view.chat.apiKey = newVal;
                   this.set_api_unlock();
                   dialog.close();
                 }
