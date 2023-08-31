@@ -130,6 +130,39 @@ async function init()
   app.on('smartSelectOpened', ()=>{
     sendToiOS({cmd:'smartSelectOpened'})
   })
+  
+  app.on('popoverOpened', (el)=>{
+    if (el.el.id === 'popover-settings') {
+
+      const v = app.smartSelect.create({
+        el: '#ss_model',
+        view: Dom7('#l_model'),
+        openIn: 'popover'
+      })
+
+      app.range.create({
+        el:'#range_temp',
+        on: {
+          change: (el) => {
+            const v = el.getValue();
+            if (el.el.id === 'range_temp')
+              DOM.iSel('v_temp').value = v.toFixed(2);
+          }
+        }
+      });
+      app.range.create({
+        el:'#range_topp',
+        on: {
+          change: (el) => {
+            const v = el.getValue();
+            if (el.el.id === 'range_topp')
+              DOM.iSel('v_topp').value = v.toFixed(2);
+          }
+        }
+      });
+    
+    }
+  })
 
 
 

@@ -26,7 +26,7 @@ class ChatMain {
     this.app_url = new URL(location.href);
     this.solidClient = solidClient;
     this.callback = callback;
-    const chat = this.chat = new Chat({httpServer, wsServer, view:this});
+    this.chat = new Chat({httpServer, wsServer, view:this});
     this.ui = new ChatUI({view:this});
 
     const session = this.session = this.solidClient.getDefaultSession();

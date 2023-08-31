@@ -840,7 +840,7 @@ class ChatUI {
   }
 
 
-  api_key()
+  api_key_0()
   {
     if (!this.view.chat.apiKeyRequired) {
       this.showNotification({title:'Info', text:'API Key is already set on this system.'});
@@ -850,7 +850,6 @@ class ChatUI {
     const dlg = this.view.app.dialog.prompt('Enter your OpenAI API key', 'Info', (text) => {
       if (text && text.trim()) {
         this.view.chat.apiKey = text.trim();
-//??        this.view.chat.apiKeyRequired = false;
         this.set_api_unlock();
         dlg.close();
       }
@@ -858,6 +857,51 @@ class ChatUI {
     () => {
       dlg.close();
     }, (this.view.chat.apiKey || 'OpenAI key...'));
+  }
+
+  api_key()
+  {
+    if (!this.view.chat.apiKeyRequired) {
+      this.showNotification({title:'Info', text:'API Key is already set on this system.'});
+      return;
+    }
+
+    const defVal = (this.view.chat.apiKey || 'OpenAI key...');
+
+    const dialog = this.view.app.dialog.create({
+            title: 'Info',
+            text: 'Enter your OpenAI API key',
+            closeByBackdropClick: true,
+            destroyOnClose: true,
+            content: `<div class="dialog-input-field input"><input type="text" class="dialog-input" value="${defVal}"></div>`,
+            buttons: [
+              {
+                text: 'Remove',
+                color: null
+              }, {
+                text: 'Set',
+                strong: isIosTheme,
+              }],
+            onClick(dialog, index) {
+                const newVal = dialog.$el.find('.dialog-input').val().trim();
+                if (index ===0) {
+                  //remove Val
+                  this.view.chat.apiKey = null;
+                  if (this.view.chat.apiKeyRequired)
+                    this.set_api_lock();
+                  else
+                    this.set_api_unlock();
+                 
+                  dialog.close();
+                }
+                else if (index === 1) {
+                  //set Val
+                  this.view.chat.apiKey = text.trim();
+                  this.set_api_unlock();
+                  dialog.close();
+                }
+              }
+        })
   }
 
   set_api_lock()

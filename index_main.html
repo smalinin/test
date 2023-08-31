@@ -90,6 +90,7 @@
       --f7-label-font-size: 15px;
       --f7-panel-left-width: 340px;
       --f7-list-item-title-font-size: 14px;
+      --f7-popover-width: 300px;
     }
 
     div.code_header {
@@ -196,10 +197,10 @@
                 <i class="icon f7-icons if-not-md">menu</i>
                 <i class="icon material-icons md-only">menu</i>
               </a>
-
+<!--
               <a href="#" id="a_model" class="link smart-select smart-select-init" data-open-in="popover">
-                <i class="icon f7-icons">chat_bubble_2_fill</i>  <!-- gear  wrench_fill -->
-                  <select id="c_model" placeholder="Please choose...">
+                <i class="icon f7-icons">chat_bubble_2_fill</i>  
+                  <select id="c_model_1" placeholder="Please choose...">
                     <option value="gpt-4" selected>GPT-4</option>
                     <option value="gpt-4-0613" >GPT-4-0613</option>
                     <option value="gpt-4-0314" >GPT-4-0314</option>
@@ -210,6 +211,7 @@
                     <option value="gpt-3.5-turbo-0301" >GPT-3.5-turbo-0301</option>
                   </select>
               </a>
+            -->
             </div>
 
             <div class="title">Personal Assistant
@@ -235,10 +237,11 @@
                 <!-- Subnavbar content, for example tabs buttons -->
                 <div class="left">
                   <a id="reload" href="#" class="link" style="padding-left: 10px;" ><i class="icon f7-icons">arrow_clockwise</i> </a>
-                  <a href="#" class="link popover-open" style="padding-left: 30px;" data-popover=".popover-funcs">
+                  <a href="#" class="link popover-open" style="padding-left: 5px;" data-popover=".popover-settings"> <i class="icon f7-icons">gear</i> </a>
+                  <a href="#" class="link popover-open" style="padding-left: 5px;" data-popover=".popover-funcs">
                     <i class="icon f7-icons">f_cursive<span id="func_badge" class="badge color-red hidden">1</span></i>
                   </a>
-                  <a id="share" href="#" class="link" style="padding-left: 20px;"> <i class="icon f7-icons">square_arrow_up</i> </a>
+                  <a id="share" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">square_arrow_up</i> </a>
                 </div>          
               </div>
             </div>
@@ -253,17 +256,6 @@
           <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
         </div>
         <!-- toolbar bottom -->
-<!--        
-        <div class="toolbar toolbar-bottom no-outline" style="height: calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom) + 0px);">
-          <div class="toolbar-inner">
-            <a id="reload" href="#" class="link" style="padding-left: 30px;" ><i class="icon f7-icons">arrow_clockwise</i> </a>
-            <a href="#" class="link popover-open" data-popover=".popover-funcs">
-              <i class="icon f7-icons">f_cursive<span id="func_badge" class="badge color-red hidden">1</span></i>
-            </a>
-            <a id="share" href="#" class="link" style="padding-right: 30px;"> <i class="icon f7-icons">square_arrow_up</i> </a>
-          </div>          
-        </div>
-      -->
         <div class="fab fab-extended fab-left-bottom color-blue hidden" id="fab-continue">
           <a>
             <i class="icon f7-icons">arrowtriangle_right_fill</i>
@@ -289,6 +281,128 @@
         </div>
 <!-- ========================================================================================= -->
       </div>
+
+      <div id ="popover-settings" class="popover popover-settings">
+        <div class="popover-angle"></div>
+        <div class="popover-inner">
+
+          <div class="list list-strong-ios list-dividers-ios list-outline-ios" id="my-form">
+            <ul>
+              <li id="#l_model">
+                <a id="ss_model" class="item-link smart-select smart-select-init" data-open-in="popover">
+                  <select name="ss_model" id="c_model" placeholder="Please choose...">
+                    <option value="gpt-4" selected>GPT-4</option>
+                    <option value="gpt-4-0613" >GPT-4-0613</option>
+                    <option value="gpt-4-0314" >GPT-4-0314</option>
+                    <option value="gpt-3.5-turbo" >GPT-3.5-turbo</option>
+                    <option value="gpt-3.5-turbo-16k" >GPT-3.5-turbo-16k</option>
+                    <option value="gpt-3.5-turbo-16k-0613" >GPT-3.5-turbo-16k-0613</option>
+                    <option value="gpt-3.5-turbo-0613" >GPT-3.5-turbo-0613</option>
+                    <option value="gpt-3.5-turbo-0301" >GPT-3.5-turbo-0301</option>
+                  </select>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Model</div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <div class="item-content" style="flex-flow:column">
+                  <div class="item-inner" style="flex-flow: column;align-items: flex-start;">
+                    <div style="width: 100%;display:flex;">
+                      <div class="item-title" style="margin: auto; margin-left: 0px;">temperature</div>
+                      <div class="item-after">
+                        <input id="v_temp" type="number" min="0" max="2" step="0.01" value="0.2" style="/*background: lightgrey;*/"/>
+                      </div>
+                    </div>
+                    <div id="range_temp" class="range-slider" data-label="false">
+                      <input type="range" min="0" max="2" step="0.01" value="0.2" />
+                    </div>
+                </div>
+              </li>              
+
+              <li>
+                <div class="item-content" style="flex-flow:column">
+                  <div class="item-inner" style="flex-flow: column;align-items: flex-start;">
+                    <div style="width: 100%;display:flex; ">
+                      <div class="item-title" style="margin: auto; margin-left: 0px;">top_p</div>
+                      <div class="item-after">
+                        <input id="v_topp" type="number" min="0" max="1" step="0.01" value="0.5" />
+                      </div>
+                    </div>
+                    <div id="range_topp" class="range-slider" data-label="false">
+                      <input type="range" min="0" max="1" step="0.01" value="0.5"/>
+                    </div>
+              </div>
+              </li>              
+<!--
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">temperature</div>
+                    <div class="item-input-wrap">
+                      <input id="v_temp" type="number" min="0" max="2" value="1" />
+                      <div id="range_temp" class="range-slider" data-label="false">
+                        <input type="range" min="0" max="2" step="0.01" value="1" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>              
+            -->
+<!--            
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title" style="margin:auto">top_p</div>
+                    <div class="item-input-wrap">
+                      <input id="v_topp" type="number" min="0" max="2" value="1"/>
+                      <div id="range_topp" class="range-slider" data-label="false">
+                        <input type="range" min="0" max="1" step="0.01" value="1"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>              
+            -->
+<!--
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Temperature</div>
+                    <div class="item-input-wrap">
+                      <div id="range_temp2" class="range-slider" data-label="true">
+                        <input type="range" min="0" max="2" step="0.01" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Gender</div>
+                    <div class="item-input-wrap">
+                      <select name="gender">
+                        <option value="male" selected="selected">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            -->
+
+            </ul>
+          </div>
+          <div class="block" style="overflow-wrap: anywhere;">
+          </div>
+        </div>
+      </div>
+
 
       <div class="popover popover-user">
         <div class="popover-angle"></div>
