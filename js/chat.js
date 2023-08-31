@@ -840,25 +840,6 @@ class ChatUI {
   }
 
 
-  api_key_0()
-  {
-    if (!this.view.chat.apiKeyRequired) {
-      this.showNotification({title:'Info', text:'API Key is already set on this system.'});
-      return;
-    }
-
-    const dlg = this.view.app.dialog.prompt('Enter your OpenAI API key', 'Info', (text) => {
-      if (text && text.trim()) {
-        this.view.chat.apiKey = text.trim();
-        this.set_api_unlock();
-        dlg.close();
-      }
-    }, 
-    () => {
-      dlg.close();
-    }, (this.view.chat.apiKey || 'OpenAI key...'));
-  }
-
   api_key()
   {
     if (!this.view.chat.apiKeyRequired) {
@@ -902,43 +883,6 @@ class ChatUI {
                 }
               }
         }).open();
-/********
-     const dialog = this.view.app.dialog.create({
-            title: 'Info',
-            text: 'Enter your OpenAI API key',
-            closeByBackdropClick: true,
-            destroyOnClose: true,
-            content: `<div class="dialog-input-field input"><input type="text" class="dialog-input" value="${defVal}"></div>`,
-            buttons: [
-              {
-                text: 'Remove',
-                color: null
-              }, {
-                text: 'Set',
-                strong: true,
-              }],
-            onClick(dialog, index) {
-                const newVal = dialog.$el.find('.dialog-input').val().trim();
-                if (index ===0) {
-                  //remove Val
-                  this.view.chat.apiKey = null;
-                  if (this.view.chat.apiKeyRequired)
-                    this.set_api_lock();
-                  else
-                    this.set_api_unlock();
-                 
-                  dialog.close();
-                }
-                else if (index === 1) {
-                  //set Val
-                  this.view.chat.apiKey = text.trim();
-                  this.set_api_unlock();
-                  dialog.close();
-                }
-              }
-        }).open();
-
- */
   }
 
   set_api_lock()
@@ -983,7 +927,11 @@ class Chat {
     this.loggedIn = false;
     this.webSocket = null;
     this.helloSent = false;
+    this.defModel = 'gpt-4';
     this.currentModel = 'gpt-4';
+    this.temperature = 0.2;
+    this.top_p = 0.5;
+
     this.funcsList = [];
     this.apiKey = null;
     this.apiKeyRequired = true;
@@ -1130,7 +1078,10 @@ class Chat {
     else {
       this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
       this.currentChatId = rc.chat_id;
-//??todo FIXME      this.view.ui.updateFuncsList(rc.funcs)
+      if (rc.funcs)
+        this.view.ui.updateFuncsList(rc.funcs)
+      this.setTemperature(rc.temperature);
+      this.setTop_p(rc.top_p);
       return rc;
     }
   }
@@ -1151,7 +1102,18 @@ class Chat {
         let chat = await resp.json();
         const chat_id = chat['chat_id'];
         const title = chat['title'];
-        return {chat_id, title};
+        let rc = {chat_id, title};
+
+        if (chat.funcs)
+           rc['funcs'] = chat.funcs;
+
+        if (chat.temperature)
+          rc['temperature'] = chat.temperature;
+
+        if (chat.top_p)
+          rc['top_p'] = chat.top_p;
+
+        return rc;
       } else {
         return {error:'Can not retrieve chatId ' + resp.statusText}
       }
@@ -1256,6 +1218,8 @@ class Chat {
                     call: this.getEnableCallbacks(),
                     model: this.currentModel,  
                   };
+//??TODO fixme
+//  temperature   top_p                  
     this.webSocket.send(JSON.stringify(request));
     DOM.qHide('#fab-continue');
   }
@@ -1380,6 +1344,9 @@ class Chat {
                        model: this.currentModel, 
                        apiKey: this.apiKey,
                        call: this.getEnableCallbacks() };
+//??TODO fixme
+//  temperature   top_p                  
+
         this.view.ui.showProgress();
         this.view.ui.new_question(text);
         DOM.qHide('#fab-continue');
@@ -1466,7 +1433,9 @@ class Chat {
 
         for(const v of list) {
           if (v.role === 'user')
-            this.setModel(v.model ?? 'gpt-4', true);
+            this.setModel(v.model ?? this.defModel, true);
+            this.setTemperature(v.temperature);
+            this.setTop_p(v.top_p);
         }
 
         this.view.ui.updateConversation(list, chat_id);
@@ -1554,15 +1523,26 @@ class Chat {
   }
 
 
-  setModel(text, update_ui)
+  setModel(v, update_ui)
   {
-    if (!text)
-      return;
+    const text = v || this.defModel; 
     
-      this.currentModel = text;
+    this.currentModel = text;
 
     if (update_ui)
       this.view.ui.setModel(this.currentModel);
+  }
+
+  setTemperature(text)
+  {
+    const v = text || '0.2';
+    this.temperature = v;
+  }
+
+  setTop_p(text)
+  {
+    const v = text || '0.5';
+    this.top_p = v;
   }
 
 
