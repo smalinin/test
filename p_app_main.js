@@ -130,7 +130,7 @@ async function init()
   app.on('smartSelectOpened', ()=>{
     sendToiOS({cmd:'smartSelectOpened'})
   })
-  
+
   app.on('popoverOpened', (el)=>{
     if (el.el.id === 'popover-settings') {
 
@@ -169,7 +169,7 @@ async function init()
   document.onclick = (ev) => {
     const n = ev.target;
     if (n.nodeName === 'A') {
-      if (n.hostname != app_url.hostname) {
+      if (n.href && n.hostname != app_url.hostname) {
         ev.stopImmediatePropagation();
         if (app_url.protocol === 'file://')
           sendToiOS({cmd:'open_url', url:n.href})
