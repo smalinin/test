@@ -370,6 +370,25 @@ class ChatUI {
   }
 
 
+  new_message(text)
+  {
+    if (!text)
+      return;
+
+    const id = this.last_item_id + 1;
+    const html = `<div class="block block-strong medium-inset" style="color: red;" id="item_${id}">`
+          +   text
+          +`</div>`;
+
+    const el = DOM.htmlToElement(html);
+
+    this.chat_list.appendChild(el); 
+    this._update_scroll(disable_scroll);
+
+    this.last_item_text = '';
+    this.last_item_id = id;
+  }
+
 
   new_question(text, disable_scroll)
   {
@@ -829,6 +848,7 @@ class ChatUI {
     }
   }
 
+
   setModel(text)
   {
     const el = DOM.qSel(`select#c_model option[value="${text}"]`);
@@ -885,6 +905,7 @@ class ChatUI {
         }).open();
   }
 
+
   set_api_lock()
   {
     const el = DOM.qSel('a#api-lock i');   //('i#api-lock');
@@ -892,11 +913,18 @@ class ChatUI {
       el.innerHTML = 'lock';
   }
 
+
   set_api_unlock()
   {
     const el = DOM.qSel('a#api-lock i');   //('i#api-lock');
     if (el)
       el.innerHTML = 'lock_open';
+  }
+
+
+  show_api_key_dlg()
+  {
+    DOM.qSel('#api-lock').click();
   }
 
 
@@ -932,6 +960,9 @@ class Chat {
     this.temperature = 0.2;
     this.top_p = 0.5;
 
+    this.setTemperature(this.temperature);
+    this.setTop_p(this.top_p);
+
     this.funcsList = [];
     this.apiKey = null;
     this.apiKeyRequired = true;
@@ -947,8 +978,9 @@ class Chat {
 
   showMessage(text)
   {
-    console.log('Chat msg: '+text);
+    this.view.ui.new_message(text);
   }
+
 
   getSharedLink()
   {
@@ -968,6 +1000,7 @@ class Chat {
   {
     return this.view.ui.getFuncsList();
   }
+
 
   async onLogin()
   {
@@ -1052,9 +1085,10 @@ class Chat {
       const obj = await resp.json();
       this.apiKeyRequired = obj.apiKeyRequired
 
-      if (this.apiKeyRequired)
+      if (this.apiKeyRequired) {
         this.view.ui.set_api_lock();
-      else
+        this.view.ui.show_api_key_dlg();
+      } else
         this.view.ui.set_api_unlock();
 
     } catch (e) {
@@ -1216,10 +1250,11 @@ class Chat {
                     chat_id: this.currentChatId,
                     apiKey: this.apiKey, 
                     call: this.getEnableCallbacks(),
-                    model: this.currentModel,  
+                    model: this.currentModel,
+                    temperature: this.temperature,
+                    top_p: this.top_p  
                   };
-//??TODO fixme
-//  temperature   top_p                  
+
     this.webSocket.send(JSON.stringify(request));
     DOM.qHide('#fab-continue');
   }
@@ -1246,7 +1281,7 @@ class Chat {
 //??
   async ws_onOpen(ev)
   {
-    console.log('ws_onOpen = '+JSON.stringify(ev));
+    //??console.log('ws_onOpen = '+JSON.stringify(ev));
     const rc = await this.chatAuthenticate (this.currentChatId); // used also to sent currentChatId 
     if (!rc) {
       this.view.logout();
@@ -1309,9 +1344,7 @@ class Chat {
 
   ws_onError(ev)
   {
-    console.log('ws_onError = '+JSON.stringify(ev));
-//??            sendMessage ('Error connecting to the server.', 'right');
-    this.showMessage('Error connecting to the server.');
+    this.showMessage('Error connecting to the server. '+JSON.stringify(ev));
 //??--            $('.spinner').hide();
 //??--            $('.message_input').prop('disabled', true);
     this.webSocket.close();
@@ -1320,9 +1353,8 @@ class Chat {
 
   ws_onClose(ev)
   {
-    console.log('ws_onClose = '+JSON.stringify(ev));
-//??            sendMessage ('Connection to the server closed.', 'right');
-    this.showMessage ('Connection to the server closed.');
+    this.showMessage ('Connection to the server closed. '+JSON.stringify(ev));
+    this.view.logout();
 //??--            $('.send_message').hide();
 //??--            $('.spinner').hide();
 //??--            $('.reconnect').show();
@@ -1330,28 +1362,38 @@ class Chat {
   }
 
 
-  ws_sendMessage(text)
+  async ws_sendMessage(text)
   {
-//++
-//??todo add Ping for test connection
-    console.log('ws_sendMessage = '+text);
     if (this.loggedIn) {
-        if (text.trim() === '' || !this.webSocket)
+      try {
+        const rc = await this.getTopic();
+        if (rc && rc.error) {
+          this.view.logout();
+          this.view.ui.showNotification({title:'Error', text:'Not logged in'});
           return false;
-       const request = { type: 'user', 
+        }
+      } catch(e) {
+        console.log(e);
+      }
+  
+      if (text.trim() === '' || !this.webSocket)
+          return false;
+
+      const request = { type: 'user', 
                        question: text, 
                        chat_id: this.currentChatId, 
                        model: this.currentModel, 
                        apiKey: this.apiKey,
-                       call: this.getEnableCallbacks() };
-//??TODO fixme
-//  temperature   top_p                  
+                       call: this.getEnableCallbacks(),
+                       temperature: this.temperature,
+                       top_p: this.top_p
+                       };
 
-        this.view.ui.showProgress();
-        this.view.ui.new_question(text);
-        DOM.qHide('#fab-continue');
-        this.webSocket.send(JSON.stringify(request));
-        return true;
+      this.view.ui.showProgress();
+      this.view.ui.new_question(text);
+      DOM.qHide('#fab-continue');
+      this.webSocket.send(JSON.stringify(request));
+      return true;
     }
     else {
      this.view.ui.showNotification({title:'Error', text:'Not logged in'});
@@ -1428,8 +1470,6 @@ class Chat {
       if (resp.status === 200) {
         let list = await resp.json();
         this.curConversation = list;
-//??-- console.log('========Chat======== '+chat_id)
-//??-- console.log(list);
 
         for(const v of list) {
           if (v.role === 'user')
@@ -1442,7 +1482,8 @@ class Chat {
         this.receivingMessage = null;
         this.currentChatId = chat_id;
         this.initFunctionList();
-      } else {
+      } 
+      else {
         this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
         return false;
@@ -1487,7 +1528,10 @@ class Chat {
                         chat_id: id, 
                         model: this.currentModel,
                         apiKey: this.apiKey, 
-                        call: null };
+                        call: null,
+                        temperature: this.temperature,
+                        top_p: this.top_p
+                      };
         this.currentChatId = null;
         this.webSocket.send(JSON.stringify(request));
       }
@@ -1505,7 +1549,6 @@ class Chat {
     let url = new URL('/chat/api/createTopic', this.httpServer);
     let params = new URLSearchParams(url.search);
     params.append('session_id', this.session.info.sessionId);
-//??    params.append('netid', this.session.info.webId);
     params.append('chat_id', chat_id);
     url.search = params.toString();
     try {
@@ -1533,15 +1576,15 @@ class Chat {
       this.view.ui.setModel(this.currentModel);
   }
 
-  setTemperature(text)
+  setTemperature(val)
   {
-    const v = text || 0.2;
+    const v = val || 0.2;
     this.temperature = v;
   }
 
-  setTop_p(text)
+  setTop_p(val)
   {
-    const v = text || 0.5;
+    const v = val || 0.5;
     this.top_p = v;
   }
 

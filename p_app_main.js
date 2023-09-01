@@ -125,6 +125,9 @@ async function init()
 
   });
 
+  app.temperature = 0.2;
+  app.top_p = 0.5;
+
   c_main = new ChatMain(app, solidClient, pcallback);
 
   app.on('smartSelectOpened', ()=>{
@@ -142,6 +145,7 @@ async function init()
 
       app.range.create({
         el:'#range_temp',
+        value: app.temperature,
         on: {
           change: (el) => {
             const v = el.getValue();
@@ -152,6 +156,7 @@ async function init()
       });
       app.range.create({
         el:'#range_topp',
+        value: app.top_p,
         on: {
           change: (el) => {
             const v = el.getValue();
@@ -164,6 +169,17 @@ async function init()
     }
   })
 
+  app.on('popoverClosed', (el)=>{
+    if (el.el.id === 'popover-settings') {
+
+      app.temperature = app.range.getValue('#range_temp');
+      app.top_p = app.range.getValue('#range_topp');
+      if (app.chat) {
+        app.chat.setTemperature(app.temperature);
+        app.chat.setTop_p(app.top_p);
+      }
+    }
+  })
 
 
   document.onclick = (ev) => {

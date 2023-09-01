@@ -14,20 +14,16 @@
 //
 
 
-function showNotice(s) 
-{
-  alert(s);
-}
-
-
 class ChatMain {
   constructor(app, solidClient, callback) {
     this.app = app;
     this.app_url = new URL(location.href);
     this.solidClient = solidClient;
     this.callback = callback;
-    this.chat = new Chat({httpServer, wsServer, view:this});
     this.ui = new ChatUI({view:this});
+    this.chat = new Chat({httpServer, wsServer, view:this});
+
+    app.chat = this.chat;
 
     const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
@@ -146,7 +142,7 @@ class ChatMain {
 
   async send_req(text)
   {
-    return this.chat.ws_sendMessage(text);
+    return await this.chat.ws_sendMessage(text);
   }
 
   send_continue()
