@@ -65,9 +65,14 @@ class ChatMain {
       .onclick = async () => {
         const el = DOM.iSel('s_req');
         const text = el.innerText;
+
+        this.chat.showMessage(text);
+        el.innerText = '';
+/*        
         const rc = await this.send_req(text);
         if (rc)
           el.innerText = '';
+        */
     };
 
     DOM.iSel("fab-continue")
