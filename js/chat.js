@@ -1535,13 +1535,13 @@ class Chat {
 
   setTemperature(text)
   {
-    const v = text || '0.2';
+    const v = text || 0.2;
     this.temperature = v;
   }
 
   setTop_p(text)
   {
-    const v = text || '0.5';
+    const v = text || 0.5;
     this.top_p = v;
   }
 
