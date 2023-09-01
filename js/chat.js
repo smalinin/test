@@ -370,13 +370,13 @@ class ChatUI {
   }
 
 
-  new_message(text)
+  new_message(text, disable_scroll)
   {
     if (!text)
       return;
 
     const id = this.last_item_id + 1;
-    const html = `<div class="block block-strong medium-inset" style="color: red;" id="item_${id}">`
+    const html = `<div class="block block-strong medium-inset" style="color: red; word-wrap: break-word;" id="item_${id}">`
           +   text
           +`</div>`;
 
