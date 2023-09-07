@@ -981,7 +981,6 @@ class Chat {
     this.receivingMessage = null;
     this.curConversation = [];
     this.curChats = [];
-    this.firstLogin = true;
   }
 
 
@@ -1045,11 +1044,6 @@ class Chat {
 
         await this.updateLoginState();
         this.view.ui.onLogin(this.webId);
-
-        if (this.firstLogin) {
-          this.firstLogin = false;
-          this.view.reload();
-        }
       } 
     } catch (e) {
       console.log(e);
@@ -1071,10 +1065,6 @@ class Chat {
       return;
     
     this.view.ui.showProgress();
-//??    console.log('AppState#updateLoginState: loggedIn:', this.loggedIn);
-
-//??      loginButton.classList.toggle('hidden', loggedIn)
-//??      logoutButton.classList.toggle('hidden', !loggedIn)
 
     if (this.resume_char_id) {
       const chat_id = await resumeAsNew(resume_char_id);

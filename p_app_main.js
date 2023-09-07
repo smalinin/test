@@ -258,8 +258,6 @@ async function handle_authCode(authCode, url)
             if (ret && ret.tokens)
                     storage.setItem('oidc_saved_tokens', JSON.stringify(ret.tokens));
             
-            const session = solidClient.getDefaultSession();
-            console.log(session);
         } catch(e) {
             console.log(e);
         }
