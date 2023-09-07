@@ -23,6 +23,9 @@ class ChatMain {
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
 
+    if (this.app_url.startsWith('file:'))
+      this.sendToiOS({cmd:'get_api_key'});
+
     app.chat = this.chat;
 
     const session = this.session = this.solidClient.getDefaultSession();
@@ -41,7 +44,7 @@ class ChatMain {
 
     DOM.iSel("reload")
       .onclick = () => {
-        window.location.reload();
+        this.reload();
       };
 
     DOM.iSel("login")
@@ -124,7 +127,7 @@ class ChatMain {
 
   login()
   {
-    if (this.app_url.protocol === 'file://')
+    if (this.app_url.protocol.startsWith('file:'))
       this.sendToiOS({cmd:'login'})
     else
       this.solidClient.login({oidcIssuer:httpServer, 
@@ -138,6 +141,11 @@ class ChatMain {
     const storage = (window.localStorage) ? window.localStorage : window.sessionStorage
     storage.removeItem("oidc_saved_tokens");
     await this.solidClient.logout();
+  }
+
+  reload()
+  {
+    window.location.reload();
   }
 
   async send_req(text)
@@ -178,7 +186,7 @@ class ChatMain {
       return;
     }
     
-    if (this.app_url.protocol === 'file://')
+    if (this.app_url.protocol.startsWith('file:'))
       this.sendToiOS({cmd:'share', url})
     else
       this.ui.share();

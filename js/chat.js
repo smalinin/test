@@ -888,6 +888,10 @@ class ChatUI {
                 if (index ===0) {
                   //remove Val
                   this.view.chat.apiKey = null;
+                  
+                  if (this.view.app_url.startsWith('file:'))
+                    this.view.sendToiOS({cmd:'del_api_key'})
+                    
                   if (this.view.chat.apiKeyRequired)
                     this.set_api_lock();
                   else
@@ -898,6 +902,10 @@ class ChatUI {
                 else if (index === 1) {
                   //set Val
                   this.view.chat.apiKey = newVal;
+
+                  if (this.view.app_url.startsWith('file:'))
+                    this.view.sendToiOS({cmd:'set_api_key', val:newVal})
+                  
                   this.set_api_unlock();
                   dialog.close();
                 }
@@ -973,6 +981,7 @@ class Chat {
     this.receivingMessage = null;
     this.curConversation = [];
     this.curChats = [];
+    this.firstLogin = true;
   }
 
 
@@ -982,6 +991,16 @@ class Chat {
   }
 
 
+  set_api_key(v)
+  {
+    if (!v)
+      return;
+      
+    this.apiKey = v;
+    this.view.ui.set_api_unlock();
+  }
+    
+    
   getSharedLink()
   {
     if (this.currentChatId) {
@@ -1026,6 +1045,11 @@ class Chat {
 
         await this.updateLoginState();
         this.view.ui.onLogin(this.webId);
+
+        if (this.firstLogin) {
+          this.firstLogin = false;
+          this.view.reload();
+        }
       } 
     } catch (e) {
       console.log(e);
@@ -1086,8 +1110,10 @@ class Chat {
       this.apiKeyRequired = obj.apiKeyRequired
 
       if (this.apiKeyRequired) {
-        this.view.ui.set_api_lock();
-        this.view.ui.show_api_key_dlg();
+        if (!this.apiKey || (this.apiKey && !this.apiKey.startsWith('sk-'))) {
+          this.view.ui.set_api_lock();
+          this.view.ui.show_api_key_dlg();
+        }
       } else
         this.view.ui.set_api_unlock();
 
@@ -1297,6 +1323,9 @@ class Chat {
       if (this.currentChatId)
         await this.loadConversation(this.currentChatId);
       this.helloSent = true;
+    }
+    else {
+      this.view.ui.hideProgress();
     }
   }
 
@@ -1514,7 +1543,7 @@ class Chat {
          oidcIssuer: httpServer,
          redirectUrl: url.toString(),
          tokenType: "Bearer",
-         clientName: "OpenLink CoPilot"
+         clientName: "OpenLink Personal Assistant"
     });
   }
 

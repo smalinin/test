@@ -187,7 +187,7 @@ async function init()
     if (n.nodeName === 'A') {
       if (n.href && n.hostname != app_url.hostname) {
         ev.stopImmediatePropagation();
-        if (app_url.protocol === 'file://')
+        if (app_url.protocol.startsWith('file:'))
           sendToiOS({cmd:'open_url', url:n.href})
         else
           window.open(n.href);
@@ -200,14 +200,23 @@ async function init()
 
 function sendToiOS(cmd)
 {
-  if (app_url.protocol === 'file://')
+  if (app_url.protocol.startsWith('file:'))
     window.webkit.messageHandlers.iOSNative.postMessage(cmd);
 }
 
 function setCallback(url)
 {
-    
 }
+
+function stored_api_key(v)
+{
+  if (!v)
+    return;
+    
+  if (c_main)
+    c_main.chat.set_api_key(v);
+}
+
 
 function handle_callback(url_str)
 {
