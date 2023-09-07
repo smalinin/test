@@ -23,7 +23,7 @@ class ChatMain {
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
 
-    if (this.app_url.startsWith('file:'))
+    if (this.app.isNative)
       this.sendToiOS({cmd:'get_api_key'});
 
     app.chat = this.chat;
@@ -127,7 +127,7 @@ class ChatMain {
 
   login()
   {
-    if (this.app_url.protocol.startsWith('file:'))
+    if (this.app.isNative)
       this.sendToiOS({cmd:'login'})
     else
       this.solidClient.login({oidcIssuer:httpServer, 
@@ -186,7 +186,7 @@ class ChatMain {
       return;
     }
     
-    if (this.app_url.protocol.startsWith('file:'))
+    if (this.app.isNative)
       this.sendToiOS({cmd:'share', url})
     else
       this.ui.share();

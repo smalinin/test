@@ -889,7 +889,7 @@ class ChatUI {
                   //remove Val
                   this.view.chat.apiKey = null;
                   
-                  if (this.view.app_url.startsWith('file:'))
+                  if (this.view.app.isNative)
                     this.view.sendToiOS({cmd:'del_api_key'})
                     
                   if (this.view.chat.apiKeyRequired)
@@ -903,7 +903,7 @@ class ChatUI {
                   //set Val
                   this.view.chat.apiKey = newVal;
 
-                  if (this.view.app_url.startsWith('file:'))
+                  if (this.view.app.isNative)
                     this.view.sendToiOS({cmd:'set_api_key', val:newVal})
                   
                   this.set_api_unlock();

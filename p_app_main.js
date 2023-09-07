@@ -127,6 +127,7 @@ async function init()
 
   app.temperature = 0.2;
   app.top_p = 0.5;
+  app.isNative = app_url.protocol.startsWith('file:');
 
   c_main = new ChatMain(app, solidClient, pcallback);
 
@@ -187,7 +188,7 @@ async function init()
     if (n.nodeName === 'A') {
       if (n.href && n.hostname != app_url.hostname) {
         ev.stopImmediatePropagation();
-        if (app_url.protocol.startsWith('file:'))
+        if (app.isNative)
           sendToiOS({cmd:'open_url', url:n.href})
         else
           window.open(n.href);
@@ -200,7 +201,7 @@ async function init()
 
 function sendToiOS(cmd)
 {
-  if (app_url.protocol.startsWith('file:'))
+  if (app.isNative)
     window.webkit.messageHandlers.iOSNative.postMessage(cmd);
 }
 
