@@ -288,7 +288,7 @@ class ChatUI {
     for(const v of list) {
       if (v.role !== this.last_item_role) {
 
-        if (this.last_item_role === 'user' || v.role === 'user')   
+        if (this.last_item_role === 'user' || v.role === 'user' || !v.last_item_role)   
           this._append_block_title(v.role);
 
         this.last_item_text = '';
