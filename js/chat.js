@@ -1095,7 +1095,7 @@ class Chat {
         return link.toString();
       }
     } catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Can not get PermaLink: ' + e});
+      this.view.ui.showNotification({title:'Error', text:'Can not get PermaLink: ' + e.message});
     }
     return null;
 
@@ -1196,7 +1196,7 @@ class Chat {
         this.view.ui.set_api_unlock();
 
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e});
+        this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e.message});
         return false;
     }
     return true;
@@ -1256,7 +1256,7 @@ class Chat {
         return {error:'Can not retrieve chatId ' + resp.statusText}
       }
     } catch (e) {
-      return {error:'Can not getTopic ' + e};
+      return {error:'Can not getTopic ' + e.message};
     }
   }
 
@@ -1331,9 +1331,9 @@ class Chat {
       }
     } catch (e) {
       if (action === 'delete') {
-        this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + e});
+        this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + e.message});
       } else if (action === 'rename') {
-        this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + e});
+        this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + e.message});
       }
     }
   }
@@ -1397,7 +1397,7 @@ class Chat {
         this.solidClient.fetch (url.toString());
         DOM.qHide('#fab-stop')
     } catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Stop failed: ' + e});
+      this.view.ui.showNotification({title:'Error', text:'Stop failed: ' + e.message});
     }
   }
 
@@ -1554,7 +1554,7 @@ class Chat {
         return false;
       }
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + e});
+        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + e.message});
         return false;
     }
     return false;
@@ -1610,7 +1610,7 @@ class Chat {
       }
     } 
     catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e});
+      this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e.message});
       this.view.logout();
       return false;
     } 
@@ -1705,7 +1705,7 @@ freeTextTopicSearch();
         } else
             this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + resp.statusText});
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + e});
+        this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + e.message});
     }
   }
 
