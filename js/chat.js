@@ -1290,6 +1290,10 @@ class Chat {
                   })
             }
           })
+          .catch((resp) => {
+            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+            return;
+          })
       }
       else if (action === 'rename' && name) {
         const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
