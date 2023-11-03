@@ -1273,6 +1273,7 @@ class Chat {
       params.append('session_id', this.sessionId);
       params.append('chat_id', chat_id);
       url.search = params.toString();
+/*** 
       if (action === 'delete') {
         this.solidClient.fetch (url.toString(), { method:'DELETE' })
           .then((resp) => {
@@ -1294,6 +1295,31 @@ class Chat {
             this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.message});
             return;
           })
+      }
+      else if (action === 'rename' && name) {
+        const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
+        if (!resp.ok && resp.status !== 200) {
+          this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + resp.statusText});
+          return;
+        }
+        this.loadChats();
+      }
+**/      
+      if (action === 'delete') {
+        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
+        if (resp.ok) {
+          if (resp.status !== 204) {
+            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+            return;
+          }
+
+          if (chat_id === this.currentChatId)
+            this.currentChatId = null;
+    
+          const rc = await this.loadChats();
+          if (rc && this.currentChatId)
+            this.loadConversation(this.currentChatId);
+        }
       }
       else if (action === 'rename' && name) {
         const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
