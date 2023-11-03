@@ -772,7 +772,7 @@ class ChatUI {
         +`  <div class="item-content">`
         +`    <div class="item-inner">`
         +`      <div class="item-text ftune_title" chat_id="${id}">`
-        +`        <span class="topic_item">${title}</span>`
+        +`        <span class="topic_item ftune_item">${title}</span>`
         +`      </div>`
         +`      <span class="timestamp" style="font-size:8px">(${ts})</span>`;             
         +`    </div>`
