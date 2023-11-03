@@ -775,10 +775,12 @@ class ChatUI {
     let item = el.querySelector('.item-text');
     item.onclick = (e) => {
       const chat_id = item.attributes['chat_id'];
+      const model_attr = item.attributes['model'];
       if (chat_id) {
         this.showProgress();
          
         const id = chat_id.value;
+        const model = model_attr.value;
 
         if (id.startsWith('system-')) {
           this.chat_list.innerHTML = '';
@@ -796,10 +798,7 @@ class ChatUI {
 
           this.view.app.popover.close('#popover-ftune');
 
-            //?????          this.view.chat.selectFineTune(id);
-
-//??TODO add update cur_item attribute
-//??TODO add close popup          
+          this.view.chat.selectFineTune(id, model);
         } 
       }
     }
@@ -1639,10 +1638,11 @@ class Chat {
     this.webSocket.send(JSON.stringify(request));
   }
 
-  selectFineTune(id)
+  selectFineTune(id, model)
   {
     if (id.startsWith('system-') && this.webSocket) {
       this.currentChatId = null;
+      this.setModel(model, true);
       this.sendPrompt(null, 'user', id, null);
     }
     this.setFineTune(id);
