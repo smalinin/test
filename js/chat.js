@@ -754,24 +754,13 @@ class ChatUI {
     const title = v.title ? v.title : v.chat_id;
     const id = v.chat_id;
     const ts = v.ts ? this.timeSince(v.ts) : '';
-/*
+    const model = v.model || '';
+    const role = v.role || '';
     let s =
         `<li>`
         +`  <div class="item-content">`
         +`    <div class="item-inner">`
-        +`      <div class="item-title topic_title" chat_id="${id}">`
-        +`        <span class="topic_item">${title}</span>`
-        +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`;             
-        +`      </div>`
-        +`    </div>`
-        +`  </div>`
-        +`</li>`;
-*/        
-    let s =
-        `<li>`
-        +`  <div class="item-content">`
-        +`    <div class="item-inner">`
-        +`      <div class="item-text ftune_title" chat_id="${id}">`
+        +`      <div class="item-text ftune_title" chat_id="${id}" model="${model}" role="${role}">`
         +`        <span class="topic_item ftune_item">${title}</span>`
         +`      </div>`
         +`      <span class="timestamp" style="font-size:8px">(${ts})</span>`;             
@@ -787,11 +776,11 @@ class ChatUI {
     item.onclick = (e) => {
       const chat_id = item.attributes['chat_id'];
       if (chat_id) {
-         this.showProgress();
-//??todo         this.view.app.panel.close('#left_panel');
-         const id = chat_id.value;
+        this.showProgress();
+         
+        const id = chat_id.value;
 
-         if (id.startsWith('system-')) {
+        if (id.startsWith('system-')) {
           this.chat_list.innerHTML = '';
           this.last_item_role = null;
           this.last_item_text = '';
@@ -804,7 +793,10 @@ class ChatUI {
           ftune_item =e.target.closest('li');
           if (ftune_item)
             ftune_item.classList.add('cur_topic')
-//?????          this.view.chat.selectFineTune(id);
+
+          this.view.app.popover.close('#popover-ftune');
+
+            //?????          this.view.chat.selectFineTune(id);
 
 //??TODO add update cur_item attribute
 //??TODO add close popup          
