@@ -1720,7 +1720,6 @@ freeTextTopicSearch();
 
   async initFineTune() 
   {
-    return;
     try {
       let url = new URL('/chat/api/listFineTune', this.httpServer);
       const resp = await fetch (url.toString());
