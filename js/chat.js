@@ -754,7 +754,7 @@ class ChatUI {
     const title = v.title ? v.title : v.chat_id;
     const id = v.chat_id;
     const ts = v.ts ? this.timeSince(v.ts) : '';
-
+/*
     let s =
         `<li>`
         +`  <div class="item-content">`
@@ -766,7 +766,19 @@ class ChatUI {
         +`    </div>`
         +`  </div>`
         +`</li>`;
-    return s;
+*/        
+    let s =
+        `<li>`
+        +`  <div class="item-content">`
+        +`    <div class="item-inner">`
+        +`      <div class="item-text ftune_title" chat_id="${id}">`
+        +`        <span class="topic_item">${title}</span>`
+        +`      </div>`
+        +`      <span class="timestamp" style="font-size:8px">(${ts})</span>`;             
+        +`    </div>`
+        +`  </div>`
+        +`</li>`;
+        return s;
   }
 
   _set_ftune_handler(el)
