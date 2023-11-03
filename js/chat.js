@@ -749,6 +749,63 @@ class ChatUI {
     return rc;
   }
 
+  _create_ftune_html(v)
+  {
+    const title = v.title ? v.title : v.chat_id;
+    const id = v.chat_id;
+    const ts = v.ts ? this.timeSince(v.ts) : '';
+
+    let s =
+        `<li>`
+        +`  <div class="item-content">`
+        +`    <div class="item-inner">`
+        +`      <div class="item-title topic_title" chat_id="${id}">`
+        +`        <span class="topic_item">${title}</span>`
+        +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`;             
+        +`      </div>`
+        +`    </div>`
+        +`  </div>`
+        +`</li>`;
+    return s;
+  }
+
+  _set_ftune_handler(el)
+  {
+    let item = el.querySelector('.item-title');
+    item.onclick = (e) => {
+      const listItem = e.target.closest('li.swipeout');
+      const chat_id = item.attributes['chat_id'];
+      if (chat_id) {
+         this.showProgress();
+//??todo         this.view.app.panel.close('#left_panel');
+         const id = chat_id.value;
+
+         if (id.startsWith('system-')){
+          this.chat_list.innerHTML = '';
+          this.last_item_role = null;
+          this.last_item_text = '';
+          this.last_item_id = 0;
+//?????          this.view.chat.selectFineTune(id);
+
+//??TODO add update cur_item attribute
+//??TODO add close popup          
+        } 
+      }
+    }
+  }
+
+  initFuneTune(list)
+  {
+    const el_list = DOM.qSel('ul#ftune-list');
+
+    for(const v of list) {
+      const html = this._create_ftune_html(v);
+      const el = DOM.htmlToElement(html);
+      el_list.appendChild(el);
+      this._set_ftune_handler(el);
+    }
+  }
+
   showNotification({title, subtitle, text})
   {
     if (this.notification) {
@@ -936,9 +993,9 @@ class ChatUI {
   }
 
 
-  share()
+  async share()
   {
-    const url = this.view.chat.getSharedLink();
+    const url = await this.view.chat.getSharedLink();
     if (url) {
       this.showNotification({title:'Info', text:'Permalink was copied to clipboard'});
       navigator.clipboard.writeText(url);
@@ -967,6 +1024,7 @@ class Chat {
     this.currentModel = 'gpt-4';
     this.temperature = 0.2;
     this.top_p = 0.5;
+    this.fine_tune = null;
 
     this.setTemperature(this.temperature);
     this.setTop_p(this.top_p);
@@ -1000,8 +1058,9 @@ class Chat {
   }
     
     
-  getSharedLink()
+  async getSharedLink()
   {
+/** old 
     if (this.currentChatId) {
       let url = new URL('/chat/', this.httpServer);
       let params = new URLSearchParams(url.search);
@@ -1011,6 +1070,25 @@ class Chat {
     } else {
       return null;
     }
+***/
+
+    try {
+      let url = new URL('/chat/api/listChats', this.httpServer);
+      let params = new URLSearchParams(url.search);
+      params.append('chat_id', this.currentChatId);
+      url.search = params.toString();
+      const resp = await this.solidClient.fetch(url.toString());
+      if (resp.status === 200 && resp.ok) {
+        const share_id = await resp.text();
+        let link = new URL(document.location);
+        link.search = 'chat_id='+share_id;
+        return link.toString();
+      }
+    } catch (e) {
+      this.view.ui.showNotification({title:'Error', text:'Can not get PermaLink: ' + e});
+    }
+    return null;
+
   }
 
     
@@ -1261,17 +1339,7 @@ class Chat {
       return;
 
     const lastLine = this.view.ui.getLastLine();
-    let request = { type: 'system', 
-                    question: 'continue'+lastLine, 
-                    chat_id: this.currentChatId,
-                    apiKey: this.apiKey, 
-                    call: this.getEnableCallbacks(),
-                    model: this.currentModel,
-                    temperature: this.temperature,
-                    top_p: this.top_p  
-                  };
-
-    this.webSocket.send(JSON.stringify(request));
+    this.sendPrompt('continue'+lastLine, 'system');
     DOM.qHide('#fab-continue');
   }
 
@@ -1294,10 +1362,8 @@ class Chat {
   }
 
 
-//??
   async ws_onOpen(ev)
   {
-    //??console.log('ws_onOpen = '+JSON.stringify(ev));
     const rc = await this.chatAuthenticate (this.currentChatId); // used also to sent currentChatId 
     if (!rc) {
       this.view.logout();
@@ -1398,20 +1464,11 @@ class Chat {
       if (text.trim() === '' || !this.webSocket)
           return false;
 
-      const request = { type: 'user', 
-                       question: text, 
-                       chat_id: this.currentChatId, 
-                       model: this.currentModel, 
-                       apiKey: this.apiKey,
-                       call: this.getEnableCallbacks(),
-                       temperature: this.temperature,
-                       top_p: this.top_p
-                       };
-
       this.view.ui.showProgress();
       this.view.ui.new_question(text);
       DOM.qHide('#fab-continue');
-      this.webSocket.send(JSON.stringify(request));
+
+      this.sendPrompt(text)
       return true;
     }
     else {
@@ -1427,6 +1484,7 @@ class Chat {
     /* user chats */
     await this.loadChats ();
     /* init plink copy */
+    await this.initFineTune();
   }
 
   async loadChats() 
@@ -1488,6 +1546,7 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let list = await resp.json();
+        let fine_tune = null;
         this.curConversation = list;
 
         for(const v of list) {
@@ -1495,11 +1554,13 @@ class Chat {
             this.setModel(v.model ?? this.defModel, true);
             this.setTemperature(v.temperature);
             this.setTop_p(v.top_p);
+            fine_tune = v.fine_tune;
         }
 
         this.view.ui.updateConversation(list, chat_id);
         this.receivingMessage = null;
         this.currentChatId = chat_id;
+        this.setFineTune(fine_tune);
         this.initFunctionList();
       } 
       else {
@@ -1542,17 +1603,8 @@ class Chat {
   {
     if (id.startsWith('system-') && is_system === '1') {
       if (this.webSocket) {
-        let request = { type: 'user', 
-                        question: null, 
-                        chat_id: id, 
-                        model: this.currentModel,
-                        apiKey: this.apiKey, 
-                        call: null,
-                        temperature: this.temperature,
-                        top_p: this.top_p
-                      };
         this.currentChatId = null;
-        this.webSocket.send(JSON.stringify(request));
+        this.sendPrompt(null, 'user', id, null);
       }
 
     }
@@ -1561,7 +1613,39 @@ class Chat {
     }
   }
 
+  sendPrompt(text, role = 'user', chat_id = this.currentChatId, call_funcs = this.getEnableCallbacks())
+  {
+    const request = { type: role, 
+                  question: text, 
+                   chat_id: chat_id, 
+                     model: this.currentModel, 
+                    apiKey: this.apiKey,
+                      call: call_funcs,
+               temperature: this.temperature,
+                     top_p: this.top_p
+               };
   
+    this.webSocket.send(JSON.stringify(request));
+  }
+
+  selectFineTune(id)
+  {
+    if (id.startsWith('system-') && this.webSocket) {
+      this.currentChatId = null;
+      this.sendPrompt(null, 'user', id, null);
+    }
+    this.setFineTune(id);
+  }
+
+/*##
+//???
+chatTopicsCacheReload();
+freeTextTopicSearch();
+
+
+
+*/  
+
 //???TODO
   async resumeAsNew(chat_id)
   {
@@ -1607,24 +1691,46 @@ class Chat {
     this.top_p = v;
   }
 
+  setFineTune(val)
+  {
+//??    const v = val || 0.5;
+    this.fine_tune = val;
+  }
+
 
   async initFunctionList() 
   {
     try {
       let url = new URL('/chat/api/listFunctions', this.httpServer);
       let params = new URLSearchParams(url.search);
-      params.append('chat_id', this.currentChatId); //?? != null ? currentChatId : plink);
+      params.append('chat_id', this.currentChatId); 
       url.search = params.toString();
       const resp = await fetch (url.toString());
       if (resp.status === 200) {
           let list = await resp.json();
-//??--          console.log('initFunctionList:'+currentChatId);
           this.funcsList = list;
           this.view.ui.initFuncsList(list)
       } else
           this.view.ui.showNotification({title:'Error', text:'Loading helper functions failed: ' + resp.statusText});
     } catch(e) {
       console.log(e);
+    }
+  }
+
+
+  async initFineTune() 
+  {
+    return;
+    try {
+      let url = new URL('/chat/api/listFineTune', this.httpServer);
+      const resp = await fetch (url.toString());
+      if (resp.status === 200) {
+          let list = await resp.json();
+          this.view.ui.initFuneTune(list)
+      } else
+          this.view.ui.showNotification({title:'Error', text:'Loading pre-defined prompts failed: ' + resp.statusText});
+    } catch(e) {
+      console.log('Loading pre-defined prompts failed: '+e);
     }
   }
 
