@@ -791,11 +791,19 @@ class ChatUI {
 //??todo         this.view.app.panel.close('#left_panel');
          const id = chat_id.value;
 
-         if (id.startsWith('system-')){
+         if (id.startsWith('system-')) {
           this.chat_list.innerHTML = '';
           this.last_item_role = null;
           this.last_item_text = '';
           this.last_item_id = 0;
+
+          let ftune_item = DOM.qSel('#ftune-list li.cur_topic');
+          if (ftune_item)
+            ftune_item.classList.remove('cur_topic');
+
+          ftune_item =e.target.closest('li');
+          if (ftune_item)
+            ftune_item.classList.add('cur_topic')
 //?????          this.view.chat.selectFineTune(id);
 
 //??TODO add update cur_item attribute
