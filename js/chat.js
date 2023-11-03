@@ -783,9 +783,8 @@ class ChatUI {
 
   _set_ftune_handler(el)
   {
-    let item = el.querySelector('.item-title');
+    let item = el.querySelector('.item-text');
     item.onclick = (e) => {
-      const listItem = e.target.closest('li.swipeout');
       const chat_id = item.attributes['chat_id'];
       if (chat_id) {
          this.showProgress();
