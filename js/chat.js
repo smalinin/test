@@ -1291,7 +1291,7 @@ class Chat {
             }
           })
           .catch((resp) => {
-            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.message});
             return;
           })
       }
