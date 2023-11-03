@@ -28,6 +28,11 @@ class ChatMain {
 
     app.chat = this.chat;
 
+    const k = localStorage.getItem("api_key");
+    if (k)
+      this.chat.set_api_key(k);
+
+
     const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
       this.onLogin();
