@@ -798,18 +798,8 @@ class ChatUI {
           this.last_item_role = null;
           this.last_item_text = '';
           this.last_item_id = 0;
-//??---          
-/***
-          let ftune_item = DOM.qSel('#ftune-list li.cur_topic');
-          if (ftune_item)
-            ftune_item.classList.remove('cur_topic');
 
-          ftune_item =e.target.closest('li');
-          if (ftune_item)
-            ftune_item.classList.add('cur_topic')
-***/
           this.view.app.popover.close('#popover-ftune');
-
           this.view.chat.selectFineTune(id, model);
         } 
       }
@@ -826,6 +816,32 @@ class ChatUI {
       el_list.appendChild(el);
       this._set_ftune_handler(el);
     }
+  }
+
+//??TODO  
+  initModels(list, def)
+  {
+    if (!list)
+      return;
+
+    try {
+      let ss = this.view.app.smartSelect.get('#ss_model');
+/*      
+      if (ss)
+        this.view.app.smartSelect.destroy('#ss_model');
+*/      
+      let html = [];
+      for(const v of list)
+        html.push(`<option value="${v.id.toLowerCase()}">${v.name.toUpperCase()}</option>`);
+      
+      const sel = DOM.qSel('select#c_model');
+      sel.innerHTML = html.join('\n');
+
+      if (def)
+        ss.setValue(def);
+
+    } catch(__) {}
+
   }
 
   showNotification({title, subtitle, text})
@@ -930,15 +946,10 @@ class ChatUI {
 
   setModel(text)
   {
-//??    const el = DOM.qSel(`select#c_model option[value="${text}"]`);
-//??    if (el) {
-//??      el.selected=true;
-//??      DOM.qSel('select#c_model').onchange({target:DOM.qSel('select#c_model')});
-//??    }
-    DOM.qSel('span#subtitle').innerText = text;
+    DOM.qSel('span#subtitle').innerText = text.toUpperCase();
     try {
       const ss = this.view.app.smartSelect.get('#ss_model');
-      ss.setValue(text);
+      ss.setValue(text.toLowerCase());
     } catch(__) {}
   }
 
@@ -1051,6 +1062,16 @@ class Chat {
     this.temperature = 0.2;
     this.top_p = 0.5;
     this.fine_tune = null;
+    this.defModels = model_names = [ 
+          'gpt-4',
+          'gpt-4-0613', 
+          'gpt-4-0314', 
+          'gpt-3.5-turbo', 
+          'gpt-3.5-turbo-16k', 
+          'gpt-3.5-turbo-16k-0613', 
+          'gpt-3.5-turbo-0613', 
+          'gpt-3.5-turbo-0301'
+        ];
 
     this.setTemperature(this.temperature);
     this.setTop_p(this.top_p);
@@ -1538,7 +1559,7 @@ class Chat {
   {
     this.setModel(this.currentModel, true);
     await this.initFineTune();
-//??todo initModels()    
+    await this.initModels()    
     /* user chats */
     await this.loadChats ();
   }
@@ -1802,6 +1823,27 @@ freeTextTopicSearch();
     } catch(e) {
       console.log('Loading pre-defined prompts failed: '+e);
     }
+  }
+
+  async initModels() 
+  {
+    try {
+      let url = new URL('/chat/api/getModels', this.httpServer);
+      const resp = await fetch (url.toString());
+      if (resp.status === 200) {
+          let list = await resp.json();
+          this.view.ui.initModels(list, this.defModel);
+          return;
+      }
+    } catch(e) {
+      console.log('Loading pre-defined prompts failed: '+e);
+    }
+    /* use def model's list */
+    let models = [];
+    for(const v of this.defModels)
+      models.push({id:v, name:v});
+
+    this.view.ui.initModels(models);
   }
 
 
