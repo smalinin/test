@@ -826,6 +826,8 @@ class ChatUI {
 
     def = def ? def.toLowerCase() : def;
 
+    if (1==1)
+      return;
     try {
       let ss = this.view.app.smartSelect.get('#ss_model');
 /*      
