@@ -930,12 +930,16 @@ class ChatUI {
 
   setModel(text)
   {
-    const el = DOM.qSel(`select#c_model option[value="${text}"]`);
-    if (el) {
-      el.selected=true;
-      DOM.qSel('select#c_model').onchange({target:DOM.qSel('select#c_model')});
-    }
+//??    const el = DOM.qSel(`select#c_model option[value="${text}"]`);
+//??    if (el) {
+//??      el.selected=true;
+//??      DOM.qSel('select#c_model').onchange({target:DOM.qSel('select#c_model')});
+//??    }
     DOM.qSel('span#subtitle').innerText = text;
+    try {
+      const ss = this.view.app.smartSelect.get('#ss_model');
+      ss.setValue(text);
+    } catch(__) {}
   }
 
 
