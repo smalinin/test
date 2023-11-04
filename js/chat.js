@@ -1563,8 +1563,8 @@ class Chat {
         }
 
         this.view.ui.updateListTopics(chats, this.currentChatId);
-        this.setModel(model);
-        this.setFineTune(fine_tune);
+        this.setModel(model, true);
+        this.setFineTune(fine_tune, true);
         return true;
       } 
       else {
