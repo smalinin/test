@@ -818,7 +818,6 @@ class ChatUI {
     }
   }
 
-//??TODO  
   initModels(list, def)
   {
     if (!list)
@@ -826,14 +825,7 @@ class ChatUI {
 
     def = def ? def.toLowerCase() : def;
 
-    if (1==1)
-      return;
     try {
-      let ss = this.view.app.smartSelect.get('#ss_model');
-/*      
-      if (ss)
-        this.view.app.smartSelect.destroy('#ss_model');
-*/      
       let html = [];
       for(const v of list) {
         let opt_val = v.id.toLowerCase();
@@ -844,11 +836,7 @@ class ChatUI {
       const sel = DOM.qSel('select#c_model');
       sel.innerHTML = html.join('\n');
 
-      if (def && ss)
-        ss.setValue(def);
-
     } catch(__) {}
-
   }
 
   showNotification({title, subtitle, text})
