@@ -1551,13 +1551,20 @@ class Chat {
       const resp = await this.solidClient.fetch (url.toString());
       if (resp.status === 200) {
         let chats = await resp.json();
+        let model = '';
+        let fine_tune = '';
 
         for(const v of chats) {
-          if (!this.currentChatId && v.role === 'user')
+          if (!this.currentChatId && v.role === 'user') {
             this.currentChatId = this.lastChatId = v.chat_id;
+            model = v.model;
+            fine_tune = v.fine_tune;
+          }
         }
 
         this.view.ui.updateListTopics(chats, this.currentChatId);
+        this.setModel(model);
+        this.setFineTune(fine_tune);
         return true;
       } 
       else {
@@ -1754,7 +1761,7 @@ freeTextTopicSearch();
   {
     this.fine_tune = val;
     if (update_ui)
-      this.view.ui.setFineTune(fine_tune);
+      this.view.ui.setFineTune(this.fine_tune);
   }
 
 
