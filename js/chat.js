@@ -1533,10 +1533,10 @@ class Chat {
   async initSidebar() 
   {
     this.setModel(this.currentModel, true);
+    await this.initFineTune();
+//??todo initModels()    
     /* user chats */
     await this.loadChats ();
-    /* init plink copy */
-    await this.initFineTune();
   }
 
   async loadChats() 
