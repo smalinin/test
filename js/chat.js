@@ -113,28 +113,26 @@ class ChatUI {
     }
   }
 
-  _gen_topic_html(is_system, chat_id, title, more, cur_chat)
+  _gen_topic_html(item, cur_chat)
   {
-    let html = '';
+    const title = item.title ?? item.chat_id;
+    const role = item.role || 'user';
+    const ts = item.ts ? this.timeSince(item.ts) : '';
+    const chat_id = v.chat_id;
     const add_class = chat_id === cur_chat ? 'cur_topic':'';
+    const fine_tune = v.fine_tune || '';
+    const model = v.model || '';
 
-    if (is_system) {
+    let html = '';
+
       html = 
-      `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}">`
-     +`  <div class="item-content">`
-     +`    <div class="item-inner">`
-     +`      <div class="item-title topic_title">${title}</div>`
-     +`    </div>`
-     +`  </div>`
-     +`</li>`
-    }
-    else {
-      const text = `<span class="topic_item">${title} </span><span class="timestamp" style="font-size:8px">(${more})</span>`;
-      html = 
-        `<li class="swipeout ${add_class}"  chat_id="${chat_id}" is_system="${is_system?1:0}" title="${title}">`
+        `<li class="swipeout ${add_class}" chat_id="${chat_id}" role="${role}" title="${title}" model="${model}" fine_tune="${fine_tune}">`
        +`  <div class="item-content swipeout-content">`
        +`    <div class="item-inner">`
-       +`      <div class="item-title topic_title">${text}</div> <a href="#${chat_id}"/>`
+       +`      <div class="item-title topic_title"> `
+       +`        <span class="topic_item">${title} </span> `
+       +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`
+       +`      </div> `
        +`    </div>`
        +`  </div>`
        +`  <div class="swipeout-actions-right" >`
@@ -142,7 +140,7 @@ class ChatUI {
        +`    <a class="color-red chat_del">Delete</a>`
        +`  </div>`
        +`</li>`
-    }
+
     return html;
   }
 
@@ -152,20 +150,22 @@ class ChatUI {
     item.onclick = (e) => {
       const listItem = e.target.closest('li.swipeout');
       const chat_id = listItem.attributes['chat_id'];
-      const is_system = listItem.attributes['is_system'];
+      const role = listItem.attributes['role'];
+      const model = listItem.attributes['model'];
+      const fine_tune = listItem.attributes['fine_tune'];
+
       if (chat_id) {
          this.showProgress();
          this.view.app.panel.close('#left_panel');
-         const id = chat_id.value;
 
-         if (id.startsWith('system-')){
+         if (role.value === 'system'){
           this.chat_list.innerHTML = '';
           this.last_item_role = null;
           this.last_item_text = '';
           this.last_item_id = 0;
          } 
 
-         this.view.chat.selectSession(id, is_system.value);
+         this.view.chat.selectSession(chat_id.value, role.value, model.value, fine_tune.value);
       }
     }
 
@@ -221,11 +221,7 @@ class ChatUI {
 
     for(const v of list) 
     {
-      const text = v.title ?? v.chat_id;
-      const is_system = v.role !== 'user';
-      const more = v.ts ? this.timeSince(v.ts) : '';
-
-      let html = this._gen_topic_html(is_system, v.chat_id, text, more, cur_chat);
+      let html = this._gen_topic_html(v, cur_chat);
 
       const el = DOM.htmlToElement(html);
       el_topics.appendChild(el); 
@@ -366,7 +362,7 @@ class ChatUI {
     this.last_item_role = null;
     this.last_item_text = '';
     this.last_item_id = 0;
-    this.view.chat.selectSession('system-new', "1");
+    this.view.chat.selectSession('system-new', 'system');
   }
 
 
@@ -770,6 +766,21 @@ class ChatUI {
         return s;
   }
 
+
+  setFineTune(id)
+  {
+    let ftune_item = DOM.qSel('#ftune-list li.cur_topic');
+    if (ftune_item)
+      ftune_item.classList.remove('cur_topic');
+
+    const item = DOM.qSel(`#ftune-list div.item-text[chat_id="${id}"]`);  
+    if (item) {
+      ftune_item =item.closest('li');
+      if (ftune_item)
+        ftune_item.classList.add('cur_topic')
+    }
+  }
+
   _set_ftune_handler(el)
   {
     let item = el.querySelector('.item-text');
@@ -787,7 +798,8 @@ class ChatUI {
           this.last_item_role = null;
           this.last_item_text = '';
           this.last_item_id = 0;
-
+//??---          
+/***
           let ftune_item = DOM.qSel('#ftune-list li.cur_topic');
           if (ftune_item)
             ftune_item.classList.remove('cur_topic');
@@ -795,7 +807,7 @@ class ChatUI {
           ftune_item =e.target.closest('li');
           if (ftune_item)
             ftune_item.classList.add('cur_topic')
-
+***/
           this.view.app.popover.close('#popover-ftune');
 
           this.view.chat.selectFineTune(id, model);
@@ -1591,7 +1603,7 @@ class Chat {
 
         for(const v of list) {
           if (v.role === 'user')
-            this.setModel(v.model ?? this.defModel, true);
+            this.setModel(v.model, true);
             this.setTemperature(v.temperature);
             this.setTop_p(v.top_p);
             fine_tune = v.fine_tune;
@@ -1639,16 +1651,22 @@ class Chat {
   }
 
 
-  selectSession(id, is_system)
+  selectSession(id, role, model, fine_tune)
   {
-    if (id.startsWith('system-') && is_system === '1') {
+    if (id.startsWith('system-') && role === 'system') {
       if (this.webSocket) {
         this.currentChatId = null;
+
+        this.setModel(model, true);
+        this.setFineTune(fine_tune, true);
+
         this.sendPrompt(null, 'user', id, null);
       }
-
     }
     else {
+      this.setModel(model, true);
+      this.setFineTune(fine_tune, true);
+   
       this.loadConversation (id);
     }
   }
@@ -1670,12 +1688,12 @@ class Chat {
 
   selectFineTune(id, model)
   {
+    this.setFineTune(id, true);
     if (id.startsWith('system-') && this.webSocket) {
       this.currentChatId = null;
       this.setModel(model, true);
       this.sendPrompt(null, 'user', id, null);
     }
-    this.setFineTune(id);
   }
 
 /*##
@@ -1732,10 +1750,11 @@ freeTextTopicSearch();
     this.top_p = v;
   }
 
-  setFineTune(val)
+  setFineTune(val, update_ui)
   {
-//??    const v = val || 0.5;
     this.fine_tune = val;
+    if (update_ui)
+      this.view.ui.setFineTune(fine_tune);
   }
 
 
