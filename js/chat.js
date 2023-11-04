@@ -118,10 +118,10 @@ class ChatUI {
     const title = item.title ?? item.chat_id;
     const role = item.role || 'user';
     const ts = item.ts ? this.timeSince(item.ts) : '';
-    const chat_id = v.chat_id;
+    const chat_id = item.chat_id;
     const add_class = chat_id === cur_chat ? 'cur_topic':'';
-    const fine_tune = v.fine_tune || '';
-    const model = v.model || '';
+    const fine_tune = item.fine_tune || '';
+    const model = item.model || '';
 
     let html = '';
 
