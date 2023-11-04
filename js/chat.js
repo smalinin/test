@@ -1062,7 +1062,7 @@ class Chat {
     this.temperature = 0.2;
     this.top_p = 0.5;
     this.fine_tune = null;
-    this.defModels = model_names = [ 
+    this.defModels = [ 
           'gpt-4',
           'gpt-4-0613', 
           'gpt-4-0314', 
