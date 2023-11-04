@@ -824,6 +824,8 @@ class ChatUI {
     if (!list)
       return;
 
+    def = def ? def.toLowerCase() : def;
+
     try {
       let ss = this.view.app.smartSelect.get('#ss_model');
 /*      
@@ -831,13 +833,16 @@ class ChatUI {
         this.view.app.smartSelect.destroy('#ss_model');
 */      
       let html = [];
-      for(const v of list)
-        html.push(`<option value="${v.id.toLowerCase()}">${v.name.toUpperCase()}</option>`);
+      for(const v of list) {
+        let opt_val = v.id.toLowerCase();
+        let sel = def && opt_val === def ? 'selected' : '' 
+        html.push(`<option value="${opt_val}" ${sel} >${v.name.toUpperCase()}</option>`);
+      }
       
       const sel = DOM.qSel('select#c_model');
       sel.innerHTML = html.join('\n');
 
-      if (def)
+      if (def && ss)
         ss.setValue(def);
 
     } catch(__) {}
