@@ -1039,6 +1039,213 @@ class ChatUI {
 }
 
 
+class AudioRec {
+  constructor({chat, view})
+  {
+    this.chat = chat;
+    this.view = view;
+    this.mediaRec = null;
+    this.recordingTimeout = null;
+    this.chunks = [];
+
+    this.mime = 'audio/wav';
+    const types = [
+        "audio/mp3",
+        "audio/m4a",
+        "audio/webm",
+        "audio/mp4",
+        "audio/ogg",
+        "audio/flac",
+        "audio/mpeg",
+        "audio/mpga",
+        "audio/wav",
+    ];
+
+    for (const type of types) {
+        if (MediaRecorder.isTypeSupported(type)) {
+            this.mime = type;
+            break;
+        }
+    }
+   
+    console.log ('MediaRecorder.isTypeSupported:', this.mime);
+  }
+
+
+  startRecording()
+  {
+    if (!this.mediaRec)
+      return;
+
+    this.mediaRec.start(1000);
+    this.recordingTimeout = setTimeout(() => this.stopMediaRec(), 5000);
+  }
+
+  stopRecording()
+  {
+    if (!this.mediaRec)
+      return;
+
+    this.mediaRec.stop();
+  }
+
+
+  audioDisable()
+  {
+    if (this.mediaRec) {
+      if (this.mediaRec.state === 'recording') {
+          this.mediaRec.stop();
+      }
+      this.mediaRec.stream.getTracks().forEach(track => track.stop());
+      this.mediaRec = null;
+//??      $('#start-btn').hide();
+//??      $('#stop-btn').hide();
+    }
+  }
+
+  async audioEnable()
+  {
+    if (this.mediaRec)
+      return;
+
+    if (navigator.mediaDevices.getUserMedia) {
+        const constraints = { audio: true };
+
+//??        $('#start-btn').show();
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          this.onSuccess(stream);
+          
+        } catch(e) {
+          this.onError(e);
+        }
+    } else {
+        console.log('getUserMedia not supported on your browser!');
+    }
+  }
+
+  detectSound() 
+  {
+    /* sound detection */
+    const audioContext = new AudioContext();
+    const audioStreamSource = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    analyser.minDecibels = -50;
+    analyser.fftSize = 256;
+    audioStreamSource.connect(analyser);
+    const bufferLength = analyser.frequencyBinCount;
+    const domainData = new Uint8Array(bufferLength);
+
+    analyser.getByteFrequencyData(domainData);
+
+    for (let i = 0; i < bufferLength; i++) {
+        if (domainData[i] > 0 && null != this.recodingTimeout) {
+            clearTimeout(this.recodingTimeout);
+            this.recodingTimeout = setTimeout(() => this.stopRecording(), 5000);
+            break;
+        }
+    }
+    window.requestAnimationFrame(() => this.detectSound());
+  }
+
+  onError(err)
+  {
+    this.view.ui.showNotification({title:'Error', text:'Error occured: ' + err});
+  }
+
+  onSuccess(stream)
+  {
+    const self = this;
+
+    this.chunks = [];
+
+    const options = {
+        audioBitsPerSecond: 128000,
+        mimeType: this.mime,
+    };
+    this.mediaRec = new MediaRecorder(stream, options);
+
+    /* sound detection */
+    const audioContext = new AudioContext();
+    const audioStreamSource = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    analyser.minDecibels = -50;
+    analyser.fftSize = 256;
+    audioStreamSource.connect(analyser);
+    const bufferLength = analyser.frequencyBinCount;
+    const domainData = new Uint8Array(bufferLength);
+
+    const detectSound = function () {
+        analyser.getByteFrequencyData(domainData);
+        for (let i = 0; i < bufferLength; i++) {
+            if (domainData[i] > 0 && null != self.recodingTimeout) {
+                clearTimeout(self.recodingTimeout);
+                self.recodingTimeout = setTimeout(() => self.stopRecording(), 5000);
+                break;
+            }
+        }
+        window.requestAnimationFrame(detectSound);
+    }
+    window.requestAnimationFrame(detectSound);
+    /* end sound detection */
+
+    this.mediaRec.onstart = (e)=> {
+//??        $('#start-btn').hide();
+//??        $('#stop-btn').show();
+    }
+
+    this.mediaRec.onstop = (e) => {
+        clearTimeout(this.recodingTimeout);
+        this.recodingTimeout = null;
+//??        $('#start-btn').show();
+//??        $('#stop-btn').hide();
+        const blob = new Blob(this.chunks, { 'type' : this.mime });
+        this.chunks = [];
+//??TODO        
+        if (apiKey != null) {
+            getText (blob);
+        } else {
+            this.view.ui.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
+        }
+    }
+
+    this.mediaRec.ondataavailable = (e) => {
+        this.chunks.push(e.data);
+    }
+  }
+
+/*    
+    async function getText (blob) {
+        let url = new URL('/chat/api/voice2text', httpServer);
+        const formData  = new FormData();
+        formData.append('format', mime);
+        formData.append('apiKey', apiKey);
+        formData.append('data', blob);
+        $('.loader').show();
+        try {
+            const resp = await fetch (url.toString(), { method: 'POST', body: formData });
+            if (resp.ok) {
+                let jt = await resp.json();
+                let text = jt.text;
+                if (text.length) {
+                    sendMessage(text, 'left');
+                    promptComplete(text);
+                } else {
+                    showNotice ('Recording cannot be transcribed.');
+                }
+            } else {
+                showNotice ('Can not access voice transcription service ' + resp.statusText);
+            }
+        } catch (e) {
+            showNotice ('Can not access voice transcription service ' + e);
+        }
+        $('.loader').hide();
+    }
+*/
+
+}
+
 
 class Chat {
   constructor({httpServer, wsServer, view}) 

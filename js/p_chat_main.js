@@ -104,16 +104,20 @@ class ChatMain {
         }
       }
       
-    DOM.iSel("api-lock")
+    DOM.iSel('api-lock')
       .onclick = () => {
         this.api_key();
     };
 
-    DOM.iSel("share")
+    DOM.iSel('share')
       .onclick = () => {
         this.share();
     };
 
+    DOM.iSel('audio_enable')
+      .onchange = (e) => {
+        console.log(e.target.checked);
+      } 
 
 //////////////////////////////////////////////////////
   }

@@ -138,6 +138,32 @@
       padding-top: 10px;
     }
 
+    .audio-btn {
+      float:right;
+    /*  position:relative;*
+    /*  border-radius:50%;*/
+    /*  background-color:white;*/
+    /*  width: 35px;*/
+    /*  height: 35px;*/
+    /*  padding: 0 0 0 0;*/
+    /*  margin-top:15px;*/
+      margin-right:5px;
+    /*  border:none;*/
+      padding-left: 5px;
+      padding-right: 10px;
+/*      
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-image: none;
+*/      
+}
+
   </style>
 </head>
 <body>
@@ -229,6 +255,8 @@
 
         <!-- bottom toolbar for req -->
         <div class="toolbar toolbar-bottom mtoolbar block block-strong">
+          <a id="audio-start" href="#" class="link audio-btn hidden" > <i class="icon f7-icons">mic_fill</i> </a>
+          <a id="audio-stop" href="#" class="link audio-btn hidden" > <i class="icon f7-icons">mic_slash_fill</i> </a>
           <span id="s_req" class="textarea" role="textbox" contenteditable></span>
           <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
         </div>
@@ -314,6 +342,18 @@
                     </div>
               </div>
               </li>              
+
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Enable audio input</div>
+                  <div class="item-after">
+                    <label class="toggle" >
+                      <input type="checkbox" id="enable_audio"/>
+                      <span class="toggle-icon"></span>
+                    </label>
+                  </div>
+                </div>
+              </li>
 
             </ul>
           </div>
