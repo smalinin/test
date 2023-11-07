@@ -114,7 +114,7 @@ class ChatMain {
         this.share();
     };
 
-    DOM.iSel('audio_enable')
+    DOM.iSel('enable_audio')
       .onchange = (e) => {
         console.log(e.target.checked);
       } 
