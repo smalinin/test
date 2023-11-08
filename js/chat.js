@@ -1359,9 +1359,10 @@ class Chat {
             let jt = await resp.json();
             let text = jt.text;
             if (text.length) {
+              showAlert(text);
               //??
-                sendMessage(text, 'left');
-                promptComplete(text);
+                //??sendMessage(text, 'left');
+                //??promptComplete(text);
             } else {
               this.showNotice({title:'Error', text:'Recording cannot be transcribed.'});
             }
