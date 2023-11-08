@@ -234,14 +234,13 @@ class ChatUI {
   }
 
 
-  addNewTopic(chat_id, title, lastChatId)
+  addNewTopic(item, lastChatId)
   {
     let topic = DOM.qSel('#list_topics li.cur_topic');
     if (topic) 
       topic.classList.remove('cur_topic');
 
-    const text = title ?? chat_id;
-    let html = this._gen_topic_html(false, chat_id, text, 'now', chat_id);
+    let html = this._gen_topic_html(item, lastChatId);
     const el = DOM.htmlToElement(html);
     const last = DOM.qSel('#list_topics ul li[chat_id="'+lastChatId+'"]');
 
@@ -1494,7 +1493,7 @@ class Chat {
        return null;
     } 
     else {
-      this.view.ui.addNewTopic(rc.chat_id, rc.title, this.lastChatId);
+      this.view.ui.addNewTopic(rc, this.lastChatId);
       this.currentChatId = rc.chat_id;
       if (rc.funcs)
         this.view.ui.updateFuncsList(rc.funcs)
