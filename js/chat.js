@@ -1319,10 +1319,10 @@ class Chat {
     formData.append('data', blob);
     this.view.ui.showProgress();
     try {
-        const resp = await this.solidClient.fetch (url.toString(), 
+//??      const resp = await this.solidClient.fetch (url.toString(), 
+        const resp = await fetch (url.toString(), 
                                    { method: 'POST', 
-                                     body: formData,
-                                     mode: 'cors' 
+                                     body: formData
                                    });
         if (resp.ok) {
             let jt = await resp.json();
