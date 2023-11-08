@@ -1213,15 +1213,6 @@ class AudioRec {
         const blob = new Blob(this.chunks, { 'type' : this.mime });
         this.chunks = [];
         this.view.chat.voice2text(blob, this.mime);
-//??TODO     
-/***   
-        if (apiKey != null) {
-            //??getText (blob);
-            alert('GET_TEXT '+blob);
-        } else {
-            this.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
-        }
-***/        
     }
 
     this.mediaRec.ondataavailable = (e) => {
@@ -1329,7 +1320,11 @@ class Chat {
     formData.append('data', blob);
     this.view.ui.showProgress();
     try {
-        const resp = await this.solidClient.fetch (url.toString(), { method: 'POST', body: formData });
+        const resp = await this.solidClient.fetch (url.toString(), 
+                                   { method: 'POST', 
+                                     body: formData,
+                                     mode: 'cors' 
+                                   });
         if (resp.ok) {
             let jt = await resp.json();
             let text = jt.text;
@@ -1560,7 +1555,6 @@ class Chat {
       url.search = params.toString();
 
       if (action === 'delete') {
-//??        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE', mode:'cors' });
         const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE'});
         if (resp.ok) {
           if (resp.status !== 204) {
