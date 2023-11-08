@@ -116,7 +116,7 @@ class ChatMain {
 
     DOM.iSel('enable_audio')
       .onchange = (e) => {
-        console.log(e.target.checked);
+        this.chat.enableAudio(e.target.checked)
       } 
 
 //////////////////////////////////////////////////////

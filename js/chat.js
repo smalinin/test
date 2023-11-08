@@ -1288,6 +1288,7 @@ class Chat {
     this.receivingMessage = null;
     this.curConversation = [];
     this.curChats = [];
+
   }
 
 
@@ -1306,7 +1307,24 @@ class Chat {
     this.view.ui.set_api_unlock();
   }
     
-    
+  enableAudio(v)
+  {
+    if (v) {  //enable
+      if (this.audioRec)
+        return;
+      
+        this.audioRec = new AudioRec({chat: this, view});
+        //??this.audioRec.audioEnable();
+    } 
+    else {  //disable
+      if (this.audioRec) {
+        this.audioRec.audioDisable();
+        this.audioRec = null;
+      }
+    }
+
+  }  
+
   async getSharedLink()
   {
 /** old 
