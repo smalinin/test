@@ -1313,7 +1313,7 @@ class Chat {
       if (this.audioRec)
         return;
       
-        this.audioRec = new AudioRec({chat: this, view});
+        this.audioRec = new AudioRec({chat: this, view: this.view});
         //??this.audioRec.audioEnable();
     } 
     else {  //disable
