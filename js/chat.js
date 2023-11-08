@@ -1560,7 +1560,8 @@ class Chat {
       url.search = params.toString();
 
       if (action === 'delete') {
-        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE', mode:'cors' });
+//??        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE', mode:'cors' });
+        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE'});
         if (resp.ok) {
           if (resp.status !== 204) {
             this.showNotice({title:'Error', text:'Delete failed: ' + resp.statusText});
