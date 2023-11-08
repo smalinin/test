@@ -1334,7 +1334,7 @@ class Chat {
             let jt = await resp.json();
             let text = jt.text;
             if (text.length) {
-              showAlert(text);
+              alert(text);
               //??
                 //??sendMessage(text, 'left');
                 //??promptComplete(text);
