@@ -1089,7 +1089,7 @@ class AudioRec {
       return;
 
     this.mediaRec.start(1000);
-    this.recordingTimeout = setTimeout(() => this.stopMediaRec(), 5000);
+    this.recordingTimeout = setTimeout(() => this.stopRecording(), 5000);
   }
 
   stopRecording()
