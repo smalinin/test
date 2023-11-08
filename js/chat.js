@@ -117,7 +117,7 @@ class ChatUI {
   {
     const title = item.title ?? item.chat_id;
     const role = item.role || 'user';
-    const ts = item.ts ? this.timeSince(item.ts) : '';
+    const ts = item.ts ? this.timeSince(item.ts) : 'now';
     const chat_id = item.chat_id;
     const add_class = chat_id === cur_chat ? 'cur_topic':'';
     const fine_tune = item.fine_tune || '';
@@ -240,7 +240,7 @@ class ChatUI {
     if (topic) 
       topic.classList.remove('cur_topic');
 
-    let html = this._gen_topic_html(item, lastChatId);
+    let html = this._gen_topic_html(item, item.chat_id);
     const el = DOM.htmlToElement(html);
     const last = DOM.qSel('#list_topics ul li[chat_id="'+lastChatId+'"]');
 
