@@ -1098,8 +1098,8 @@ class AudioRec {
       }
       this.mediaRec.stream.getTracks().forEach(track => track.stop());
       this.mediaRec = null;
-//??      $('#start-btn').hide();
-//??      $('#stop-btn').hide();
+      DOM.qHide('#audio-start');
+      DOM.qHide('#audio-stop');
     }
   }
 
@@ -1111,7 +1111,7 @@ class AudioRec {
     if (navigator.mediaDevices.getUserMedia) {
         const constraints = { audio: true };
 
-//??        $('#start-btn').show();
+        DOM.qShow('#audio-start');
 
         try {
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -1191,20 +1191,21 @@ class AudioRec {
     /* end sound detection */
 
     this.mediaRec.onstart = (e)=> {
-//??        $('#start-btn').hide();
-//??        $('#stop-btn').show();
+      DOM.qHide('#audio-start');
+      DOM.qShow('#audio-stop');
     }
 
     this.mediaRec.onstop = (e) => {
         clearTimeout(this.recodingTimeout);
         this.recodingTimeout = null;
-//??        $('#start-btn').show();
-//??        $('#stop-btn').hide();
+        DOM.qShow('#audio-start');
+        DOM.qHide('#audio-stop');
         const blob = new Blob(this.chunks, { 'type' : this.mime });
         this.chunks = [];
 //??TODO        
         if (apiKey != null) {
-            getText (blob);
+            //??getText (blob);
+            alert('GET_TEXT '+blob);
         } else {
             this.view.ui.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
         }
@@ -1314,7 +1315,7 @@ class Chat {
         return;
       
         this.audioRec = new AudioRec({chat: this, view: this.view});
-        //??this.audioRec.audioEnable();
+        this.audioRec.audioEnable();
     } 
     else {  //disable
       if (this.audioRec) {
