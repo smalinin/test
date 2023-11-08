@@ -96,10 +96,10 @@ class ChatMain {
     DOM.qSel('select#c_model')
       .onchange = (e) => {
         const el = e.target.querySelector('option:checked');
-        const v = el.value;
+        const val = el.value;
         const text = el.innerText;
         if (text) {
-          this.chat.setModel(text, false);
+          this.chat.setModel(val, false);
           DOM.qSel('span#subtitle').innerText = text;
         }
       }
