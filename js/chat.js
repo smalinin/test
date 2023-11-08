@@ -1319,7 +1319,6 @@ class Chat {
     formData.append('data', blob);
     this.view.ui.showProgress();
     try {
-//??      const resp = await this.solidClient.fetch (url.toString(), 
         const resp = await fetch (url.toString(), 
                                    { method: 'POST', 
                                      body: formData
@@ -1329,10 +1328,6 @@ class Chat {
             let text = jt.text;
             if (text.length) {
               this.ws_sendMessage(text);
-//??              alert(text);
-              //??
-                //??sendMessage(text, 'left');
-                //??promptComplete(text);
             } else {
               this.showNotice({title:'Error', text:'Recording cannot be transcribed.'});
             }
