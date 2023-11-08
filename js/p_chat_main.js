@@ -119,6 +119,7 @@ class ChatMain {
         this.chat.enableAudio(e.target.checked)
       } 
 
+
 //////////////////////////////////////////////////////
   }
 

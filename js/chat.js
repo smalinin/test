@@ -1069,6 +1069,17 @@ class AudioRec {
     }
    
     console.log ('MediaRecorder.isTypeSupported:', this.mime);
+
+    DOM.iSel('#audio-start')
+    .onclick = () => {
+      this.startRecording()
+    }
+
+    DOM.iSel('#audio-stop')
+    .onclick = () => {
+      this.stopRecording()
+    }
+
   }
 
 
