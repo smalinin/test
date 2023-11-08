@@ -1186,7 +1186,7 @@ class AudioRec {
     audioStreamSource.connect(analyser);
     const bufferLength = analyser.frequencyBinCount;
     const domainData = new Uint8Array(bufferLength);
-
+/** 
     const detectSound = function () {
         analyser.getByteFrequencyData(domainData);
         for (let i = 0; i < bufferLength; i++) {
@@ -1198,6 +1198,19 @@ class AudioRec {
         }
         window.requestAnimationFrame(detectSound);
     }
+**/    
+    const detectSound = () => {
+        analyser.getByteFrequencyData(domainData);
+        for (let i = 0; i < bufferLength; i++) {
+            if (domainData[i] > 0 && null != this.recodingTimeout) {
+                clearTimeout(this.recodingTimeout);
+                this.recodingTimeout = setTimeout(() => this.stopRecording(), 5000);
+                break;
+            }
+        }
+        window.requestAnimationFrame(detectSound);
+    }
+
     window.requestAnimationFrame(detectSound);
     /* end sound detection */
 
