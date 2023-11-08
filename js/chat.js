@@ -174,9 +174,9 @@ class ChatUI {
       item.onclick = (e) => {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
-        const is_system = listItem.attributes['is_system'].value;
+        const role = listItem.attributes['role'].value;
       
-        if (chat_id && is_system==='0') {
+        if (chat_id && role!=='system') {
           const id = chat_id.value;
           const text = listItem.attributes['title'].value;
 
@@ -196,9 +196,9 @@ class ChatUI {
       item.onclick = (e) => {
         const listItem = e.target.closest('li.swipeout');
         const chat_id = listItem.attributes['chat_id'];
-        const is_system = listItem.attributes['is_system'].value;
+        const role = listItem.attributes['role'].value;
         
-        if (chat_id && is_system==='0') {
+        if (chat_id && role!=='system') {
           const id = chat_id.value;
           const text = listItem.attributes['title'].value;
 
@@ -1162,13 +1162,11 @@ class AudioRec {
 
   onError(err)
   {
-    this.view.ui.showNotification({title:'Error', text:'Error occured: ' + err});
+    this.showNotification({title:'Error', text:'Error occured: ' + err});
   }
 
   onSuccess(stream)
   {
-    const self = this;
-
     this.chunks = [];
 
     const options = {
@@ -1186,19 +1184,7 @@ class AudioRec {
     audioStreamSource.connect(analyser);
     const bufferLength = analyser.frequencyBinCount;
     const domainData = new Uint8Array(bufferLength);
-/** 
-    const detectSound = function () {
-        analyser.getByteFrequencyData(domainData);
-        for (let i = 0; i < bufferLength; i++) {
-            if (domainData[i] > 0 && null != self.recodingTimeout) {
-                clearTimeout(self.recodingTimeout);
-                self.recodingTimeout = setTimeout(() => self.stopRecording(), 5000);
-                break;
-            }
-        }
-        window.requestAnimationFrame(detectSound);
-    }
-**/    
+
     const detectSound = () => {
         analyser.getByteFrequencyData(domainData);
         for (let i = 0; i < bufferLength; i++) {
@@ -1231,7 +1217,7 @@ class AudioRec {
             //??getText (blob);
             alert('GET_TEXT '+blob);
         } else {
-            this.view.ui.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
+            this.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
         }
     }
 
@@ -1322,6 +1308,10 @@ class Chat {
     this.view.ui.new_message(text);
   }
 
+  showNotice(params)
+  {
+    this.view.ui.showNotification(params);
+  }
 
   set_api_key(v)
   {
@@ -1347,8 +1337,44 @@ class Chat {
         this.audioRec = null;
       }
     }
-
   }  
+
+
+  async voice2text(blob, mime)
+  {
+    if (this.apiKeyRequired && !this.apiKey) {
+      this.showNotice({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
+      return;
+    }
+
+    let url = new URL('/chat/api/voice2text', this.httpServer);
+    const formData  = new FormData();
+    formData.append('format', mime);
+    formData.append('apiKey', this.apiKey);
+    formData.append('data', blob);
+    this.view.ui.showProgress();
+    try {
+        const resp = await this.solidClient.fetch (url.toString(), { method: 'POST', body: formData });
+        if (resp.ok) {
+            let jt = await resp.json();
+            let text = jt.text;
+            if (text.length) {
+              //??
+                sendMessage(text, 'left');
+                promptComplete(text);
+            } else {
+              this.showNotice({title:'Error', text:'Recording cannot be transcribed.'});
+            }
+        } else {
+          this.showNotice({title:'Error', text:'Can not access voice transcription service ' + resp.statusText});
+        }
+    } catch (e) {
+      this.showNotice({title:'Error', text:'Can not access voice transcription service ' + e.message});
+    } finally {
+      this.view.ui.hideProgress();
+    }
+  }
+
 
   async getSharedLink()
   {
@@ -1377,7 +1403,7 @@ class Chat {
         return link.toString();
       }
     } catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Can not get PermaLink: ' + e.message});
+      this.showNotice({title:'Error', text:'Can not get PermaLink: ' + e.message});
     }
     return null;
 
@@ -1462,7 +1488,7 @@ class Chat {
       url.search = params.toString();
       const resp = await this.solidClient.fetch (url.toString());
       if (!resp.ok) {
-        this.view.ui.showNotification({title:'Error', text:'Can not authenticate chat session' + resp.statusText});
+        this.showNotice({title:'Error', text:'Can not authenticate chat session' + resp.statusText});
         return false;
       }
 
@@ -1478,7 +1504,7 @@ class Chat {
         this.view.ui.set_api_unlock();
 
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Can not authenticate ' + e.message});
+      this.showNotice({title:'Error', text:'Can not authenticate ' + e.message});
         return false;
     }
     return true;
@@ -1492,7 +1518,7 @@ class Chat {
       return null;
 
     if (rc.error) {
-       this.view.ui.showNotification({title:'Error', text:rc.error});
+      this.showNotice({title:'Error', text:rc.error});
        return null;
     } 
     else {
@@ -1591,7 +1617,7 @@ class Chat {
         const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
         if (resp.ok) {
           if (resp.status !== 204) {
-            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
+            this.showNotice({title:'Error', text:'Delete failed: ' + resp.statusText});
             return;
           }
 
@@ -1606,16 +1632,16 @@ class Chat {
       else if (action === 'rename' && name) {
         const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
         if (!resp.ok && resp.status !== 200) {
-          this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + resp.statusText});
+          this.showNotice({title:'Error', text:'Rename failed: ' + resp.statusText});
           return;
         }
         this.loadChats();
       }
     } catch (e) {
       if (action === 'delete') {
-        this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + e.message});
+        this.showNotice({title:'Error', text:'Delete failed: ' + e.message});
       } else if (action === 'rename') {
-        this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + e.message});
+        this.showNotice({title:'Error', text:'Rename failed: ' + e.message});
       }
     }
   }
@@ -1679,7 +1705,7 @@ class Chat {
         this.solidClient.fetch (url.toString());
         DOM.qHide('#fab-stop')
     } catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Stop failed: ' + e.message});
+      this.showNotice({title:'Error', text:'Stop failed: ' + e.message});
     }
   }
 
@@ -1752,8 +1778,7 @@ class Chat {
   ws_onError(ev)
   {
     this.showMessage('Error connecting to the server. '+JSON.stringify(ev));
-//??--            $('.spinner').hide();
-//??--            $('.message_input').prop('disabled', true);
+    this.view.ui.hideProgress();
     this.webSocket.close();
     this.webSocket = null;
   }
@@ -1762,8 +1787,8 @@ class Chat {
   {
     this.showMessage ('Connection to the server closed. '+JSON.stringify(ev));
     this.view.logout();
+    this.view.ui.hideProgress();
 //??--            $('.send_message').hide();
-//??--            $('.spinner').hide();
 //??--            $('.reconnect').show();
 //??--            $('.message_input').prop('disabled', true);
   }
@@ -1776,7 +1801,7 @@ class Chat {
         const rc = await this.getTopic();
         if (rc && rc.error) {
           this.view.logout();
-          this.view.ui.showNotification({title:'Error', text:'Not logged in'});
+          this.showNotice({title:'Error', text:'Not logged in'});
           return false;
         }
       } catch(e) {
@@ -1794,7 +1819,7 @@ class Chat {
       return true;
     }
     else {
-     this.view.ui.showNotification({title:'Error', text:'Not logged in'});
+      this.showNotice({title:'Error', text:'Not logged in'});
      return false;
     }
   }
@@ -1838,12 +1863,12 @@ class Chat {
         return true;
       } 
       else {
-        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + resp.statusText});
+        this.showNotice({title:'Error', text:'Loading chats failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
         return false;
       }
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Loading chats failed: ' + e.message});
+      this.showNotice({title:'Error', text:'Loading chats failed: ' + e.message});
         return false;
     }
     return false;
@@ -1861,7 +1886,7 @@ class Chat {
   {
     try {
       if (!this.loggedIn) {
-        this.view.ui.showNotification({title:'Info', text:'Session was disconnected'})
+        this.showNotice({title:'Info', text:'Session was disconnected'})
         this.view.logout();
         return false;
       }
@@ -1893,13 +1918,13 @@ class Chat {
         this.initFunctionList();
       } 
       else {
-        this.view.ui.showNotification({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
+        this.showNotice({title:'Error', text:'Conversation failed to load failed: ' + resp.statusText});
         await this.checkLoggedIn(resp.status);
         return false;
       }
     } 
     catch (e) {
-      this.view.ui.showNotification({title:'Error', text:'Loading conversation failed: ' + e.message});
+      this.showNotice({title:'Error', text:'Loading conversation failed: ' + e.message});
       this.view.logout();
       return false;
     } 
@@ -1998,9 +2023,9 @@ freeTextTopicSearch();
             this.currentChatId = chat['chat_id'];
             this.helloSent = true;
         } else
-            this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + resp.statusText});
+        this.showNotice({title:'Error', text:'Resuming chat failed: ' + resp.statusText});
     } catch (e) {
-        this.view.ui.showNotification({title:'Error', text:'Resuming chat failed: ' + e.message});
+      this.showNotice({title:'Error', text:'Resuming chat failed: ' + e.message});
     }
   }
 
@@ -2048,7 +2073,7 @@ freeTextTopicSearch();
           this.funcsList = list;
           this.view.ui.initFuncsList(list)
       } else
-          this.view.ui.showNotification({title:'Error', text:'Loading helper functions failed: ' + resp.statusText});
+      this.showNotice({title:'Error', text:'Loading helper functions failed: ' + resp.statusText});
     } catch(e) {
       console.log(e);
     }
@@ -2064,7 +2089,7 @@ freeTextTopicSearch();
           let list = await resp.json();
           this.view.ui.initFuneTune(list)
       } else
-          this.view.ui.showNotification({title:'Error', text:'Loading pre-defined prompts failed: ' + resp.statusText});
+        this.showNotice({title:'Error', text:'Loading pre-defined prompts failed: ' + resp.statusText});
     } catch(e) {
       console.log('Loading pre-defined prompts failed: '+e);
     }
