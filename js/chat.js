@@ -1558,40 +1558,9 @@ class Chat {
       params.append('session_id', this.sessionId);
       params.append('chat_id', chat_id);
       url.search = params.toString();
-/*** 
+
       if (action === 'delete') {
-        this.solidClient.fetch (url.toString(), { method:'DELETE' })
-          .then((resp) => {
-            if (resp.status !== 204) {
-              this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.statusText});
-              return;
-            } else {
-              if (chat_id === this.currentChatId)
-                this.currentChatId = null;
-    
-                this.loadChats()
-                  .then((rc) => {
-                    if (rc && this.currentChatId)
-                      this.loadConversation(this.currentChatId);
-                  })
-            }
-          })
-          .catch((resp) => {
-            this.view.ui.showNotification({title:'Error', text:'Delete failed: ' + resp.message});
-            return;
-          })
-      }
-      else if (action === 'rename' && name) {
-        const resp = await this.solidClient.fetch (url.toString(), { method:'POST', body: JSON.stringify ({title: name, model: this.currentModel}) });
-        if (!resp.ok && resp.status !== 200) {
-          this.view.ui.showNotification({title:'Error', text:'Rename failed: ' + resp.statusText});
-          return;
-        }
-        this.loadChats();
-      }
-**/      
-      if (action === 'delete') {
-        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE' });
+        const resp = await this.solidClient.fetch (url.toString(), { method:'DELETE', mode:'cors' });
         if (resp.ok) {
           if (resp.status !== 204) {
             this.showNotice({title:'Error', text:'Delete failed: ' + resp.statusText});
@@ -1625,8 +1594,7 @@ class Chat {
 
 
 
-/***==================================
-============================***********/
+/***==================================***********/
 
 
   ws_Init()
