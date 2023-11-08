@@ -162,6 +162,16 @@
       user-select: none;
       background-image: none;
 */      
+    }
+
+    .blink_btn {
+      animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+    }
 }
 
   </style>
@@ -256,7 +266,7 @@
         <!-- bottom toolbar for req -->
         <div class="toolbar toolbar-bottom mtoolbar block block-strong">
           <a id="audio-start" href="#" class="link audio-btn hidden" > <i class="icon f7-icons">mic_fill</i> </a>
-          <a id="audio-stop" href="#" class="link audio-btn hidden" > <i class="icon f7-icons">mic_slash_fill</i> </a>
+          <a id="audio-stop" href="#" class="link audio-btn hidden blink_btn" > <i class="icon f7-icons">mic_slash_fill</i> </a>
           <span id="s_req" class="textarea" role="textbox" contenteditable></span>
           <a id="btn-send" href="#" class="link" style="padding-left: 10px;"> <i class="icon f7-icons">paperplane_fill</i> </a>
         </div>
