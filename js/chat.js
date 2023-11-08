@@ -1212,13 +1212,16 @@ class AudioRec {
         DOM.qHide('#audio-stop');
         const blob = new Blob(this.chunks, { 'type' : this.mime });
         this.chunks = [];
-//??TODO        
+        this.view.chat.voice2text(blob, this.mime);
+//??TODO     
+/***   
         if (apiKey != null) {
             //??getText (blob);
             alert('GET_TEXT '+blob);
         } else {
             this.showNotification({title:'Error', text:'Must login and enter API Key in order to get voice transcription'});
         }
+***/        
     }
 
     this.mediaRec.ondataavailable = (e) => {
@@ -1226,34 +1229,6 @@ class AudioRec {
     }
   }
 
-/*    
-    async function getText (blob) {
-        let url = new URL('/chat/api/voice2text', httpServer);
-        const formData  = new FormData();
-        formData.append('format', mime);
-        formData.append('apiKey', apiKey);
-        formData.append('data', blob);
-        $('.loader').show();
-        try {
-            const resp = await fetch (url.toString(), { method: 'POST', body: formData });
-            if (resp.ok) {
-                let jt = await resp.json();
-                let text = jt.text;
-                if (text.length) {
-                    sendMessage(text, 'left');
-                    promptComplete(text);
-                } else {
-                    showNotice ('Recording cannot be transcribed.');
-                }
-            } else {
-                showNotice ('Can not access voice transcription service ' + resp.statusText);
-            }
-        } catch (e) {
-            showNotice ('Can not access voice transcription service ' + e);
-        }
-        $('.loader').hide();
-    }
-*/
 
 }
 
