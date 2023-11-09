@@ -203,9 +203,8 @@
             &nbsp;&nbsp;&nbsp;
           </div>
           
-          <div class="block" style="margin-bottom: 10px;">
-
-            <form data-search-container=".search-list" data-search-in=".item-title" class="searchbar searchbar-init">
+          <div class="block" style="margin-bottom: 10px; margin-top: 0px;">
+            <form data-search-container=".search-list" data-search-in=".item-title" class="searchbar searchbar-init" style="margin-bottom: 5px;">
               <div class="searchbar-inner">
                 <div class="searchbar-input-wrap">
                   <input type="search" placeholder="Search" />
@@ -215,14 +214,21 @@
                 <span class="searchbar-disable-button">Cancel</span>
               </div>
             </form>
-
             <button id="btn-new" class="button button-large button-outline" style="text-transform: inherit;justify-content: left;">
               <i class="icon f7-icons">plus</i>
               &nbsp;&nbsp;New chat
             </button>
           </div>
+
           <!-- Chat List -->
-          <div id="list_topics" class="list list-strong list-outline-ios list-dividers inset-md" style="height:80%; overflow-y:scroll; margin-top: 10px; margin-top: 10px;">
+
+          <div class="searchbar-backdrop"></div>
+          <div class="list list-strong-ios list-outline-ios list-dividers-ios simple-list searchbar-not-found">
+            <ul>
+              <li>Nothing found</li>
+            </ul>
+          </div>
+          <div id="list_topics" class="list list-strong     list-outline-ios list-dividers  search-list searchbar-found inset-md" style="height:80%; overflow-y:scroll; margin-top: 10px;">
             <ul>
             </ul>
           </div>
