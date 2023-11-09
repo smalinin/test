@@ -186,7 +186,7 @@ async function init()
               console.log('Searchbar enabled')
             },
             search: function (ev) {
-              console.log(ev.detail.query);
+              console.log(ev.query);
             }
           }
         })
