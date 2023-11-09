@@ -172,20 +172,25 @@ async function init()
 
   app.on('panelOpened', (el) => {
     if (el.el.id === 'left_panel') {
-      var searchbar = app.searchbar.create({
-        el: '.searchbar',
-        searchContainer: '.search-list',
-        searchIn: '.topic_item',
-        foundEl: '.searchbar-found',
-        notFoundEl:'.searchbar-not-found',
-        backdrop: true,
+      try {
+        let v = app.searchbar.get('.searchbar');
+        if (v)
+          app.searchbar.destroy('.searchbar');
 
-        on: {
-          enable: function () {
-            console.log('Searchbar enabled')
+        v = app.searchbar.create({
+          el: '.searchbar',
+          searchContainer: '.search-list',
+          searchIn: '.topic_item',
+  //        backdrop: true,
+  
+          on: {
+            enable: function () {
+              console.log('Searchbar enabled')
+            }
           }
-        }
-      })
+        })
+  
+      } catch(___) {}
     }
   })
 
