@@ -174,6 +174,9 @@ async function init()
     if (el.el.id === 'left_panel') {
       try {
         let v = app.searchbar.get('.searchbar');
+        const dsearch = debounce((ev) => {
+          console.log(ev.query);
+        }, 500);
 
         if (!v)
           v = app.searchbar.create({
@@ -187,9 +190,7 @@ async function init()
             },
             search: function (ev) {
               try {
-              debounce((ev) => {
-                console.log(ev.query);
-              }, 500);
+              dsearch(ev);
             } catch(e) {
               console.log(e);
             }
