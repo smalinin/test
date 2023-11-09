@@ -174,8 +174,6 @@ async function init()
     if (el.el.id === 'left_panel') {
       try {
         let v = app.searchbar.get('.searchbar');
-//        if (v)
-//          app.searchbar.destroy('.searchbar');
 
         if (!v)
           v = app.searchbar.create({
@@ -186,6 +184,9 @@ async function init()
           on: {
             enable: function () {
               console.log('Searchbar enabled')
+            },
+            search: function (ev) {
+              console.log(ev.detail.query);
             }
           }
         })
