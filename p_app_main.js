@@ -181,8 +181,7 @@ async function init()
           el: '.searchbar',
           searchContainer: '.search-list',
           searchIn: '.topic_item',
-  //        backdrop: true,
-  
+
           on: {
             enable: function () {
               console.log('Searchbar enabled')
