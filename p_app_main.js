@@ -186,9 +186,13 @@ async function init()
               console.log('Searchbar enabled')
             },
             search: function (ev) {
+              try {
               debounce((ev) => {
                 console.log(ev.query);
               }, 500);
+            } catch(e) {
+              console.log(e);
+            }
             }
           }
         })
