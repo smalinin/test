@@ -174,10 +174,11 @@ async function init()
     if (el.el.id === 'left_panel') {
       try {
         let v = app.searchbar.get('.searchbar');
-        if (v)
-          app.searchbar.destroy('.searchbar');
+//        if (v)
+//          app.searchbar.destroy('.searchbar');
 
-        v = app.searchbar.create({
+        if (!v)
+          v = app.searchbar.create({
           el: '.searchbar',
           searchContainer: '.search-list',
           searchIn: '.topic_item',
