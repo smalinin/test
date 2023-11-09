@@ -186,7 +186,7 @@ async function init()
               console.log('Searchbar enabled')
             },
             search: function (ev) {
-              debounce((v) => {
+              debounce((ev) => {
                 console.log(ev.query);
               }, 500);
             }
