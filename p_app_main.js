@@ -172,7 +172,14 @@ async function init()
 
   app.on('panelOpened', (el) => {
     if (el.el.id === 'left_panel') {
-      alert('QQQ');
+      var searchbar = app.searchbar.create({
+        el: '.searchbar',
+        on: {
+          enable: function () {
+            console.log('Searchbar enabled')
+          }
+        }
+      })
     }
   })
 
