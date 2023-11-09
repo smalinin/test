@@ -180,20 +180,6 @@
   <div id="app">
     <!--  Left panel -->
     <div class="panel panel-left panel-cover panel-resizable panel-init" id="left_panel">
-<!--      
-      <div class="subnavbar">
-        <form data-search-container=".search-list" data-search-in=".item-title" class="searchbar searchbar-init">
-          <div class="searchbar-inner">
-            <div class="searchbar-input-wrap">
-              <input type="search" placeholder="Search" />
-              <i class="searchbar-icon"></i>
-              <span class="input-clear-button"></span>
-            </div>
-            <span class="searchbar-disable-button">Cancel</span>
-          </div>
-        </form>
-      </div>
-    -->
       <div class="page">
         <div class="page-content">
           <div style="display:flex; flex-direction:row-reverse;">
@@ -204,7 +190,19 @@
           </div>
           
           <div class="block" style="margin-bottom: 10px; margin-top: 0px;">
+<!--
             <form data-search-container=".search-list" data-search-in=".topic_item" class="searchbar searchbar-init" style="margin-bottom: 5px;">
+              <div class="searchbar-inner">
+                <div class="searchbar-input-wrap">
+                  <input type="search" placeholder="Search" />
+                  <i class="searchbar-icon"></i>
+                  <span class="input-clear-button"></span>
+                </div>
+                <span class="searchbar-disable-button">Cancel</span>
+              </div>
+            </form>
+-->
+            <form class="searchbar" style="margin-bottom: 5px;">
               <div class="searchbar-inner">
                 <div class="searchbar-input-wrap">
                   <input type="search" placeholder="Search" />
@@ -221,8 +219,6 @@
           </div>
 
           <!-- Chat List -->
-
-          <div class="searchbar-backdrop"></div>
           <div class="list list-strong-ios list-outline-ios list-dividers-ios simple-list searchbar-not-found">
             <ul>
               <li>Nothing found</li>
