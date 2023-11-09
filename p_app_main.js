@@ -170,6 +170,12 @@ async function init()
     }
   })
 
+  app.on('panelOpened', (el) => {
+    if (el.el.id === 'left_panel') {
+      alert('QQQ');
+    }
+  })
+
   app.on('popoverClosed', (el)=>{
     if (el.el.id === 'popover-settings') {
 
