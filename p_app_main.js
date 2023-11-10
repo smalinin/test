@@ -173,10 +173,15 @@ async function init()
   app.on('panelOpened', (el) => {
     if (el.el.id === 'left_panel') {
       try {
-        let v = app.searchbar.get('.searchbar');
-        const dsearch = debounce((ev) => {
+        const debouncedSearch = debounce((ev) => {
           console.log(ev.query);
-        }, 500);
+        }, 1000);
+
+        let v = app.searchbar.get('.searchbar');
+        if (v) {
+          app.searchbar.destroy(v);
+          v = null;
+        }
 
         if (!v)
           v = app.searchbar.create({
@@ -189,11 +194,10 @@ async function init()
               console.log('Searchbar enabled')
             },
             search: function (ev) {
-              try {
-              dsearch(ev);
-            } catch(e) {
-              console.log(e);
-            }
+              debouncedSearch(ev);
+            },
+            clear: function (ev) {
+              console.log('call clear');
             }
           }
         })
