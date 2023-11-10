@@ -22,7 +22,7 @@ class ChatMain {
     this.callback = callback;
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
-    this.localSearch = false;
+    this.localSearch = true;
     this.lastSearch = null;
 
     if (this.app.isNative)
@@ -124,6 +124,15 @@ class ChatMain {
     DOM.iSel('enable_audio')
       .onchange = (e) => {
         this.chat.enableAudio(e.target.checked)
+      } 
+
+    DOM.iSel('enable_srv_search')
+      .onchange = (e) => {
+        if (!this.localSearch)
+          this.clearSearch();
+
+        this.lastSearch = null;
+        this.localSearch = !e.target.checked;
       } 
 
 
