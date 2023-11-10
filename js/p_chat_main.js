@@ -152,8 +152,8 @@ class ChatMain {
 
     if (query.length < 2 || query === this.lastSearch )
       return;
-    
-    thid.lastSearch = query;
+
+    this.lastSearch = query;
     this.chat.execSearch(query);
   }
 
