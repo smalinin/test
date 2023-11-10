@@ -207,11 +207,11 @@ async function init()
           };
 
           if (localSearch) {
-            params[searchContainer] = '.search-list';
-            params[searchIn] = '.topic_item';
-            params[customSearch] = false;
+            params['searchContainer'] = '.search-list';
+            params['searchIn'] = '.topic_item';
+            params['customSearch'] = false;
           } else {
-            params[customSearch] = true;
+            params['customSearch'] = true;
           }
         
           v = app.searchbar.create(params);
