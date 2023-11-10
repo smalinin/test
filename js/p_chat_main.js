@@ -22,9 +22,15 @@ class ChatMain {
     this.callback = callback;
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
+    this.localSearch = true;
 
     if (this.app.isNative)
       this.sendToiOS({cmd:'get_api_key'});
+    else {
+      DOM.qHide('#reload');
+      DOM.qSel('#settings').style['paddingLeft'] = '0px';
+      DOM.qSel('#settings').style['marginLeft'] = '10px';
+    }
 
     app.chat = this.chat;
 
@@ -121,6 +127,21 @@ class ChatMain {
 
 
 //////////////////////////////////////////////////////
+  }
+
+  isLocalSearch()
+  {
+    return this.localSearch;
+  }
+
+  setLocalSearchMode()
+  {
+    this.localSearch = true;
+  }
+
+  setSrvSearchMode()
+  {
+    this.localSearch = false;
   }
 
   onLogin()

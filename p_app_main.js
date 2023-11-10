@@ -177,33 +177,45 @@ async function init()
           console.log(ev.query);
         }, 1000);
 
+        const localSearch = c_main.isLocalSearch();
         let v = app.searchbar.get('.searchbar');
         if (v) {
-//          app.searchbar.destroy(v);
-          v.clear();
-          v.disable();
-          v.destroy();
-          v = null;
+          if ((localSearch && v.params.customSearch)
+              || (!localSearch && v.params.customSearch)) 
+            {
+              v.clear();
+              v.disable();
+              v.destroy();
+              v = null;
+            }
         }
 
-        if (!v)
-          v = app.searchbar.create({
-          el: '.searchbar',
-          searchContainer: '.search-list',
-          searchIn: '.topic_item',
-
-          on: {
-            enable: function () {
-              console.log('Searchbar enabled')
-            },
-            search: function (ev) {
-              debouncedSearch(ev);
-            },
-            clear: function (ev) {
-              console.log('call clear');
+        if (!v) {
+          let params = {
+            el: '.searchbar',
+            on: {
+              enable: function () {
+                console.log('Searchbar enabled')
+              },
+              search: function (ev) {
+                debouncedSearch(ev);
+              },
+              clear: function (ev) {
+                console.log('call clear');
+              }
             }
+          };
+
+          if (localSearch) {
+            params[searchContainer] = '.search-list';
+            params[searchIn] = '.topic_item';
+            params[customSearch] = false;
+          } else {
+            params[customSearch] = true;
           }
-        })
+        
+          v = app.searchbar.create(params);
+        }
   
       } catch(___) {}
     }
