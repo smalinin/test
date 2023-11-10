@@ -1043,8 +1043,8 @@ class ChatUI {
     }
     if (list) {
       if (list.length > 0) {
-        $f7('.searchbar-not-found').hide();
-        $f7('.searchbar-found').show();
+        $('.searchbar-not-found').hide();
+        $('.searchbar-found').show();
 
         let id_set = {};
         for(const i of list) 
@@ -1062,16 +1062,16 @@ class ChatUI {
       else {
         //set not found
         //??TODO
-        $f7('.searchbar-not-found').show();
-        $f7('.searchbar-found').hide();
+        $('.searchbar-not-found').show();
+        $('.searchbar-found').hide();
       }
     }
   }
 
   clearSearch() 
   {
-    $f7('.searchbar-not-found').hide();
-    $f7('.searchbar-found').show();
+    $('.searchbar-not-found').hide();
+    $('.searchbar-found').show();
     const topics = DOM.qSelAll('#list_topics li')
     for(let el of topics) {
       el.classList.remove('hidden-by-searchbar');
