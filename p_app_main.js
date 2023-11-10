@@ -174,7 +174,7 @@ async function init()
     if (el.el.id === 'left_panel') {
       try {
         const debouncedSearch = debounce((ev) => {
-          c_main.chat.execSearch(ev.query);
+          c_main.execSearch(ev.query);
         }, 1000);
 
         const localSearch = c_main.isLocalSearch();
@@ -204,7 +204,7 @@ async function init()
               clear: function (ev) {
                 console.log('call clear');
                 if (ev.params.customSearch)
-                  c_main.chat.clearSearch();
+                  c_main.clearSearch();
               }
             }
           };
