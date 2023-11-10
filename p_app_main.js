@@ -205,6 +205,11 @@ async function init()
                 console.log('call clear');
                 if (ev.params.customSearch)
                   c_main.clearSearch();
+              },
+              disable: function (ev) {
+                console.log('call clear');
+                if (ev.params.customSearch)
+                  c_main.clearSearch();
               }
             }
           };
