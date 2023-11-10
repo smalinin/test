@@ -181,6 +181,7 @@ async function init()
         if (v) {
 //          app.searchbar.destroy(v);
           v.clear();
+          v.disable();
           v.destroy();
           v = null;
         }
