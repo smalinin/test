@@ -179,7 +179,9 @@ async function init()
 
         let v = app.searchbar.get('.searchbar');
         if (v) {
-          app.searchbar.destroy(v);
+//          app.searchbar.destroy(v);
+          v.clear();
+          v.destroy();
           v = null;
         }
 
