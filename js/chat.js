@@ -1312,7 +1312,7 @@ class Chat {
         let params = new URLSearchParams(url.search);
         params.append('query', query);
         url.search = params.toString();
-        const rc = await this.solidClient.fetch(ur.toString());
+        const rc = await this.solidClient.fetch(url.toString());
         if (rc.ok) {
           const list = await rc.json();
           console.log(list);
