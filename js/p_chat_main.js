@@ -159,6 +159,7 @@ class ChatMain {
 
   clearSearch()
   {
+    this.lastSearch = null;
     this.chat.clearSearch();
   }
 
