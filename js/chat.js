@@ -1046,9 +1046,9 @@ class ChatUI {
         //          this.clearSearchResult();
         let id_set = {};
         for(const i of list) 
-        id_set[i.chat_id] = 1;
-        const topics = DOM.qSelAll('#list_topics li')
+          id_set[i.chat_id] = 1;
 
+        const topics = DOM.qSelAll('#list_topics li')
         for(let el of topics) {
           const chat_id = el.attributes['chat_id'].value;
           if (id_set[chat_id])
@@ -1354,7 +1354,6 @@ class Chat {
         if (rc.ok) {
           const list = await rc.json();
           this.view.ui.applySearchResult(query, list);
-          console.log(list);
         } else {
           this.showNotice({title:'Error', text:'Filtering chats failed: ' + rc.statusText});
         }
@@ -1362,6 +1361,11 @@ class Chat {
         this.showNotice({title:'Error', text:'Filtering chats failed: ' + e.toString()});
       }
     }
+  }
+
+  async clearSearch(query)
+  {
+    this.view.ui.clearSearch();
   }
 
   async voice2text(blob, mime)
