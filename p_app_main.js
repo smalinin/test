@@ -181,7 +181,7 @@ async function init()
         let v = app.searchbar.get('.searchbar');
         if (v) {
           if ((localSearch && v.params.customSearch)
-              || (!localSearch && v.params.customSearch)) 
+              || (!localSearch && !v.params.customSearch)) 
             {
               v.clear();
               v.disable();
