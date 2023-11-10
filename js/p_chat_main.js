@@ -22,7 +22,7 @@ class ChatMain {
     this.callback = callback;
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
-    this.localSearch = true;
+    this.localSearch = false;
 
     if (this.app.isNative)
       this.sendToiOS({cmd:'get_api_key'});
