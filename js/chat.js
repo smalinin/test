@@ -1352,6 +1352,7 @@ class Chat {
   {
     if (query && query.length > 0) {
       try {
+        this.showProgress();
         const url = new URL('/chat/api/searchChats', this.httpServer);
         let params = new URLSearchParams(url.search);
         params.append('query', query);
@@ -1365,6 +1366,8 @@ class Chat {
         }
       } catch(e) {
         this.showNotice({title:'Error', text:'Filtering chats failed: ' + e.toString()});
+      } finally {
+        this.hideProgress();
       }
     }
   }
