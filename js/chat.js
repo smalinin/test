@@ -1304,6 +1304,26 @@ class Chat {
     }
   }  
 
+  async execSearch(query)
+  {
+    if (query && query.length > 0) {
+      try {
+        const url = new URL('/chat/api/searchChats', this.httpServer);
+        let params = new URLSearchParams(url.search);
+        params.append('query', query);
+        url.search = params.toString();
+        const rc = await this.solidClient.fetch(ur.toString());
+        if (rc.ok) {
+          const list = await rc.json();
+          console.log(list);
+        } else {
+          this.showNotice({title:'Error', text:'Filtering chats failed: ' + rc.statusText});
+        }
+      } catch(e) {
+        this.showNotice({title:'Error', text:'Filtering chats failed: ' + e.toString()});
+      }
+    }
+  }
 
   async voice2text(blob, mime)
   {

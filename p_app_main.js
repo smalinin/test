@@ -174,7 +174,7 @@ async function init()
     if (el.el.id === 'left_panel') {
       try {
         const debouncedSearch = debounce((ev) => {
-          console.log(ev.query);
+          c_main.chat.execSearch(ev.query);
         }, 1000);
 
         const localSearch = c_main.isLocalSearch();
@@ -198,7 +198,8 @@ async function init()
                 console.log('Searchbar enabled')
               },
               search: function (ev) {
-                debouncedSearch(ev);
+                if (ev.params.customSearch)
+                  debouncedSearch(ev);
               },
               clear: function (ev) {
                 console.log('call clear');

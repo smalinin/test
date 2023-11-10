@@ -144,6 +144,12 @@ class ChatMain {
     this.localSearch = false;
   }
 
+  execSearch(query)
+  {
+    //li class=hidden-by-searchbar
+    this.chat.execSearch(query);
+  }
+
   onLogin()
   {
     this.chat.onLogin();
