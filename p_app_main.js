@@ -203,6 +203,8 @@ async function init()
               },
               clear: function (ev) {
                 console.log('call clear');
+                if (ev.params.customSearch)
+                  c_main.chat.clearSearch();
               }
             }
           };

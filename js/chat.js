@@ -1035,6 +1035,44 @@ class ChatUI {
     }
   }
 
+  applySearchResult(query, list) 
+  {
+    if (query && query.length === 0) {
+       this.clearSearchResult();
+       return;
+    }
+    if (list) {
+      if (list.length > 0) {
+        //          this.clearSearchResult();
+        let id_set = {};
+        for(const i of list) 
+        id_set[i.chat_id] = 1;
+        const topics = DOM.qSelAll('#list_topics li')
+
+        for(let el of topics) {
+          const chat_id = el.attributes['chat_id'].value;
+          if (id_set[chat_id])
+            el.classList.remove('hidden-by-searchbar');
+          else
+            el.classList.add('hidden-by-searchbar');
+        }
+      }
+      else {
+        //set not found
+        //??TODO
+      }
+    }
+  }
+
+  clearSearch() 
+  {
+    const topics = DOM.qSelAll('#list_topics li')
+    for(let el of topics) {
+      el.classList.remove('hidden-by-searchbar');
+    }
+    
+  }
+
 }
 
 
@@ -1315,6 +1353,7 @@ class Chat {
         const rc = await this.solidClient.fetch(url.toString());
         if (rc.ok) {
           const list = await rc.json();
+          this.view.ui.applySearchResult(query, list);
           console.log(list);
         } else {
           this.showNotice({title:'Error', text:'Filtering chats failed: ' + rc.statusText});
