@@ -23,6 +23,7 @@ class ChatMain {
     this.ui = new ChatUI({view:this});
     this.chat = new Chat({httpServer, wsServer, view:this});
     this.localSearch = false;
+    this.lastSearch = null;
 
     if (this.app.isNative)
       this.sendToiOS({cmd:'get_api_key'});
@@ -146,6 +147,13 @@ class ChatMain {
 
   execSearch(query)
   {
+    if (!query)
+      return;
+
+    if (query.length < 2 || query === this.lastSearch )
+      return;
+    
+    thid.lastSearch = query;
     this.chat.execSearch(query);
   }
 
