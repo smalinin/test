@@ -1416,18 +1416,6 @@ class Chat {
 
   async getSharedLink()
   {
-/** old 
-    if (this.currentChatId) {
-      let url = new URL('/chat/', this.httpServer);
-      let params = new URLSearchParams(url.search);
-      params.append('chat_id', this.currentChatId);
-      url.search = params.toString();
-      return url.toString();
-    } else {
-      return null;
-    }
-***/
-
     try {
       let url = new URL('/chat/api/listChats', this.httpServer);
       let params = new URLSearchParams(url.search);
@@ -1444,7 +1432,6 @@ class Chat {
       this.showNotice({title:'Error', text:'Can not get PermaLink: ' + e.message});
     }
     return null;
-
   }
 
     
@@ -1512,8 +1499,8 @@ class Chat {
 
   async chatAuthenticate (currentChatId) 
   {
-    if (!this.currentChatId)
-      return false;
+//    if (!this.currentChatId)
+//      return false;
 
     try {
       const url = new URL('/chat/api/chatAuthenticate', this.httpServer);
@@ -1941,24 +1928,6 @@ class Chat {
   }
 
 
-//??TODO
-  continueSession()
-  {
-    let url = new URL(window.location.href);
-    let params = new URLSearchParams(url.search);
-    let chat_id = params.get('chat_id');
-    params.delete('chat_id');
-    params.append ('resume_chat_id', chat_id);
-    url.search = params.toString();
-    solidClientAuthentication.login({
-         oidcIssuer: httpServer,
-         redirectUrl: url.toString(),
-         tokenType: "Bearer",
-         clientName: "OpenLink Personal Assistant"
-    });
-  }
-
-
   selectSession(id, role, model, fine_tune)
   {
     if (id.startsWith('system-') && role === 'system') {
@@ -2004,14 +1973,6 @@ class Chat {
     }
   }
 
-/*##
-//???
-chatTopicsCacheReload();
-freeTextTopicSearch();
-
-
-
-*/  
 
 //???TODO
   async resumeAsNew(chat_id)
@@ -2034,6 +1995,24 @@ freeTextTopicSearch();
       this.showNotice({title:'Error', text:'Resuming chat failed: ' + e.message});
     }
   }
+
+  //??TODO
+  continueSession()
+  {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    let chat_id = params.get('chat_id');
+    params.delete('chat_id');
+    params.append ('resume_chat_id', chat_id);
+    url.search = params.toString();
+    solidClientAuthentication.login({
+       oidcIssuer: httpServer,
+       redirectUrl: url.toString(),
+       tokenType: "Bearer",
+       clientName: "OpenLink Personal Assistant"
+    });
+  }
+
 
 
   setModel(v, update_ui)
