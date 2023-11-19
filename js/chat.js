@@ -1715,13 +1715,14 @@ class Chat {
       return;
     }
 
-    if (!this.helloSent) { // send init message e.g. Init or something else to cause Chat bot to answer 
-      //console.log ('onOpen currentChatId:'+currentChatId);
-      if (this.currentChatId)
-        await this.loadConversation(this.currentChatId);
-      this.helloSent = true;
-    }
-    else {
+    try {
+      if (!this.helloSent) { // send init message e.g. Init or something else to cause Chat bot to answer 
+        //console.log ('onOpen currentChatId:'+currentChatId);
+        if (this.currentChatId)
+          await this.loadConversation(this.currentChatId);
+        this.helloSent = true;
+      }
+    } finally {
       this.view.ui.hideProgress();
     }
   }
