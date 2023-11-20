@@ -134,7 +134,7 @@ class ChatUI {
        +`        <span class="topic_item">${title} </span> `
        +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`;
 
-    if (this.isMobile) {
+    if (!this.isMobile) {
       html +=
         `        <a href="#" class="chat_edit">  <i class="icon f7-icons topic_icon">pencil_ellipsis_rectangle</i> </a>`
        +`        <a href="#" class="chat_del">  <i class="icon f7-icons topic_icon">trash</i> </a>`
@@ -145,7 +145,7 @@ class ChatUI {
        +`    </div>`
        +`  </div>`;
 
-    if (!this.isMobile) {
+    if (this.isMobile) {
       html +=
        `  <div class="swipeout-actions-right" >`
       +`    <a class="color-green chat_edit">Edit</a>`
