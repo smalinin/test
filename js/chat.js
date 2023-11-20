@@ -132,6 +132,8 @@ class ChatUI {
        +`      <div class="item-title topic_title"> `
        +`        <span class="topic_item">${title} </span> `
        +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`
+       +`        <a href="#" >  <i class="icon f7-icons">pencil_ellipsis_rectangle</i> </a>`
+       +`        <a href="#" >  <i class="icon f7-icons">trash</i> </a>`
        +`      </div> `
        +`    </div>`
        +`  </div>`
