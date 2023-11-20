@@ -278,7 +278,7 @@ function stored_api_key(v)
 }
 
 
-function handle_callback(url_str)
+function handle_callback(url_str, ver)
 {
     try {
         const url = new URL(url_str);
@@ -286,14 +286,14 @@ function handle_callback(url_str)
             url.searchParams.get("code") ||
             url.searchParams.get("access_token");
 
-        handle_authCode(authCode, url_str);
+        handle_authCode(authCode, url_str, ver);
     } catch(e) {
         console.log(e);
     }
 }
 
 
-async function handle_authCode(authCode, url)
+async function handle_authCode(authCode, url, ver)
 {
     var authData = null;
     const storage = (window.localStorage) ? window.localStorage : window.sessionStorage
@@ -320,4 +320,13 @@ async function handle_authCode(authCode, url)
         } catch(e) {
             console.log(e);
         }
+
+    if (ver && app.isNative) {
+      const oldVer = storage.getItem('ios_app_ver') || '0';
+      if (oldVer !== ver) {
+        storage.setItem('ios_app_ver', ver);
+        location.reload();
+      }
+    }
+
 }

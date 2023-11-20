@@ -1061,7 +1061,6 @@ class ChatUI {
       }
       else {
         //set not found
-        //??TODO
         $('.searchbar-not-found').show();
         $('.searchbar-found').hide();
       }
@@ -1152,9 +1151,10 @@ class AudioRec {
       }
       this.mediaRec.stream.getTracks().forEach(track => track.stop());
       this.mediaRec = null;
-      DOM.qHide('#audio-start');
-      DOM.qHide('#audio-stop');
     }
+
+    DOM.qHide('#audio-start');
+    DOM.qHide('#audio-stop');
   }
 
   async audioEnable()
@@ -1165,17 +1165,20 @@ class AudioRec {
     if (navigator.mediaDevices.getUserMedia) {
         const constraints = { audio: true };
 
-        DOM.qShow('#audio-start');
-
         try {
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
           this.onSuccess(stream);
           
         } catch(e) {
           this.onError(e);
+          return false;
         }
+
+        DOM.qShow('#audio-start');
+        return true;
     } else {
         console.log('getUserMedia not supported on your browser!');
+        return false;
     }
   }
 
@@ -1312,6 +1315,14 @@ class Chat {
   }
 
 
+  async init() 
+  {
+    await this.initFineTune();
+    await this.initModels()    
+    await this.initFunctionList();
+  }
+
+
   showMessage(text)
   {
     this.view.ui.new_message(text);
@@ -1331,14 +1342,27 @@ class Chat {
     this.view.ui.set_api_unlock();
   }
     
-  enableAudio(v)
+  async enableAudio(v)
   {
     if (v) {  //enable
       if (this.audioRec)
         return;
       
         this.audioRec = new AudioRec({chat: this, view: this.view});
-        this.audioRec.audioEnable();
+        let rc = false;
+
+        try {
+          rc = await this.audioRec.audioEnable();
+        } catch(e) {
+          rc = false;
+        }
+
+        if (!rc) {
+          this.audioRec.audioDisable();
+          this.audioRec = null;
+          this.showNotice({title:'Error', text:'Could not enable audio recording'});
+          return false;
+        }
     } 
     else {  //disable
       if (this.audioRec) {
@@ -1346,6 +1370,7 @@ class Chat {
         this.audioRec = null;
       }
     }
+    return true;
   }  
 
   async execSearch(query)
@@ -1492,16 +1517,13 @@ class Chat {
       await loadConversation(chat_id);
     }
     await this.initSidebar();
-    //?? initFunctions();
+    await this.initFunctionList();
     this.ws_Init();
   }
 
 
   async chatAuthenticate (currentChatId) 
   {
-//    if (!this.currentChatId)
-//      return false;
-
     try {
       const url = new URL('/chat/api/chatAuthenticate', this.httpServer);
       let params = new URLSearchParams(url.search);
@@ -1556,6 +1578,7 @@ class Chat {
       return rc;
     }
   }
+
 
   async getTopic()
   {
@@ -1641,10 +1664,6 @@ class Chat {
   }
 
 
-
-/***==================================***********/
-
-
   ws_Init()
   {
     if (!this.loggedIn)
@@ -1664,14 +1683,12 @@ class Chat {
     this.webSocket.onclose = (e) => {this.ws_onClose(e) }
   }
 
+
   ws_Reconnect()
   {
     this.ws_Init();
-//??    $('.reconnect').hide();
-//??    $('.message_input').prop('disabled', false);
-//??    $('.send_message').show();
+    //??todo
   }
-
 
 
   ws_Continue()
@@ -1782,9 +1799,6 @@ class Chat {
     this.showMessage ('Connection to the server closed. '+JSON.stringify(ev));
     this.view.logout();
     this.view.ui.hideProgress();
-//??--            $('.send_message').hide();
-//??--            $('.reconnect').show();
-//??--            $('.message_input').prop('disabled', true);
   }
 
 

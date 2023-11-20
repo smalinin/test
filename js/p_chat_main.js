@@ -43,6 +43,8 @@ class ChatMain {
     const session = this.session = this.solidClient.getDefaultSession();
     if (session.info.isLoggedIn) {
       this.onLogin();
+    } else {
+      this.chat.init();
     }
 
 
@@ -122,8 +124,11 @@ class ChatMain {
     };
 
     DOM.iSel('enable_audio')
-      .onchange = (e) => {
-        this.chat.enableAudio(e.target.checked)
+      .onchange = async (e) => {
+        const checked = e.target.checked;
+        const rc = await this.chat.enableAudio(checked)
+        if (checked && !rc)
+          DOM.iSel('enable_audio').checked = false;
       } 
 
     DOM.iSel('enable_srv_search')
