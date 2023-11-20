@@ -122,26 +122,38 @@ class ChatUI {
     const add_class = chat_id === cur_chat ? 'cur_topic':'';
     const fine_tune = item.fine_tune || '';
     const model = item.model || '';
+    const isNative = this.view.isNative;
 
     let html = '';
 
-      html = 
+    html = 
         `<li class="swipeout ${add_class}" chat_id="${chat_id}" role="${role}" title="${title}" model="${model}" fine_tune="${fine_tune}">`
        +`  <div class="item-content swipeout-content">`
        +`    <div class="item-inner">`
        +`      <div class="item-title topic_title"> `
        +`        <span class="topic_item">${title} </span> `
-       +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`
-       +`        <a href="#" >  <i class="icon f7-icons topic_icon">pencil_ellipsis_rectangle</i> </a>`
-       +`        <a href="#" >  <i class="icon f7-icons topic_icon">trash</i> </a>`
-       +`      </div> `
+       +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`;
+
+    if (isNative) {
+      html +=
+        `        <a href="#" class="chat_edit">  <i class="icon f7-icons topic_icon">pencil_ellipsis_rectangle</i> </a>`
+       +`        <a href="#" class="chat_del">  <i class="icon f7-icons topic_icon">trash</i> </a>`
+    }   
+
+    html +=
+        `      </div> `
        +`    </div>`
-       +`  </div>`
-       +`  <div class="swipeout-actions-right" >`
-       +`    <a class="color-green chat_edit">Edit</a>`
-       +`    <a class="color-red chat_del">Delete</a>`
-       +`  </div>`
-       +`</li>`
+       +`  </div>`;
+
+    if (!isNative) {
+      html +=
+       `  <div class="swipeout-actions-right" >`
+      +`    <a class="color-green chat_edit">Edit</a>`
+      +`    <a class="color-red chat_del">Delete</a>`
+      +`  </div>`
+    }   
+
+    html += `</li>`;
 
     return html;
   }
