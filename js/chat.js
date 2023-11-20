@@ -10,6 +10,7 @@ class ChatUI {
     this.main_content = DOM.qSel('div#main');
     this.notification = null;
     this.preloader = null;
+    this.isMobile = 'ontouchstart' in window;
 
     const self = this;
 
@@ -122,7 +123,6 @@ class ChatUI {
     const add_class = chat_id === cur_chat ? 'cur_topic':'';
     const fine_tune = item.fine_tune || '';
     const model = item.model || '';
-    const isNative = this.view.isNative;
 
     let html = '';
 
@@ -134,7 +134,7 @@ class ChatUI {
        +`        <span class="topic_item">${title} </span> `
        +`        <span class="timestamp" style="font-size:8px">(${ts})</span>`;
 
-    if (!isNative) {
+    if (this.isMobile) {
       html +=
         `        <a href="#" class="chat_edit">  <i class="icon f7-icons topic_icon">pencil_ellipsis_rectangle</i> </a>`
        +`        <a href="#" class="chat_del">  <i class="icon f7-icons topic_icon">trash</i> </a>`
@@ -145,7 +145,7 @@ class ChatUI {
        +`    </div>`
        +`  </div>`;
 
-    if (isNative) {
+    if (!this.isMobile) {
       html +=
        `  <div class="swipeout-actions-right" >`
       +`    <a class="color-green chat_edit">Edit</a>`
