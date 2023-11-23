@@ -196,7 +196,7 @@ class ChatMain {
     else
       this.solidClient.login({oidcIssuer:httpServer, 
                             redirectUrl: this.callback, 
-                            tokenType: "Bearer",
+                            /*tokenType: "Bearer",*/
                             clientName:"OpenLink Personal Assistant"});
   }
 
