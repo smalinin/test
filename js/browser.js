@@ -1,7 +1,7 @@
 /*
- *  This file is part of the OpenLink YouID
+ *  This file is part of the OpenLink Personal Assistant
  *
- *  Copyright (C) 2015-2020 OpenLink Software
+ *  Copyright (C) 2015-2023 OpenLink Software
  *
  *  This project is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by the

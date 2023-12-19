@@ -1,3 +1,22 @@
+/*
+ *  This file is part of the OpenLink Personal Assistant
+ *
+ *  Copyright (C) 2015-2023 OpenLink Software
+ *
+ *  This project is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU General Public License as published by the
+ *  Free Software Foundation; only version 2 of the License, dated June 1991.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
 class ChatUI {
   constructor({view}) {
@@ -743,8 +762,15 @@ class ChatUI {
 
   updateFuncsList(list)
   {
-    const el = DOM.qSel('ul#funcs-list');
-    el.innerHTML = this._create_funcs_html(list);
+    let sel = new Set();
+    for(const v of list)
+      sel.add(v);
+
+    let funcs = DOM.qSelAll('ul#funcs-list input[type="checkbox"]');
+    for(const el of funcs) {
+      el.checked = sel.has(el.id) ? true : false;
+    }
+    //DOM.qSel('ul#funcs-list input[id="UB.DBA.sparqlQuery"]');
   }
 
   getFuncsList()

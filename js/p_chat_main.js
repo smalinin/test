@@ -1,17 +1,22 @@
-//
-//  YouID for iOS
-//
-//  Copyright (C) 2011-2021 OpenLink Software.
-//  All Rights Reserved.
-//
-//  The copyright above and this notice must be preserved in all
-//  copies of this source code.  The copyright above does not
-//  evidence any actual or intended publication of this source code.
-//
-//  This is unpublished proprietary trade secret of OpenLink Software.
-//  This source code may not be copied, disclosed, distributed, demonstrated
-//  or licensed except as authorized by OpenLink Software.
-//
+/*
+ *  This file is part of the OpenLink Personal Assistant
+ *
+ *  Copyright (C) 2015-2023 OpenLink Software
+ *
+ *  This project is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU General Public License as published by the
+ *  Free Software Foundation; only version 2 of the License, dated June 1991.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ */
 
 
 class ChatMain {
