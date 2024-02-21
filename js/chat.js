@@ -770,7 +770,6 @@ class ChatUI {
     for(const el of funcs) {
       el.checked = sel.has(el.id) ? true : false;
     }
-    //DOM.qSel('ul#funcs-list input[id="UB.DBA.sparqlQuery"]');
   }
 
   getFuncsList()
